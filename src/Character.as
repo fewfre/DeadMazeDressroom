@@ -11,6 +11,7 @@ package
 	{
 		// Storage
 		public var outfit:MovieClip;
+		public var animatePose:Boolean;
 		
 		internal var skinData:SkinData;
 		internal var hairData:ShopItemData;
@@ -28,15 +29,29 @@ package
 		internal var shoes:MovieClip;
 		internal var object:MovieClip;
 		
-		internal var pose:Class;
+		internal var poseClass:Class;
 		
-		internal var scale:Number;
+		internal var _scale:Number;
+		
+		public function set scale(pVal:Number) { outfit.scaleX = outfit.scaleY = pVal; }
 		
 		// Constructor
+		// pData = { x:NUmber, y:Number, [various "__Data"s] }
 		public function Character(pData:Object)
 		{
 			super();
+			animatePose = true;
 			
+			this.x = pData.x;
+			this.y = pData.y;
+			
+			this.buttonMode = true;
+			this.addEventListener(flash.events.MouseEvent.MOUSE_DOWN, function () { startDrag(); });
+			this.addEventListener(flash.events.MouseEvent.MOUSE_UP, function () { stopDrag(); });
+			
+			/****************************
+			* Store Data
+			*****************************/
 			this.skinData = pData.skin;
 			
 			this.hairData = pData.hair;
@@ -46,114 +61,67 @@ package
 			this.shoesData = pData.shoes;
 			this.objectData = pData.object;
 			
-			this.pose = pData.pose.itemClass;
+			this.poseClass = pData.pose.itemClass;
 			
-			updatePose(this.pose);
+			updatePose(this.poseClass);
 		}
 		
 		public function updatePose(pPose:Class=null) {
-			if(pPose) { this.pose = pPose; }
+			if(pPose) { this.poseClass = pPose; }
 			var tScale = 3;
 			if(outfit != null) { tScale = outfit.scaleX; removeChild(outfit); }
-			outfit = addChild(new pose());
+			outfit = addChild(new Pose(poseClass));
 			outfit.scaleX = outfit.scaleY = tScale;
 			
-			var tHairData = hairData ? hairData : skinData.hair;
-			
-			var part:DisplayObject = null;
-			//var hairPart:DisplayObject = null;
-			var tChild:* = null;
-			var tChildType:String = null;
-			
-			var tShopData = [
-				tHairData,
+			outfit.apply({ skin:skinData, hair:hairData, items:[
 				headData,
 				shirtData,
 				pantsData,
-				shoesData
-			];
-			
-			var i:Number = 0;
-			while (i < outfit.numChildren) {
-				tChild = outfit.getChildAt(i);
-				tChildType = tChild.name;
-				
-				switch (tChildType){
-					case "_Arme": if(objectData) { this.object = part = tChild.addChild(new objectData.itemClass()); } break;
-					//case "CH": if(tHairData.itemClass2) { hairPart = tChild.addChild(new tHairData.itemClass2()); } break;
-					case "T": {
-						part = tChild.addChild(new (skinData.getPartClassFromType(tChildType))());
-						//hairPart = tChild.addChild(new tHairData.itemClass());
-						break;
-					} // else check for default skin hair
-					default: part = tChild.addChild(new (skinData.getPartClassFromType(tChildType))()); break;
-				}
-				if(part && part is MovieClip) Main.costumes.colorItem({ mc:part, color: Main.costumes.skinColor, name:"$0" });
-				if(part && part is MovieClip) Main.costumes.colorItem({ mc:part, color: Main.costumes.secondaryColor, name:"$2" });
-				
-				for(var j:int = 0; j < tShopData.length; j++) {
-					part = _addToSkinIfCan(tChild, tShopData[j], tChildType);
-					if(part && tShopData[j].type == ItemType.HAIR) Main.costumes.applyColorToObject(part,  Main.costumes.hairColor);
-				}
-				
-				part = null;
-				i++;
-			}
+				shoesData,
+				objectData
+			] });
+			if(animatePose) outfit.play(); else outfit.stopAtLastFrame();
 		}
-		private function _addToSkinIfCan(pSkinPart:MovieClip, pData:ShopItemData, pID:String) : MovieClip {
-			if(pData) {
-				var tClass = pData.getPart(pID);
-				if(!(tClass is MovieClip)) {
-					return pSkinPart.addChild( new tClass() );
+		
+		/****************************
+		* Color
+		*****************************/
+			/*
+				public function colorDefault(pType:String) : void {
+					Main.costumes.colorDefault( this.getItem(pType) );
 				}
-			}
-			return null;
-		}
 
-		/*
-			public function colorDefault(pType:String) : void {
-				Main.costumes.colorDefault( this.getItem(pType) );
-			}
-
-			public function getColors(pType:String) : Array {
-				var tItem:MovieClip = this.getItem(pType);
-				if (tItem == null) { return new Array(); }
-				
-				var tChild:DisplayObject;
-				var tTransform:*=null;
-				var tArray:*=new Array();
-				
-				var i:int=0;
-				while (i < tItem.numChildren) {
-					tChild = tItem.getChildAt(i);
-					if (tChild.name.indexOf("Couleur") == 0 && tChild.name.length > 7) {
-						tTransform = tChild.transform.colorTransform;
-						tArray[tChild.name.charAt(7)] = com.piterwilson.utils.ColorMathUtil.RGBToHex(tTransform.redMultiplier * 128, tTransform.greenMultiplier * 128, tTransform.blueMultiplier * 128);
+				public function getColors(pType:String) : Array {
+					var tItem:MovieClip = this.getItem(pType);
+					if (tItem == null) { return new Array(); }
+					
+					var tChild:DisplayObject;
+					var tTransform:*=null;
+					var tArray:*=new Array();
+					
+					var i:int=0;
+					while (i < tItem.numChildren) {
+						tChild = tItem.getChildAt(i);
+						if (tChild.name.indexOf("Couleur") == 0 && tChild.name.length > 7) {
+							tTransform = tChild.transform.colorTransform;
+							tArray[tChild.name.charAt(7)] = com.piterwilson.utils.ColorMathUtil.RGBToHex(tTransform.redMultiplier * 128, tTransform.greenMultiplier * 128, tTransform.blueMultiplier * 128);
+						}
+						i++;
 					}
-					i++;
+					return tArray;
 				}
-				return tArray;
-			}
 
-			public function colorItem(pType:String, arg2:int, pColor:String) : void {
-				var tItem:MovieClip = this.getItem(pType);
-				Main.costumes.colorItem({ mc:tItem, color:pColor, swatch:arg2 });
-			}
-		*/
+				public function colorItem(pType:String, arg2:int, pColor:String) : void {
+					var tItem:MovieClip = this.getItem(pType);
+					Main.costumes.colorItem({ mc:tItem, color:pColor, swatch:arg2 });
+				}
+			*/
 
-		public function setHair(pData:ShopItemData, pRemove:Boolean=true) : void {
-			this.hairData = pData;
-			//updatePose();
-		}
-
-		public function setObject(pData:ShopItemData, pRemove:Boolean=true) : void {
-			this.objectData = pData;
-			//updatePose();
-		}
-
-		public function setSkin(pData:ShopItemData, pRemove:Boolean=true) : void {
-			this.skinData = pData;
-			//updatePose();
+		/****************************
+		* Update Data
+		*****************************/
+		public function setSkin(pData:ShopItemData) : void {
+			setItemData(ItemType.SKIN, pData);
 		}
 
 		public function getItem(pType:String):MovieClip
@@ -170,32 +138,27 @@ package
 			}
 		}
 		
-		public function addItem(pType:String, pItem:ShopItemData) : void {
+		public function setItemData(pType:String, pItem:ShopItemData) : void {
 			switch(pType) {
-				case ItemType.HAIR				: setHair(pItem); break;
+				case ItemType.HAIR				: this.hairData = pItem; break;
 				case ItemType.HEAD				: this.headData = pItem; break;
 				case ItemType.SHIRT				: this.shirtData = pItem; break;
 				case ItemType.PANTS				: this.pantsData = pItem; break;
 				case ItemType.SHOES				: this.shoesData = pItem; break;
-				case ItemType.OBJECT			: setObject(pItem); break;
-				case ItemType.SKIN				: setSkin(pItem); break;
+				case ItemType.OBJECT			: this.objectData = pItem; break;
+				case ItemType.SKIN				: this.skinData = pItem; break;
+				case ItemType.POSE				: this.poseClass = pItem.itemClass; break;
 				default: trace("[Character](addItem) Unknown Type: "+pType); break;
 			}
 			updatePose();
 		}
 		
+		public function addItem(pType:String, pItem:ShopItemData) : void {
+			setItemData(pType, pItem);
+		}
+		
 		public function removeItem(pType:String) : void {
-			switch(pType) {
-				case ItemType.HAIR				: this.hairData = null; break;
-				case ItemType.HEAD				: this.headData = null; break;
-				case ItemType.SHIRT				: this.shirtData = null; break;
-				case ItemType.PANTS				: this.pantsData = null; break;
-				case ItemType.SHOES				: this.shoesData = null; break;
-				case ItemType.OBJECT			: this.objectData = null; break;
-				case ItemType.SKIN				: this.skinData = null; break;
-				default: trace("[Character](removeItem) Unknown Type: "+pType); break;
-			}
-			updatePose();
+			setItemData(pType, null);
 		}
 	}
 }

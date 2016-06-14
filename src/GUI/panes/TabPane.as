@@ -1,11 +1,13 @@
-package GUI 
+package GUI.panes
 {
+	import GUI.*;
+	import GUI.buttons.*;
 	import fl.containers.*;
 	import flash.display.*;
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	
-	public class Tab extends MovieClip
+	public class TabPane extends MovieClip
 	{
 		// Storage
 		public var active : Boolean;
@@ -17,7 +19,7 @@ package GUI
 		var content:MovieClip;
 		
 		// Constructor
-		public function Tab()
+		public function TabPane()
 		{
 			super();
 			active = false;
@@ -27,9 +29,9 @@ package GUI
 			this.content = new MovieClip();
 		}
 
-		public function addItem(pItem:Sprite):void
+		public function addItem(pItem:Sprite):Sprite
 		{
-			this.content.addChild(pItem);
+			return this.content.addChild(pItem);
 		}
 
 		public function addInfoBar(pBar:ShopInfoBar):void

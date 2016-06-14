@@ -6,7 +6,7 @@ package
 	
 	public class Costumes
 	{
-		private const _MAX_COSTUMES_TO_CHECK_TO:Number = 999;
+		private const _MAX_COSTUMES_TO_CHECK_TO:Number = 250;//999;
 		
 		public var assets:AssetManager;
 		
@@ -54,11 +54,12 @@ package
 			this.head = _setupCostumeArray({ base:"M_2", type:ItemType.HEAD, pad:3, after:"_", map:tSkinParts });
 			this.shirts = _setupCostumeArray({ base:"M_3", type:ItemType.SHIRT, pad:3, after:"_", map:tSkinParts, sex:true });
 			this.pants = _setupCostumeArray({ base:"M_4", type:ItemType.PANTS, pad:3, after:"_", map:tSkinParts, sex:true });
-			this.shoes = _setupCostumeArray({ base:"M_5", type:ItemType.SHOES, pad:3, after:"_", map:tSkinParts });
+			this.shoes = _setupCostumeArray({ base:"M_55", type:ItemType.SHOES, pad:2, after:"_", map:tSkinParts });
 			this.objects = _setupCostumeArray({ base:"dmo_", type:ItemType.OBJECT });
+			for(i = 0; i < objects.length; i++) { objects[i].classMap = { _Arme:objects[i].itemClass }; }
 			
 			this.skins = new Array();
-			
+				
 			for(i = 0; i < _MAX_COSTUMES_TO_CHECK_TO; i++) {
 				if(assets.getLoadedClass( "M_"+i+"_BS1_1" ) != null) {
 					this.skins.push( new SkinData( i, GENDER.FEMALE ) );
@@ -144,7 +145,7 @@ package
 					return i;
 				}
 			}
-			return null;
+			return -1;
 		}
 
 		public function copyColor(copyFromMC:MovieClip, copyToMC:MovieClip) : MovieClip {

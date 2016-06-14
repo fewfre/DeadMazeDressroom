@@ -12,5 +12,8 @@ package
 		public static const OBJECT				: String = "object";
 		
 		public static const POSE				: String = "pose";
+		
+		// Order of item layering when occupying the same spot.
+		public static const LAYERING			: Array = [ SKIN, HAIR, HEAD, SHIRT, PANTS, SHOES, OBJECT ];
 	}
 }

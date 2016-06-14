@@ -1,5 +1,7 @@
 package GUI
 {
+	import GUI.*;
+	import GUI.buttons.*;
 	import com.adobe.images.*;
 	import flash.display.*;
 	import flash.display.MovieClip;
@@ -15,8 +17,8 @@ package GUI
 		public var data				: ShopItemData;
 		
 		public var Image			: MovieClip;
-		public var imageCont		: GUI.RoundedRectangle;
-		public var colorWheel		: GUI.ScaleButton;
+		public var imageCont		: RoundedRectangle;
+		public var colorWheel		: ScaleButton;
 		public var Text				: flash.text.TextField;
 		public var downloadButton	: SpriteButton;
 		
@@ -33,17 +35,17 @@ package GUI
 			this.Width = ConstantsApp.PANE_WIDTH;
 			data = null;
 			
-			imageCont = new GUI.RoundedRectangle(0, 0, 50, 50);
+			imageCont = new RoundedRectangle(0, 0, 50, 50);
 			imageCont.draw(0x6A7495, 15, 0x5d7d90, 0x11171c, 0x3c5064);
 			addChild( imageCont );
 			
 			ChangeImage( new $NoItem() );
 			
-			this.colorWheel = new GUI.ScaleButton(80, 24, pParams.showBackButton ? new $BackArrow() : new $ColorWheel());
+			this.colorWheel = new ScaleButton({ x:80, y:24, obj:pParams.showBackButton ? new $BackArrow() : new $ColorWheel() });
 			this.colorWheel.x = 80;
 			this.colorWheel.y = 24;
 			addChild(this.colorWheel);
-			this.colorWheel.alpha = 0;
+			this.colorWheel.alpha = pParams.showBackButton ? 1 : 0;
 			// Add event listener in Main
 			
 			this.Text = new flash.text.TextField();
@@ -55,10 +57,7 @@ package GUI
 			this.Text.alpha = 0;
 			addChild(this.Text);
 			
-			downloadButton = new SpriteButton(this.Width - 50, 0, 50, 50, new $SimpleDownload(), 1);
-			//downloadButton.x = this.Width - 50;
-			//downloadButton.y = 12;
-			//downloadButton.addChild( new $SimpleDownload() );
+			downloadButton = new SpriteButton({ x:this.Width - 50, y:0, width:50, height:50, obj:new $SimpleDownload(), id:1 });
 			addChild(downloadButton);
 			downloadButton.addEventListener(flash.events.MouseEvent.MOUSE_UP, saveSprite);
 			downloadButton.alpha = 0;
@@ -89,10 +88,10 @@ package GUI
 			var tOffset:Point = tBounds.topLeft;
 			
 			this.Image = pMC;
-			this.Image.x = 50 / 2 - (tBounds.width / 2 + tOffset.x)* 0.75;
-			this.Image.y = 50 / 2 - (tBounds.height / 2 + tOffset.y)* 0.75;
-			this.Image.scaleX = 0.75;
-			this.Image.scaleY = 0.75;
+			this.Image.x = 50 / 2 - (tBounds.width / 2 + tOffset.x)* 0.75 * this.Image.scaleX;
+			this.Image.y = 50 / 2 - (tBounds.height / 2 + tOffset.y)* 0.75 * this.Image.scaleY;
+			this.Image.scaleX *= 0.75;
+			this.Image.scaleY *= 0.75;
 			imageCont.addChild(this.Image);
 		}
 		
@@ -108,7 +107,7 @@ package GUI
 			
 			colorWheelActive = colorWheelEnabled;
 			Text.alpha = 1;
-			downloadButton.alpha = 1;
+			//downloadButton.alpha = 1;
 		}
 		
 		public function removeInfo() : void {

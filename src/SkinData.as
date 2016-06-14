@@ -35,62 +35,34 @@ package
 		}
 		
 		private function _initSkin() : void {
+			classMap = {};
 			var tSex = gender == GENDER.FEMALE ? "1" : "2";
 			
-			head		= Main.assets.getLoadedClass( "M_"+id+"_T_"+tSex );
-			//_getDefaultHairFromID();
+			classMap.T	= head		= Main.assets.getLoadedClass( "M_"+id+"_T_"+tSex );
+			
+			// Hair may be replaced, so we don't want it in the classMap.
 			hair		= new ShopItemData({ type:ItemType.HAIR, classMap:{ T:Main.assets.getLoadedClass( "M_"+id+"_C_"+tSex ), CH:Main.assets.getLoadedClass( "M_"+id+"_CB_"+tSex ) } });
+			//classMap.T	= Main.assets.getLoadedClass( "M_"+id+"_C_"+tSex );
+			//classMap.CH	= Main.assets.getLoadedClass( "M_"+id+"_CB_"+tSex );
 			
-			torso		= Main.assets.getLoadedClass( "M_"+id+"_TS_"+tSex );
-			pelvis		= Main.assets.getLoadedClass( "M_"+id+"_B_"+tSex );
+			classMap.TS	= torso		= Main.assets.getLoadedClass( "M_"+id+"_TS_"+tSex );
+			classMap.B	= pelvis	= Main.assets.getLoadedClass( "M_"+id+"_B_"+tSex );
 			
-			upperArm1	= Main.assets.getLoadedClass( "M_"+id+"_BS1_"+tSex );
-			lowerArm1	= Main.assets.getLoadedClass( "M_"+id+"_BI"+tSex );
 			
-			upperArm2	= Main.assets.getLoadedClass( "M_"+id+"_BS2_"+tSex );
-			lowerArm2	= MovieClip;//Main.assets.getLoadedClass( "M_"+id+"_BI"+tSex );
+			classMap.BS1= upperArm1	= Main.assets.getLoadedClass( "M_"+id+"_BS1_"+tSex );
+			classMap.BS2= upperArm2	= Main.assets.getLoadedClass( "M_"+id+"_BS2_"+tSex );
+			classMap.BI1= lowerArm1	= Main.assets.getLoadedClass( "M_"+id+"_BI"+tSex );
+			classMap.BI2= lowerArm2	= MovieClip;//Main.assets.getLoadedClass( "M_"+id+"_BI"+tSex );
 			
-			hand1		= Main.assets.getLoadedClass( "M_"+id+"_M1" );
-			hand2		= Main.assets.getLoadedClass( "M_"+id+"_M2" );
+			classMap.M1	= hand1		= Main.assets.getLoadedClass( "M_"+id+"_M1" );
+			classMap.M2	= hand2		= Main.assets.getLoadedClass( "M_"+id+"_M2" );
 			
-			upperLeg1	= Main.assets.getLoadedClass( "M_"+id+"_JS1" );
-			upperLeg2	= Main.assets.getLoadedClass( "M_"+id+"_JS2" );
-			lowerLeg1	= Main.assets.getLoadedClass( "M_"+id+"_JI1" );
-			lowerLeg2	= Main.assets.getLoadedClass( "M_"+id+"_JI2" );
-			foot1		= Main.assets.getLoadedClass( "M_"+id+"_P1" );
-			foot2		= Main.assets.getLoadedClass( "M_"+id+"_P2" );
-		}
-		
-		private function _getDefaultHairFromID() : void {
-			var tHairID:int = -1;
-			switch(id) {
-				case 0:	tHairID = gender == GENDER.MALE ? 3 : 1; break;
-				case 1:	tHairID = gender == GENDER.MALE ? 3 : 5; break;
-				case 2:	tHairID = gender == GENDER.MALE ? 4 : 8; break;
-				case 3:	tHairID = gender == GENDER.MALE ? 4 : 1; break;
-				case 4:	tHairID = gender == GENDER.MALE ? 3 : 7; break;
-				case 5:	tHairID = 1; break;
-				case 6:	tHairID = 4; break;
-				case 7:	tHairID = -1; break; // Zombie
-				case 8:	tHairID = 13; break;
-				case 9:	tHairID = 14; break;
-				case 10:tHairID = 15; break;
-				case 11:tHairID = -1; break; // Zombie
-				case 12:tHairID = -1; break; // Zombie
-				case 13:tHairID = -1; break; // Zombie
-				case 14:tHairID = -1; break; // Zombie
-				case 15:tHairID = -1; break; // Zombie
-				case 16:tHairID = 16; break;
-				case 17:tHairID = 17; break;
-				case 18:tHairID = 18; break;
-				case 19:tHairID = 19; break;
-				case 20:tHairID = 20; break;
-				case 21:tHairID = 21; break;
-				case 22:tHairID = 22; break;
-				case 23:tHairID = 23; break;
-				case 24:tHairID = 24; break;
-			}
-			hair = Main.costumes.getItemFromTypeID(ItemType.HAIR, tHairID);
+			classMap.JS1= upperLeg1	= Main.assets.getLoadedClass( "M_"+id+"_JS1" );
+			classMap.JS2= upperLeg2	= Main.assets.getLoadedClass( "M_"+id+"_JS2" );
+			classMap.JI1= lowerLeg1	= Main.assets.getLoadedClass( "M_"+id+"_JI1" );
+			classMap.JI2= lowerLeg2	= Main.assets.getLoadedClass( "M_"+id+"_JI2" );
+			classMap.P1	= foot1		= Main.assets.getLoadedClass( "M_"+id+"_P1" );
+			classMap.P2	= foot2		= Main.assets.getLoadedClass( "M_"+id+"_P2" );
 		}
 		
 		public function getPartClassFromType(pType:String) : Class {

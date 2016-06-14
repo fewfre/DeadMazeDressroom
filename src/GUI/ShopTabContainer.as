@@ -1,5 +1,7 @@
 package GUI 
 {
+	import GUI.*;
+	import GUI.buttons.*;
 	import flash.display.*;
 	import flash.display.Shape;
 	import flash.events.*;
@@ -33,20 +35,20 @@ package GUI
 			tabs = new Array();
 			
 			_addTab("Config", tX += tXSpacing, tY += tYSpacing, tWidth, tHeight, "config");
-			_addTab("Objects", tX += tXSpacing, tY += tYSpacing, tWidth, tHeight, ItemType.OBJECT);
 			_addTab("Skin", tX += tXSpacing, tY += tYSpacing, tWidth, tHeight, ItemType.SKIN);
 			_addTab("Hair", tX += tXSpacing, tY += tYSpacing, tWidth, tHeight, ItemType.HAIR);
 			_addTab("Head", tX += tXSpacing, tY += tYSpacing, tWidth, tHeight, ItemType.HEAD);
 			_addTab("Shirts", tX += tXSpacing, tY += tYSpacing, tWidth, tHeight, ItemType.SHIRT);
 			_addTab("Pants", tX += tXSpacing, tY += tYSpacing, tWidth, tHeight, ItemType.PANTS);
 			_addTab("Shoes", tX += tXSpacing, tY += tYSpacing, tWidth, tHeight, ItemType.SHOES);
+			_addTab("Objects", tX += tXSpacing, tY += tYSpacing, tWidth, tHeight, ItemType.OBJECT);
 			_addTab("Pose", tX += tXSpacing, tY += tYSpacing, tWidth, tHeight, ItemType.POSE);
 			
 			tabs[0].ToggleOn();
 		}
 		
-		private function _addTab(pText:String, pX:Number, pY:Number, pWidth:Number, pHeight:Number, pEvent:String) : GUI.PushButton {
-			var tBttn:GUI.PushButton = new GUI.PushButton(pX, pY, pWidth, pHeight, pText);
+		private function _addTab(pText:String, pX:Number, pY:Number, pWidth:Number, pHeight:Number, pEvent:String) : PushButton {
+			var tBttn:PushButton = new PushButton({ x:pX, y:pY, width:pWidth, height:pHeight, text:pText });
 			tabs.push(addChild(tBttn));
 			tBttn.addEventListener(MouseEvent.MOUSE_UP, function(tBttn){ return function(){ untoggle(tBttn, pEvent); }; }(tBttn));//, false, 0, true
 			return tBttn;
@@ -71,7 +73,7 @@ package GUI
 			untoggle();
 		}
 		
-		private function untoggle(pTab:GUI.PushButton=null, pEvent:String=null) : void {
+		private function untoggle(pTab:PushButton=null, pEvent:String=null) : void {
 			if (pTab != null && pTab.Pushed) { return; }
 			
 			for(var i:int = 0; i < tabs.length; i++) {
