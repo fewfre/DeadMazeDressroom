@@ -1,16 +1,18 @@
-package GUI.buttons
+package dressroom.ui.buttons
 {
-	import GUI.*;
+	import com.fewfre.display.ButtonBase;
+	import dressroom.ui.*;
 	import flash.display.*;
 	import flash.events.MouseEvent;
 	import flash.text.*;
 	import flash.geom.*;
 	
-	public class PushButton extends ButtonBase
+	public class PushButton extends GameButton
 	{
 		// Storage
 		public var id:int;
 		public var Pushed:Boolean;
+		public var allowToggleOff:Boolean;
 		public var Text:flash.text.TextField;
 		public var Image:flash.display.DisplayObject;
 		
@@ -19,7 +21,7 @@ package GUI.buttons
 		public static const STATE_CHANGED_AFTER:String="state_changed_after";
 		
 		// Constructor
-		// pData = { x:Number, y:Number, width:Number, height:Number, obj:DisplayObject[optional], obj_scale:Number[optional], text:String[optional], id:int[optional] }
+		// pData = { x:Number, y:Number, width:Number, height:Number, ?obj:DisplayObject, ?obj_scale:Number, ?text:String, ?id:int, ?allowToggleOff:Boolean=true }
 		public function PushButton(pData:Object)
 		{
 			super(pData);
@@ -46,63 +48,63 @@ package GUI.buttons
 				addChild(this.Image);
 			}
 			
+			this.allowToggleOff = pData.allowToggleOff == null ? true : pData.allowToggleOffs;
 			this.Pushed = false;
 			this.Unpressed();
 		}
 		
-		public function Unpressed():*
+		public function Unpressed() : void
 		{
 			super._renderUp();
 			
 			if(this.Text) {
+				this.Text.textColor = 0xC2C2DA;
 				this.Text.x = (this.Width - this.Text.textWidth) / 2 - 2;
 				this.Text.y = (this.Height - this.Text.textHeight) / 2 - 2;
 			}
 		}
 
-		public function Pressed():*
+		public function Pressed() : void
 		{
 			super._renderDown();
 			
 			if(this.Text) {
+				this.Text.textColor = 0xFFD800;
 				this.Text.x = (this.Width - this.Text.textWidth) / 2;
 				this.Text.y = (this.Height - this.Text.textHeight) / 2;
 			}
 		}
 
-		public function Toggle():*
+		public function Toggle() : void
 		{
-			dispatchEvent( new flash.events.Event(STATE_CHANGED_BEFORE) );
 			this.Pushed = !this.Pushed;
-			if (this.Pushed) {
-				this.Pressed();
+			if(this.Pushed) {
+				ToggleOn();
 			} else {
-				this.Unpressed();
+				ToggleOff();
 			}
-			dispatchEvent( new flash.events.Event(STATE_CHANGED_AFTER) );
 		}
-
-		public function ToggleOn():*
+		
+		// Pushed down
+		public function ToggleOn() : void
 		{
 			this.Pushed = true;
 			this.Pressed();
-			if(this.Text) this.Text.textColor = 0xFFD800;
+			//if(this.Text) this.Text.textColor = 0xFFD800;
 		}
 
-		public function ToggleOff():*
+		public function ToggleOff() : void
 		{
 			this.Pushed = false;
 			this.Unpressed();
-			if(this.Text) this.Text.textColor = 0xC2C2DA;
+			//if(this.Text) this.Text.textColor = 0xC2C2DA;
 		}
 		
 		override protected function _onMouseUp(pEvent:MouseEvent) : void {
 			if(!_flagEnabled) { return; }
 			dispatchEvent( new flash.events.Event(STATE_CHANGED_BEFORE) );
-			if (this.Pushed == false) {
-				this.ToggleOn();
-			} else {
-				this.ToggleOff();
+			if(this.allowToggleOff || !this.Pushed) {
+				Toggle();
 			}
 			dispatchEvent( new flash.events.Event(STATE_CHANGED_AFTER) );
 			super._onMouseUp(pEvent);

@@ -1,4 +1,4 @@
-package GUI
+package dressroom.ui
 {
 	import flash.display.*;
 	import flash.events.*;

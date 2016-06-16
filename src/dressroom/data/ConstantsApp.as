@@ -1,11 +1,17 @@
-package
+package dressroom.data
 {
 	public class ConstantsApp
 	{
+		/****************************
+		* Dimensions
+		*****************************/
 		public static const SHOP_WIDTH				: Number = 440;
 		public static const PANE_WIDTH				: Number = 430;
 		public static const APP_HEIGHT				: Number = 400;
 		
+		/****************************
+		* General
+		*****************************/
 		public static const SOURCE_URL				: String = "https://github.com/fewfre/DeadMazeDressroom";
 		
 		public static const DEFAULT_SKIN_INDEX		: int = 7;
@@ -17,7 +23,11 @@ package
 		
 		public static const ITEM_SAVE_SCALE			: int = 8; // Power of two is probably best
 		
-		// Colors
+		public static const EVENT_SHOP_TAB_CLICKED			: String = "shop_tab_clicked";
+		
+		/****************************
+		* Colors
+		*****************************/
 		public static const COLOR_BUTTON_BLUE				: int = 0x3C5064;
 		public static const COLOR_BUTTON_DOWN				: int = 0x2C3947;
 		public static const COLOR_BUTTON_MOUSE_OVER			: int = 0x42586E;
@@ -25,7 +35,5 @@ package
 		
 		public static const COLOR_BUTTON_OUTSET_BOTTOM		: int = 0x11171C;
 		public static const COLOR_BUTTON_OUTSET_TOP			: int = 0x5D7D90;
-		
-		public static const EVENT_SHOP_TAB_CLICKED			: String = "shop_tab_clicked";
 	}
 }

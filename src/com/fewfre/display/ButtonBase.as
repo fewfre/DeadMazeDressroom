@@ -1,6 +1,5 @@
-package GUI.buttons
+package com.fewfre.display
 {
-	import GUI.*;
 	import flash.display.*;
 	import flash.events.*;
 	
@@ -23,20 +22,16 @@ package GUI.buttons
 		protected var _state		: String;
 		protected var _flagEnabled	: Boolean;
 		protected var _returnData	: *;
-		protected var _bg			: RoundedRectangle;
 		
 		// Properties
-		public function get Width():Number { return _bg.Width; }
-		public function get Height():Number { return _bg.Height; }
 		public function get data():Number { return _returnData; }
 		
 		// Constructor
-		// pData = { x:Number, y:Number, width:Number[optional], height:Number[optional], data:*[optional] }
+		// pData = { x:Number, y:Number, ?data:* }
 		public function ButtonBase(pData:Object)
 		{
 			super();
 			_state = BUTTON_STATE_UP;
-			if(pData.width) { _bg = addChild(new RoundedRectangle(0, 0, pData.width, pData.height)); }
 			
 			this.x = pData.x;
 			this.y = pData.y;
@@ -99,16 +94,16 @@ package GUI.buttons
 		* Render
 		*****************************/
 		protected function _renderUp() : void {
-			_bg.draw(ConstantsApp.COLOR_BUTTON_BLUE, 7, ConstantsApp.COLOR_BUTTON_OUTSET_TOP, ConstantsApp.COLOR_BUTTON_OUTSET_BOTTOM, ConstantsApp.COLOR_BUTTON_BLUE);
+			this.scaleX = this.scaleY = 1;
 		}
 		
 		protected function _renderDown() : void
 		{
-			_bg.draw(ConstantsApp.COLOR_BUTTON_MOUSE_DOWN, 7, ConstantsApp.COLOR_BUTTON_OUTSET_BOTTOM, ConstantsApp.COLOR_BUTTON_BLUE, ConstantsApp.COLOR_BUTTON_MOUSE_DOWN);
+			this.scaleX = this.scaleY = 0.9;
 		}
 		
 		protected function _renderOver() : void {
-			_bg.draw(ConstantsApp.COLOR_BUTTON_MOUSE_OVER, 7, ConstantsApp.COLOR_BUTTON_OUTSET_BOTTOM, ConstantsApp.COLOR_BUTTON_BLUE, ConstantsApp.COLOR_BUTTON_MOUSE_OVER);
+			this.scaleX = this.scaleY = 1.1;
 		}
 		
 		protected function _renderOut() : void {
@@ -116,7 +111,7 @@ package GUI.buttons
 		}
 		
 		protected function _renderDisabled() : void {
-			_bg.draw(0x555555, 7, ConstantsApp.COLOR_BUTTON_OUTSET_BOTTOM, ConstantsApp.COLOR_BUTTON_BLUE, 0x555555);
+			this.scaleX = this.scaleY = 1;
 		}
 
 		/****************************
@@ -125,7 +120,7 @@ package GUI.buttons
 		public function _dispatch(pEvent:String) : void {
 			if(!_returnData) { dispatchEvent(new Event(pEvent)); }
 			else {
-				dispatchEvent(new Event(pEvent)); // [TODO] Return data
+				dispatchEvent(new FewfEvent(pEvent, _returnData));
 			}
 		}
 		

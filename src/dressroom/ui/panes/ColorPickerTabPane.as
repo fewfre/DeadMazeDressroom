@@ -1,13 +1,13 @@
-package GUI.panes
+package dressroom.ui.panes
 {
-	import GUI.*;
-	import GUI.buttons.*;
+	import com.piterwilson.utils.*;
+	import com.fewfre.display.*;
+	import dressroom.data.*;
+	import dressroom.ui.*;
+	import dressroom.ui.buttons.*;
 	import fl.containers.*;
 	import flash.display.*;
-	import flash.display.MovieClip;
-	import flash.display.Sprite;
 	import flash.events.*;
-	import com.piterwilson.utils.*;
 	
 	public class ColorPickerTabPane extends TabPane
 	{
@@ -72,7 +72,7 @@ package GUI.panes
 			this.addItem(_psColorPick);
 			
 			_colorSwatches = new Array();
-			var swatch:GUI.ColorSwatch;
+			var swatch:ColorSwatch;
 			for(var i:int = 0; i < 9; i++) {
 				swatch = _createColorSwatch(i, 5, 45 + (i * 30));
 				_colorSwatches.push(swatch);

@@ -1,11 +1,10 @@
-package GUI.panes
+package dressroom.ui.panes
 {
-	import GUI.*;
-	import GUI.buttons.*;
+	import dressroom.data.*;
+	import dressroom.ui.*;
+	import dressroom.ui.buttons.*;
 	import fl.containers.*;
 	import flash.display.*;
-	import flash.display.MovieClip;
-	import flash.display.Sprite;
 	
 	public class TabPane extends MovieClip
 	{

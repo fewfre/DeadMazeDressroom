@@ -1,11 +1,12 @@
-package GUI.buttons
+package dressroom.ui.buttons
 {
-	import GUI.*;
+	import com.fewfre.display.ButtonBase;
+	import dressroom.ui.*;
 	import flash.display.*;
 	import flash.text.*;
 	import flash.events.MouseEvent;
 	
-	public class SpriteButton extends ButtonBase
+	public class SpriteButton extends GameButton
 	{
 		// Storage
 		public var id:int;
@@ -17,7 +18,7 @@ package GUI.buttons
 		public static const MOUSE_UP:String="sb_mouse_up";
 		
 		// Constructor
-		// pData = { x:Number, y:Number, width:Number, height:Number, obj:DisplayObject, obj_scale:Number[optional], id:int[optional], text:String[optional] }
+		// pData = { x:Number, y:Number, width:Number, height:Number, obj:DisplayObject, ?obj_scale:Number, ?id:int, ?text:String }
 		public function SpriteButton(pData:Object)
 		{
 			super(pData);

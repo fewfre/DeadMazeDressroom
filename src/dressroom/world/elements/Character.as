@@ -1,9 +1,9 @@
-package 
+package dressroom.world.elements
 {
 	import com.piterwilson.utils.*;
+	import dressroom.data.*;
+	import dressroom.world.data.*;
 	import flash.display.*;
-	import flash.display.MovieClip;
-	import flash.display.DisplayObject;
 	import flash.events.*;
 	import flash.geom.*;
 	
@@ -14,12 +14,12 @@ package
 		public var animatePose:Boolean;
 		
 		internal var skinData:SkinData;
-		internal var hairData:ShopItemData;
-		internal var headData:ShopItemData;
-		internal var shirtData:ShopItemData;
-		internal var pantsData:ShopItemData;
-		internal var shoesData:ShopItemData;
-		internal var objectData:ShopItemData;
+		internal var hairData:ItemData;
+		internal var headData:ItemData;
+		internal var shirtData:ItemData;
+		internal var pantsData:ItemData;
+		internal var shoesData:ItemData;
+		internal var objectData:ItemData;
 		
 		internal var skin:MovieClip;
 		internal var hair:MovieClip;
@@ -46,8 +46,8 @@ package
 			this.y = pData.y;
 			
 			this.buttonMode = true;
-			this.addEventListener(flash.events.MouseEvent.MOUSE_DOWN, function () { startDrag(); });
-			this.addEventListener(flash.events.MouseEvent.MOUSE_UP, function () { stopDrag(); });
+			this.addEventListener(MouseEvent.MOUSE_DOWN, function () { startDrag(); });
+			this.addEventListener(MouseEvent.MOUSE_UP, function () { stopDrag(); });
 			
 			/****************************
 			* Store Data
@@ -73,13 +73,18 @@ package
 			outfit = addChild(new Pose(poseClass));
 			outfit.scaleX = outfit.scaleY = tScale;
 			
-			outfit.apply({ skin:skinData, hair:hairData, items:[
-				headData,
-				shirtData,
-				pantsData,
-				shoesData,
-				objectData
-			] });
+			outfit.apply({ skin:skinData, hair:hairData,
+				skinColor:Main.costumes.skinColor,
+				hairColor:Main.costumes.hairColor,
+				secondaryColor:Main.costumes.secondaryColor,
+				items:[
+					headData,
+					shirtData,
+					pantsData,
+					shoesData,
+					objectData
+				]
+			});
 			if(animatePose) outfit.play(); else outfit.stopAtLastFrame();
 		}
 		
@@ -113,47 +118,47 @@ package
 
 				public function colorItem(pType:String, arg2:int, pColor:String) : void {
 					var tItem:MovieClip = this.getItem(pType);
-					Main.costumes.colorItem({ mc:tItem, color:pColor, swatch:arg2 });
+					Main.costumes.colorItem({ obj:tItem, color:pColor, swatch:arg2 });
 				}
 			*/
 
 		/****************************
 		* Update Data
 		*****************************/
-		public function setSkin(pData:ShopItemData) : void {
-			setItemData(ItemType.SKIN, pData);
+		public function setSkin(pData:ItemData) : void {
+			setItemData(ITEM.SKIN, pData);
 		}
 
 		public function getItem(pType:String):MovieClip
 		{
 			switch(pType) {
-				case ItemType.HAIR				: return this.hair; break;
-				case ItemType.HEAD				: return this.head; break;
-				case ItemType.SHIRT				: return this.shirt; break;
-				case ItemType.PANTS				: return this.pants; break;
-				case ItemType.SHOES				: return this.shoes; break;
-				case ItemType.OBJECT			: return this.object; break;
-				case ItemType.SKIN				: return this.skin; break;
+				case ITEM.HAIR				: return this.hair; break;
+				case ITEM.HEAD				: return this.head; break;
+				case ITEM.SHIRT				: return this.shirt; break;
+				case ITEM.PANTS				: return this.pants; break;
+				case ITEM.SHOES				: return this.shoes; break;
+				case ITEM.OBJECT			: return this.object; break;
+				case ITEM.SKIN				: return this.skin; break;
 				default: trace("[Character](getItem) Unknown Type: "+pType); break;
 			}
 		}
 		
-		public function setItemData(pType:String, pItem:ShopItemData) : void {
+		public function setItemData(pType:String, pItem:ItemData) : void {
 			switch(pType) {
-				case ItemType.HAIR				: this.hairData = pItem; break;
-				case ItemType.HEAD				: this.headData = pItem; break;
-				case ItemType.SHIRT				: this.shirtData = pItem; break;
-				case ItemType.PANTS				: this.pantsData = pItem; break;
-				case ItemType.SHOES				: this.shoesData = pItem; break;
-				case ItemType.OBJECT			: this.objectData = pItem; break;
-				case ItemType.SKIN				: this.skinData = pItem; break;
-				case ItemType.POSE				: this.poseClass = pItem.itemClass; break;
+				case ITEM.HAIR				: this.hairData = pItem; break;
+				case ITEM.HEAD				: this.headData = pItem; break;
+				case ITEM.SHIRT				: this.shirtData = pItem; break;
+				case ITEM.PANTS				: this.pantsData = pItem; break;
+				case ITEM.SHOES				: this.shoesData = pItem; break;
+				case ITEM.OBJECT			: this.objectData = pItem; break;
+				case ITEM.SKIN				: this.skinData = pItem; break;
+				case ITEM.POSE				: this.poseClass = pItem.itemClass; break;
 				default: trace("[Character](addItem) Unknown Type: "+pType); break;
 			}
 			updatePose();
 		}
 		
-		public function addItem(pType:String, pItem:ShopItemData) : void {
+		public function addItem(pType:String, pItem:ItemData) : void {
 			setItemData(pType, pItem);
 		}
 		

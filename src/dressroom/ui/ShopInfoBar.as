@@ -1,10 +1,11 @@
-package GUI
+package dressroom.ui
 {
-	import GUI.*;
-	import GUI.buttons.*;
 	import com.adobe.images.*;
+	import dressroom.data.*;
+	import dressroom.ui.*;
+	import dressroom.ui.buttons.*;
+	import dressroom.world.data.*;
 	import flash.display.*;
-	import flash.display.MovieClip;
 	import flash.events.*;
 	import flash.geom.*;
 	import flash.net.*;
@@ -14,7 +15,7 @@ package GUI
 	{
 		// Storage
 		public var Width			: Number;
-		public var data				: ShopItemData;
+		public var data				: ItemData;
 		
 		public var Image			: MovieClip;
 		public var imageCont		: RoundedRectangle;
@@ -29,9 +30,10 @@ package GUI
 		public function set colorWheelActive(pVal:Boolean) { colorWheelEnabled = pVal; colorWheel.alpha = pVal ? 1 : 0; }
 		
 		// Constructor
-		public function ShopInfoBar(pParams:Object=null) {
+		// pData = { ?showBackButton:Boolean }
+		public function ShopInfoBar(pData:Object=null) {
 			super();
-			pParams = pParams==null ? {} : pParams;
+			pData = pData==null ? {} : pData;
 			this.Width = ConstantsApp.PANE_WIDTH;
 			data = null;
 			
@@ -41,11 +43,11 @@ package GUI
 			
 			ChangeImage( new $NoItem() );
 			
-			this.colorWheel = new ScaleButton({ x:80, y:24, obj:pParams.showBackButton ? new $BackArrow() : new $ColorWheel() });
+			this.colorWheel = new ScaleButton({ x:80, y:24, obj:pData.showBackButton ? new $BackArrow() : new $ColorWheel() });
 			this.colorWheel.x = 80;
 			this.colorWheel.y = 24;
 			addChild(this.colorWheel);
-			this.colorWheel.alpha = pParams.showBackButton ? 1 : 0;
+			this.colorWheel.alpha = pData.showBackButton ? 1 : 0;
 			// Add event listener in Main
 			
 			this.Text = new flash.text.TextField();
@@ -96,18 +98,21 @@ package GUI
 		}
 		
 		private function _updateID() : void {
-			this.Text.text = "ID: "+data.id;
+			this.Text.text = "ID: "+data.id+(data.gender ? (data.gender == GENDER.MALE ? "M" : "F") : "");
 		}
 		
-		public function addInfo(pData:ShopItemData, pMC:MovieClip) : void {
+		public function addInfo(pData:ItemData, pMC:MovieClip) : void {
 			if(pData == null) { return; }
 			data = pData;
+			if(data.type == ITEM.POSE || data.type == ITEM.SKIN) {
+				pMC.scaleX = pMC.scaleY = 0.6;
+			}
 			ChangeImage(pMC);
 			_updateID();
 			
 			colorWheelActive = colorWheelEnabled;
 			Text.alpha = 1;
-			//downloadButton.alpha = 1;
+			downloadButton.alpha = 1;
 		}
 		
 		public function removeInfo() : void {
@@ -120,18 +125,11 @@ package GUI
 			downloadButton.alpha = 0;
 		}
 		
-		internal function saveSprite(pEvent:flash.events.Event) : void
+		internal function saveSprite(pEvent:Event) : void
 		{
-			if(hasData == false) { return; }
-			var pElem:MovieClip = ( data.type==ItemType.FUR||data.type==ItemType.COLOR ? new Fur(data as FurData) : Main.costumes.copyColor(Image, new data.itemClass()) );
-			pName = "shop-"+data.type+data.id+".png";
-			
-			var tRect:flash.geom.Rectangle = pElem.getBounds(pElem);
-			var tBitmap:flash.display.BitmapData = new flash.display.BitmapData(pElem.width*ConstantsApp.ITEM_SAVE_SCALE, pElem.height*ConstantsApp.ITEM_SAVE_SCALE, true, 16777215);
-			var tMatrix:flash.geom.Matrix = new flash.geom.Matrix(1, 0, 0, 1, -tRect.left, -tRect.top);
-			tMatrix.scale(ConstantsApp.ITEM_SAVE_SCALE, ConstantsApp.ITEM_SAVE_SCALE);
-			tBitmap.draw(pElem, tMatrix);
-			( new flash.net.FileReference() ).save( com.adobe.images.PNGEncoder.encode(tBitmap), pName );
+			if(!data) { return; }
+			var tName = "shop-"+data.type+data.id+(data.gender ? (data.gender == GENDER.MALE ? "M" : "F") : "");
+			Main.costumes.saveMovieClipAsBitmap(Main.costumes.getItemImage(data), tName, ConstantsApp.ITEM_SAVE_SCALE);
 		}
 	}
 }

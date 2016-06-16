@@ -1,6 +1,7 @@
-package GUI.buttons
+package dressroom.ui.buttons
 {
-	import GUI.*;
+	import com.fewfre.display.ButtonBase;
+	import dressroom.ui.*;
 	import flash.display.MovieClip;
 	import flash.events.MouseEvent;
 	

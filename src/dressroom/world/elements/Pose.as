@@ -1,7 +1,8 @@
-package 
+package dressroom.world.elements
 {
+	import dressroom.data.*;
+	import dressroom.world.data.*;
 	import flash.display.*;
-	import flash.display.MovieClip;
 	import flash.geom.*;
 	
 	public class Pose extends MovieClip
@@ -34,10 +35,14 @@ package
 			stop();
 		}
 		
-		// pData = { skin:SkinData, hair:ShopItemData[optional], items:Array[optional] }
-		public function apply(pData:Object) : void {
+		// pData = { ?skin:SkinData, ?hair:ItemData, ?items:Array, ?skinColor:int, ?hairColor:int, ?secondaryColor:int, ?removeBlanks:Boolean=false }
+		public function apply(pData:Object) : MovieClip {
 			var tSkinData = pData.skin;
-			var tHairData = pData.hair ? pData.hair : tSkinData.hair;
+			var tHairData = pData.hair ? pData.hair : (tSkinData ? tSkinData.hair : null);
+			
+			var tSkinColor:int = pData.skinColor != null ? pData.skinColor : Main.costumes.skinColors[0];
+			var tHairColor:int = pData.hairColor != null ? pData.hairColor : Main.costumes.hairColors[0];
+			var tSecondaryColor:int = pData.secondaryColor != null ? pData.secondaryColor : Main.costumes.secondaryColors[0];
 			
 			if(!pData.items) pData.items = [];
 			pData.items.unshift(tSkinData);
@@ -46,31 +51,50 @@ package
 			
 			var part:DisplayObject = null;
 			var tChild:* = null;
+			var tItemsOnChild:int = 0;
 			
 			// This works because poses, skins, and items have a group of letters/numbers that let each other know they should be grouped together.
 			// For example; the "head" of a pose is T, as is the skin's head, hats, and hair. Thus they all go onto same area of the skin.
 			for(var i:int = 0; i < _pose.numChildren; i++) {
 				tChild = _pose.getChildAt(i);
+				tItemsOnChild = 0;
 				
 				for(var j:int = 0; j < tShopData.length; j++) {
 					part = _addToPoseIfCan(tChild, tShopData[j], tChild.name);
 					if(part) {
-						if(tShopData[j].type == ItemType.HAIR) Main.costumes.applyColorToObject(part,  Main.costumes.hairColor);
+						tItemsOnChild++;
+						if(tShopData[j].type == ITEM.HAIR) Main.costumes.applyColorToObject(part,  tHairColor);
 						if(part is MovieClip) {
-							Main.costumes.colorItem({ mc:part, color: Main.costumes.skinColor, name:"$0" });
-							Main.costumes.colorItem({ mc:part, color: Main.costumes.secondaryColor, name:"$2" });
+							Main.costumes.colorItem({ obj:part, color: tSkinColor, name:"$0" });
+							Main.costumes.colorItem({ obj:part, color: tSecondaryColor, name:"$2" });
 						}
 					}
+				}
+				if(tItemsOnChild == 0) {
+					tChild.enabled = false; // Hacky way to mark the child as "unused" for use in _removeUnusedParts().
 				}
 				
 				part = null;
 			}
+			if(pData.removeBlanks) {
+				_removeUnusedParts();
+			}
+			
+			return this;
 		}
 		
-		private function _addToPoseIfCan(pSkinPart:MovieClip, pData:ShopItemData, pID:String) : MovieClip {
+		private function _removeUnusedParts() {
+			i = _pose.numChildren;
+			while(i > 0) { i--;
+				tChild = _pose.getChildAt(i);
+				if(!tChild.enabled) { _pose.removeChildAt(i); }// else { var ttt = new $ColorWheel(); ttt.scaleX = ttt.scaleY = 0.1; tChild.addChild(ttt); }
+			}
+		}
+		
+		private function _addToPoseIfCan(pSkinPart:MovieClip, pData:ItemData, pID:String) : MovieClip {
 			if(pData) {
 				var tClass = pData.getPart(pID);
-				if(!(tClass is MovieClip)) {
+				if(tClass) {
 					return pSkinPart.addChild( new tClass() );
 				}
 			}
@@ -86,7 +110,7 @@ package
 			}
 			
 			pItems.sort(function(a, b){
-				return ItemType.LAYERING.indexOf(a.type) > ItemType.LAYERING.indexOf(b.type) ? 1 : -1;
+				return ITEM.LAYERING.indexOf(a.type) > ITEM.LAYERING.indexOf(b.type) ? 1 : -1;
 			});
 			
 			return pItems;

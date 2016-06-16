@@ -1,11 +1,11 @@
-package GUI.panes
+package dressroom.ui.panes
 {
-	import GUI.*;
-	import GUI.buttons.*;
+	import dressroom.data.*;
+	import dressroom.ui.*;
+	import dressroom.ui.buttons.*;
+	import dressroom.world.elements.*;
 	import fl.containers.*;
 	import flash.display.*;
-	import flash.display.MovieClip;
-	import flash.display.Sprite;
 	import flash.text.*;
 	import flash.events.*;
 	
@@ -20,11 +20,11 @@ package GUI.panes
 		public var skinColorButtons:Array;
 		public var secondaryColorButtons:Array;
 		
-		public var hairColorPickerButton:ButtonBase;
+		public var hairColorPickerButton:PushButton;
 		public var hairColorPickerButtonBox:Sprite;
-		public var skinColorPickerButton:ButtonBase;
+		public var skinColorPickerButton:PushButton;
 		public var skinColorPickerButtonBox:Sprite;
-		public var secondaryColorPickerButton:ButtonBase;
+		public var secondaryColorPickerButton:PushButton;
 		public var secondaryColorPickerButtonBox:Sprite;
 		
 		// Constructor

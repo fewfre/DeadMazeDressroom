@@ -1,8 +1,6 @@
-package GUI 
+package dressroom.ui 
 {
 	import flash.display.*;
-	import flash.display.Shape;
-	import flash.display.GradientType;
 	import flash.geom.Matrix;
 	
 	public class RoundedRectangle extends flash.display.Sprite

@@ -1,10 +1,10 @@
-package
+package com.fewfre.utils
 {
-	import flash.display.*;
+	import flash.display.Loader;
 	import flash.display.MovieClip;
-	import flash.geom.*;
+	import flash.display.Sprite;
 	import flash.events.Event;
-	import flash.net.*;
+	import flash.net.URLRequest;
 	
 	public class AssetManager extends Sprite
 	{
@@ -22,7 +22,7 @@ package
 		/****************************
 		* Loading
 		*****************************/
-			public function load(pURLs:Array) {
+			public function load(pURLs:Array) : void {
 				for(var i = 0; i < pURLs.length; i++) {
 					_loaders.push(_newAssetLoader(pURLs[i]));
 				}
@@ -31,7 +31,7 @@ package
 			private function _newAssetLoader(pUrl:String) : Loader {
 				var tLoader:Loader = new Loader();
 				tLoader.contentLoaderInfo.addEventListener(Event.INIT, _onDataLoaded);
-				tLoader.load(new flash.net.URLRequest(pUrl));
+				tLoader.load(new URLRequest(pUrl));
 				return tLoader;
 			}
 			
@@ -40,7 +40,7 @@ package
 				_checkIfLoadingDone();
 			}
 			
-			private function _checkIfLoadingDone() {
+			private function _checkIfLoadingDone() : void {
 				if(_loadedData.length >= _loaders.length) {
 					trace("[AssetManager](_checkIfLoadingDone) resources loaded...");
 					_onLoadingComplete();
@@ -53,7 +53,7 @@ package
 				}
 			}
 			
-			private function _onLoadingComplete() {
+			private function _onLoadingComplete() : void {
 				dispatchEvent(new Event(AssetManager.LOADING_FINISHED));
 			}
 		

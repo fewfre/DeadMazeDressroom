@@ -1,7 +1,6 @@
-package GUI 
+package dressroom.ui 
 {
 	import flash.display.*;
-	import flash.display.Sprite;
 	import flash.events.*;
 	import flash.text.*;
 	

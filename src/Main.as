@@ -1,18 +1,22 @@
 package 
 {
-	import GUI.*;
-	import GUI.panes.*;
-	import GUI.buttons.*;
-	import data.*;
 	import com.adobe.images.*;
 	import com.piterwilson.utils.*;
+	import com.fewfre.utils.AssetManager;
+	import com.fewfre.display.*;
+	
+	import dressroom.ui.*;
+	import dressroom.ui.panes.*;
+	import dressroom.ui.buttons.*;
+	import dressroom.data.*;
+	import dressroom.world.data.*;
+	import dressroom.world.elements.*;
+	
 	import fl.controls.*;
 	import fl.events.*;
 	import flash.display.*;
-	import flash.display.MovieClip;
-	import flash.display.Loader;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
+	import flash.text.*;
+	import flash.events.*
 	import flash.external.*;
 	import flash.geom.*;
 	import flash.net.*;
@@ -20,9 +24,6 @@ package
 	
 	public class Main extends MovieClip
 	{
-		// Settings
-		private const _LOAD_LOCAL:Boolean = true;
-		
 		// Storage
 		private const TAB_OTHER:String = "other";
 		public static var assets	: AssetManager;
@@ -32,7 +33,7 @@ package
 		internal var loadingSpinner:MovieClip;
 		
 		internal var shop			: RoundedRectangle;
-		internal var shopTabs		: GUI.ShopTabContainer;
+		internal var shopTabs		: ShopTabContainer;
 		internal var scaleSlider	: FancySlider;
 		
 		internal var button_hand	: PushButton;
@@ -104,7 +105,7 @@ package
 			
 			var btn:ButtonBase, tButtonSize = 28, tButtonSizeSpace=5;
 			btn = tools.addChild(new SpriteButton({ x:tButtonSizeSpace, y:4, width:tButtonSize, height:tButtonSize, obj_scale:0.4, obj:new $LargeDownload(), id:1 }));
-			btn.addEventListener(ButtonBase.CLICK, function():void { saveScreenshot(); });
+			btn.addEventListener(ButtonBase.CLICK, _onSaveClicked);
 			
 			btn = tools.addChild(new PushButton({ x:tButtonSizeSpace+(tButtonSize+tButtonSizeSpace), y:4, width:tButtonSize, height:tButtonSize, obj_scale:0.4, obj:new $PlayButton(), id:1 }));
 			btn.ToggleOn();
@@ -139,34 +140,33 @@ package
 			
 			
 			// Create the panes
-			var tTypes = [ ItemType.OBJECT, ItemType.SKIN, ItemType.HAIR, ItemType.HEAD, ItemType.SHIRT, ItemType.PANTS, ItemType.SHOES, ItemType.POSE ];
+			var tTypes = [ ITEM.OBJECT, ITEM.SKIN, ITEM.HAIR, ITEM.HEAD, ITEM.SHIRT, ITEM.PANTS, ITEM.SHOES, ITEM.POSE ];
 			for(var i:int = 0; i < tTypes.length; i++) {
 				tabPanes.push( tabPanesMap[tTypes[i]] = _setupPane(tTypes[i]) );
 			}
 			tTypes = null;
 			// Select Default Skin
-			tabPanesMap[ItemType.SKIN].infoBar.addInfo(costumes.skins[costumes.defaultSkinIndex], _getDefaultPoseSetup({ skin:costumes.skins[costumes.defaultSkinIndex], scale:"infobar" }));
-			tabPanesMap[ItemType.SKIN].buttons[costumes.defaultSkinIndex].ToggleOn();
+			tabPanesMap[ITEM.SKIN].infoBar.addInfo(costumes.skins[costumes.defaultSkinIndex], costumes.getItemImage(costumes.skins[costumes.defaultSkinIndex]));
+			tabPanesMap[ITEM.SKIN].buttons[costumes.defaultSkinIndex].ToggleOn();
 			// Select Default Pose
-			tabPanesMap[ItemType.POSE].infoBar.addInfo(costumes.poses[costumes.defaultPoseIndex], _getDefaultPoseSetup({ pose:costumes.poses[costumes.defaultPoseIndex], scale:"infobar" }));
-			tabPanesMap[ItemType.POSE].buttons[costumes.defaultPoseIndex].ToggleOn();
+			tabPanesMap[ITEM.POSE].infoBar.addInfo(costumes.poses[costumes.defaultPoseIndex], costumes.getItemImage(costumes.poses[costumes.defaultPoseIndex]));
+			tabPanesMap[ITEM.POSE].buttons[costumes.defaultPoseIndex].ToggleOn();
 			
 			// Select First Pane
 			this.shop.addChild(tabPanes[0]).active = true;
 		}
 		
 		private function _setupPane(pType:String) : TabPane {
-			var tPane:TabPane = new TabPane(), isSkin:Boolean = pType == ItemType.SKIN, isPose:Boolean = pType == ItemType.POSE;
-			_setupPaneButtons(tPane, costumes.getArrayByType(pType), function(pEvent){ if(isSkin) toggleItemSelectionSkin(pEvent.target); else if(isPose) toggleItemSelectionPose(pEvent.target); else toggleItemSelection(pType, pEvent.target, false); }, isSkin, isPose);
+			var tPane:TabPane = new TabPane(), isSkin:Boolean = pType == ITEM.SKIN, isPose:Boolean = pType == ITEM.POSE;
+			_setupPaneButtons(tPane, costumes.getArrayByType(pType), function(pEvent){ if(isSkin) toggleItemSelectionSkin(pEvent.target); else if(isPose) toggleItemSelectionPose(pEvent.target); else toggleItemSelection(pType, pEvent.target, false); });
 			tPane.infoBar.colorWheel.addEventListener(MouseEvent.MOUSE_UP, function(){ _colorButtonClicked(pType); });
 			tPane.infoBar.imageCont.addEventListener(MouseEvent.MOUSE_UP, function(){ _removeItem(pType); });
 			tPane.infoBar.colorWheelEnabled = !isSkin && !isPose;
 			return tPane;
 		}
 		
-		private function _setupPaneButtons(pPane:TabPane, pItemArray:Array, pChangeListener:Function, pIsSkin:Boolean=false, pIsPose:Boolean=false) : int {
-			var shopItem : MovieClip;
-			var shopItemButton : PushButton;
+		private function _setupPaneButtons(pPane:TabPane, pItemArray:Array, pChangeListener:Function) : int {
+			var tType:String = pItemArray[0].type;
 			
 			pPane.addInfoBar( new ShopInfoBar({}) );
 			
@@ -181,7 +181,7 @@ package
 			var spacing = 65;
 			var buttonPerRow = 6;
 			var scale = 1;
-			if(pIsSkin || pIsPose) {
+			if(tType == ITEM.SKIN || tType == ITEM.POSE) {
 					buttonPerRow = 4;
 					var space = 5;
 					radius = Math.floor((385 - (space * (buttonPerRow-1))) / buttonPerRow);
@@ -189,15 +189,19 @@ package
 					scale = 0.8;
 			}
 			
+			var shopItem : MovieClip;
+			var shopItemButton : PushButton;
 			while (i < pItemArray.length) 
 			{
-				if(pIsSkin) {
-					shopItem = _getDefaultPoseSetup({ skin:costumes.skins[i] });
-				} else if(pIsPose) {
-					shopItem = _getDefaultPoseSetup({ pose:costumes.poses[i] });
-				} else {
-					shopItem = new pItemArray[i].itemClass();
-					costumes.colorDefault(shopItem);
+				shopItem = costumes.getItemImage(pItemArray[i]);
+				if(tType == ITEM.SKIN && i == pItemArray.length-1) {
+					shopItem = new MovieClip();
+					var tText = shopItem.addChild(new TextField());
+					tText.defaultTextFormat = new flash.text.TextFormat("Verdana", 15, 0xC2C2DA);
+					tText.autoSize = flash.text.TextFieldAutoSize.CENTER;
+					tText.text = "Invisible";
+					tText.x = (shopItemButton.Width - tText.textWidth) * 0.5 - 2;
+					tText.y = (shopItemButton.Height - tText.textHeight) * 0.5 - 2;
 				}
 				shopItem.scaleX = shopItem.scaleY = scale;
 					
@@ -219,33 +223,28 @@ package
 			return h;
 		}
 		
-		// pData = { pose:ShopItemData[optional], skin:SkinData[optional] }
-		private function _getDefaultPoseSetup(pData:Object) : Pose {
-			var tPoseData = pData.pose ? pData.pose : costumes.poses[costumes.defaultPoseIndex];
-			var tSkinData = pData.skin ? pData.skin : costumes.skins[costumes.defaultSkinIndex];
-			
-			tPose = new Pose(tPoseData.itemClass);
-			if(tSkinData.gender == GENDER.MALE) {
-				tPose.apply({ skin:tSkinData, items:[
-					costumes.shirts[1],
-					costumes.pants[1],
-					costumes.shoes[0]
-				] });
-			} else {
-				tPose.apply({ skin:tSkinData, items:[
-					costumes.shirts[0],
-					costumes.pants[0],
-					costumes.shoes[0]
-				] });
-			}
-			tPose.stopAtLastFrame();
-			
-			if(pData.scale) {
-				tPose.scaleX = tPose.scaleY = (pData.scale == "infobar" ? 0.6 : pData.scale);
+		/****************************
+		* Get Info
+		*****************************/
+			private function getCurItemID(pType:String) : int {
+				return getTabByType(pType).selectedButton;
 			}
 			
-			return tPose;
-		}
+			private function setCurItemID(pType:String, pID:int) : void {
+				getTabByType(pType).selectedButton = pID;
+			}
+			
+			private function getTabByType(pType:String) : TabPane {
+				return tabPanesMap[pType];
+			}
+			
+			private function getInfoBarByType(pType:String) : ShopInfoBar {
+				return getTabByType(pType).infoBar;
+			}
+			
+			private function getButtonArrayByType(pType:String) : Array {
+				return getTabByType(pType).buttons;
+			}
 		
 		/****************************
 		* Events
@@ -315,34 +314,18 @@ package
 					character.outfit.stop();
 				}
 			}
-
-		function saveScreenshot() : void
-		{
-			var tRect:flash.geom.Rectangle = this.character.getBounds(this.character);
-			var tBitmap:flash.display.BitmapData = new flash.display.BitmapData(this.character.width, this.character.height, true, 16777215);
-			tBitmap.draw(this.character, new flash.geom.Matrix(1, 0, 0, 1, -tRect.left, -tRect.top));
-			( new flash.net.FileReference() ).save( com.adobe.images.PNGEncoder.encode(tBitmap), "mouse.png" );
-		}
+			
+			private function _onSaveClicked(pEvent:Event) : void {
+				Main.costumes.saveMovieClipAsBitmap(this.character, "character");
+			}
 		
 		function onTabClicked(pEvent:flash.events.DataEvent) : void {
 			_selectTab( getTabByType(pEvent.data) );
 		}
-
-		public function buttonHandClickAfter(pEvent:Event):void {
-			toggleItemSelectionOneOff(ItemType.PAW, this.button_hand, costumes.hand);
-		}
-
-		public function buttonBackClickAfter(pEvent:Event):void {
-			toggleItemSelectionOneOff(ItemType.BACK, this.button_back, costumes.fromage);
-		}
-
-		public function buttonBackHandClickAfter(pEvent:Event):void {
-			toggleItemSelectionOneOff(ItemType.PAW_BACK, this.button_backHand, costumes.backHand);
-		}
 		
 		private function toggleItemSelection(pType:String, pTarget:PushButton, pColorDefault:Boolean=false) : void {
 			var tButton:PushButton = null;
-			var tData:ShopItemData = null;
+			var tData:ItemData = null;
 			var tItemArray:Array = costumes.getArrayByType(pType);
 			var tInfoBar:ShopInfoBar = getInfoBarByType(pType);
 			
@@ -363,7 +346,7 @@ package
 					//pTabButt.ChangeImage( costumes.copyColor(tButton.Image, new tData.itemClass()) );
 					
 					if(tInfoBar != null) {
-						tInfoBar.addInfo( tData, costumes.copyColor(tButton.Image, new tData.itemClass()) );
+						tInfoBar.addInfo( tData, costumes.copyColor(tButton.Image, costumes.getItemImage(tData)) );
 						tInfoBar.colorWheelActive = costumes.getNumOfCustomColors(tButton.Image) > 0;
 					}
 					
@@ -377,23 +360,15 @@ package
 				i++ ;
 			}
 		}
-		
-		private function toggleItemSelectionOneOff(pType:String, pButton:PushButton, pClass:Class) : void {
-			if (pButton.Pushed) {
-				this.character.addItem( pType, costumes.copyColor(pButton.Image, new pClass()) );
-			} else {
-				this.character.removeItem(pType);
-			}
-		}
 
 		public function toggleItemSelectionSkin(pTarget:PushButton):void {
-			var pType:String = ItemType.SKIN;
+			var pType:String = ITEM.SKIN;
 			var pInfoBar:ShopInfoBar = getInfoBarByType(pType);
 			
 			var tButton:PushButton = null;
 			var tToggleOnDefaultSkin:Boolean = false;
 			
-			var tData:ShopItemData = null;
+			var tData:ItemData = null;
 			var tDataArray:Array = costumes.getArrayByType(pType);
 			
 			var tButtons:Array = getButtonArrayByType(pType);
@@ -411,12 +386,12 @@ package
 					setCurItemID(pType, tButton.id);
 					this.character.addItem( pType, tData );
 					
-					pInfoBar.addInfo( tData, _getDefaultPoseSetup({ skin:tData, scale:"infobar" }) );
+					pInfoBar.addInfo( tData, costumes.getItemImage(tData) );
 					pInfoBar.colorWheelActive = false;//tDataArray[tButton.id].id == -1;
 				} else {
 					tData = tDataArray[costumes.defaultSkinIndex];
 					this.character.setItemData(pType, tData);
-					getInfoBarByType(pType).addInfo( tData, _getDefaultPoseSetup({ skin:tData, scale:"infobar" }) );
+					getInfoBarByType(pType).addInfo( tData, costumes.getItemImage(tData) );
 					tToggleOnDefaultSkin = true;
 				}
 				i++;
@@ -425,13 +400,13 @@ package
 		}
 
 		public function toggleItemSelectionPose(pTarget:PushButton):void {
-			var pType:String = ItemType.POSE;
+			var pType:String = ITEM.POSE;
 			var pInfoBar:ShopInfoBar = getInfoBarByType(pType);
 			
 			var tButton:PushButton = null;
 			var tToggleOnDefaultSkin:Boolean = false;
 			
-			var tData:ShopItemData = null;
+			var tData:ItemData = null;
 			var tDataArray:Array = costumes.getArrayByType(pType);
 			
 			var tButtons:Array = getButtonArrayByType(pType);
@@ -449,12 +424,12 @@ package
 					setCurItemID(pType, tButton.id);
 					this.character.updatePose(tData.itemClass);
 					
-					pInfoBar.addInfo( tData, _getDefaultPoseSetup({ pose:tData, scale:"infobar" }) );
+					pInfoBar.addInfo( tData, costumes.getItemImage(tData) );
 					pInfoBar.colorWheelActive = false;
 				} else {
 					tData = tDataArray[costumes.defaultPoseIndex];
 					this.character.setItemData(pType, tData);
-					pInfoBar.addInfo( tData, _getDefaultPoseSetup({ pose:tData, scale:"infobar" }) );
+					pInfoBar.addInfo( tData, costumes.getItemImage(tData) );
 					tToggleOnDefaultSkin = true;
 				}
 				i++;
@@ -463,31 +438,31 @@ package
 		}
 		
 		private function _removeItem(pType:String) : void {
-			if(pType == ItemType.SKIN) { return removeSkinClicked(null); }
-			if(pType == ItemType.POSE) { return removePoseClicked(null); }
+			if(pType == ITEM.SKIN) { return removeSkinClicked(null); }
+			if(pType == ITEM.POSE) { return removePoseClicked(null); }
 			if(getInfoBarByType(pType).hasData == false) { return; }
 			this.character.removeItem(pType);
 			getInfoBarByType(pType).removeInfo();
 			getButtonArrayByType(pType)[ getCurItemID(pType) ].ToggleOff();
 		}
 		public function removeSkinClicked(pEvent:Event):void {
-			var tType = ItemType.SKIN;
+			var tType = ITEM.SKIN;
 			var tData = costumes.skins[costumes.defaultSkinIndex];
 			var tTabPane = getTabByType(tType);
 			
 			this.character.setItemData(tType, tData);
-			tTabPane.infoBar.addInfo( tData, _getDefaultPoseSetup({ skin:tData, scale:"infobar" }) );
-			tTabPane.buttons[getCurItemID(ItemType.SKIN)].ToggleOff();
+			tTabPane.infoBar.addInfo( tData, costumes.getItemImage(tData) );
+			tTabPane.buttons[getCurItemID(ITEM.SKIN)].ToggleOff();
 			tTabPane.buttons[costumes.defaultSkinIndex].ToggleOn();
 		}
 		public function removePoseClicked(pEvent:Event):void {
-			var tType = ItemType.POSE;
+			var tType = ITEM.POSE;
 			var tData = costumes.poses[costumes.defaultPoseIndex];
 			var tTabPane = getTabByType(tType);
 			
 			this.character.setItemData(tType, tData);
-			tTabPane.infoBar.addInfo( tData, _getDefaultPoseSetup({ pose:tData, scale:"infobar" }) );
-			tTabPane.buttons[getCurItemID(ItemType.POSE)].ToggleOff();
+			tTabPane.infoBar.addInfo( tData, costumes.getItemImage(tData) );
+			tTabPane.buttons[getCurItemID(ITEM.POSE)].ToggleOff();
 			tTabPane.buttons[costumes.defaultPoseIndex].ToggleOn();
 		}
 		
@@ -505,26 +480,6 @@ package
 				this.shop.removeChild(pTab);
 			} catch (e:Error) { };
 		}
-		
-		private function getCurItemID(pType:String) : int {
-			return getTabByType(pType).selectedButton;
-		}
-		
-		private function setCurItemID(pType:String, pID:int) : void {
-			getTabByType(pType).selectedButton = pID;
-		}
-		
-		private function getTabByType(pType:String) : TabPane {
-			return tabPanesMap[pType];
-		}
-		
-		private function getInfoBarByType(pType:String) : GUI.ShopInfoBar {
-			return getTabByType(pType).infoBar;
-		}
-		
-		private function getButtonArrayByType(pType:String) : Array {
-			return getTabByType(pType).buttons;
-		}
 
 		public function HideAllTabs() : void
 		{
@@ -541,7 +496,7 @@ package
 			
 			this.HideAllTabs();
 			this.tabColorPane.active = true;
-			var tData:ShopItemData = getInfoBarByType(pType).data;
+			var tData:ItemData = getInfoBarByType(pType).data;
 			this.tabColorPane.infoBar.addInfo( tData, costumes.copyColor(this.character.getItemFromIndex(pType), new tData.itemClass()) );
 			this.currentlyColoringType = pType;
 			this.tabColorPane.setupSwatches( this.character.getColors(pType) );
