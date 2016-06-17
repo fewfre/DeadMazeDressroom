@@ -3,7 +3,7 @@ package dressroom.ui
 	import flash.display.*;
 	import flash.geom.Matrix;
 	
-	public class RoundedRectangle extends flash.display.Sprite
+	public class RoundedRectangle extends Sprite
 	{
 		// Storage
 		public var Width:Number;

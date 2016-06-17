@@ -10,17 +10,12 @@ package dressroom.ui
 	public class ShopTabContainer extends RoundedRectangle
 	{
 		// Storage
-		public var DefaultX:Number;
-		public var DefaultY:Number;
-		
-		var tabs:Array;
+		public var tabs:Array;
 		
 		// Constructor
 		public function ShopTabContainer(pX:Number, pY:Number, pWidth:Number, pHeight:Number)
 		{
 			super(pX, pY, pWidth, pHeight);
-			this.DefaultX = pX;
-			this.DefaultY = pY;
 			
 			this.drawSimpleGradient([ 0x112528, 0x1E3D42 ], 15, 0x6a8fa2, 0x11171c, 0x324650);
 			
@@ -42,8 +37,6 @@ package dressroom.ui
 			_addTab("Shoes", tX += tXSpacing, tY += tYSpacing, tWidth, tHeight, ITEM.SHOES);
 			_addTab("Objects", tX += tXSpacing, tY += tYSpacing, tWidth, tHeight, ITEM.OBJECT);
 			_addTab("Pose", tX += tXSpacing, tY += tYSpacing, tWidth, tHeight, ITEM.POSE);
-			
-			tabs[0].ToggleOn();
 		}
 		
 		private function _addTab(pText:String, pX:Number, pY:Number, pWidth:Number, pHeight:Number, pEvent:String) : PushButton {
@@ -58,11 +51,11 @@ package dressroom.ui
 		}
 		
 		private function untoggle(pTab:PushButton=null, pEvent:String=null) : void {
-			if (pTab != null && pTab.Pushed) { return; }
+			if (pTab != null && pTab.pushed) { return; }
 			
 			for(var i:int = 0; i < tabs.length; i++) {
-				if (tabs[i].Pushed && tabs[i] != pTab) {
-					tabs[i].ToggleOff();
+				if (tabs[i].pushed && tabs[i] != pTab) {
+					tabs[i].toggleOff();
 				}
 			}
 			

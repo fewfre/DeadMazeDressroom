@@ -13,10 +13,6 @@ package dressroom.ui.buttons
 		public var Image:flash.display.DisplayObject;
 		public var Text:flash.text.TextField;
 		
-		// Constants
-		public static const MOUSE_DOWN:String="sb_mouse_down";
-		public static const MOUSE_UP:String="sb_mouse_up";
-		
 		// Constructor
 		// pData = { x:Number, y:Number, width:Number, height:Number, obj:DisplayObject, ?obj_scale:Number, ?id:int, ?text:String }
 		public function SpriteButton(pData:Object)
@@ -43,10 +39,12 @@ package dressroom.ui.buttons
 
 		public function ChangeImage(pMC:DisplayObject) : void
 		{
-			if(this.Image != null) { removeChild(this.Image); }
+			var tScale:Number = 1;
+			if(this.Image != null) { tScale = this.Image.scaleX; removeChild(this.Image); }
 			this.Image = addChild( pMC );
 			this.Image.x = this.Width * 0.5;
 			this.Image.y = this.Height * 0.5;
+			this.Image.scaleX = this.Image.scaleY = tScale;
 		}
 		
 		override protected function _renderDown() : void {
@@ -55,7 +53,7 @@ package dressroom.ui.buttons
 		}
 		
 		override protected function _renderOver() : void {
-			if(this.Text) this.Text.textColor = 74565;
+			if(this.Text) this.Text.textColor = 0x012345;
 			super._renderOver();
 		}
 		

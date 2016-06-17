@@ -44,9 +44,9 @@ package dressroom.ui.panes
 				
 				if (tLength > i) {
 					_colorSwatches[i].alpha = 1;
-					_colorSwatches[i].Value = pSwatches[i];
+					_colorSwatches[i].value = pSwatches[i];
 					if (_selectedSwatch == i) {
-						_psColorPick.setCursor(_colorSwatches[i].TextValue);
+						_psColorPick.setCursor(_colorSwatches[i].textValue);
 					}
 				}
 			}
@@ -103,14 +103,14 @@ package dressroom.ui.panes
 			}
 			_selectedSwatch = pNum;
 			_colorSwatches[pNum].select();
-			if(pSetCursor) { _psColorPick.setCursor(_colorSwatches[pNum].TextValue); }
+			if(pSetCursor) { _psColorPick.setCursor(_colorSwatches[pNum].textValue); }
 		}
 		
 		/****************************
 		* Events
 		*****************************/
 		private function _onColorPickChanged(pEvent:DataEvent) : void {
-			_colorSwatches[_selectedSwatch].Value = uint(pEvent.data);
+			_colorSwatches[_selectedSwatch].value = uint(pEvent.data);
 			dispatchEvent(new DataEvent(EVENT_COLOR_PICKED, false, false, pEvent.data));
 		}
 		

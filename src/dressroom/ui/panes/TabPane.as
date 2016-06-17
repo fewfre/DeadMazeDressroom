@@ -12,7 +12,7 @@ package dressroom.ui.panes
 		public var active : Boolean;
 		public var infoBar : ShopInfoBar;
 		public var buttons : Array;
-		public var selectedButton : int;
+		public var selectedButtonIndex : int;
 		
 		var Pane:fl.containers.ScrollPane;
 		var content:MovieClip;
@@ -24,7 +24,7 @@ package dressroom.ui.panes
 			active = false;
 			infoBar = null;
 			buttons = [];
-			selectedButton = -1;
+			selectedButtonIndex = -1;
 			this.content = new MovieClip();
 		}
 

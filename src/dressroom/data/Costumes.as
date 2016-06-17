@@ -32,6 +32,7 @@ package dressroom.data
 		public var hairColors:Array;
 		public var secondaryColors:Array;
 		
+		// Current
 		public var sex:String;
 		public var skinColor:int;
 		public var hairColor:int;

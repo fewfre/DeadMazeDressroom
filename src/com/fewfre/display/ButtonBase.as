@@ -1,5 +1,6 @@
 package com.fewfre.display
 {
+	import com.fewfre.events.FewfEvent;
 	import flash.display.*;
 	import flash.events.*;
 	
@@ -21,10 +22,10 @@ package com.fewfre.display
 		// Storage
 		protected var _state		: String;
 		protected var _flagEnabled	: Boolean;
-		protected var _returnData	: *;
+		protected var _returnData	: Object;
 		
 		// Properties
-		public function get data():Number { return _returnData; }
+		public function get data():Object { return _returnData; }
 		
 		// Constructor
 		// pData = { x:Number, y:Number, ?data:* }
@@ -33,8 +34,8 @@ package com.fewfre.display
 			super();
 			_state = BUTTON_STATE_UP;
 			
-			this.x = pData.x;
-			this.y = pData.y;
+			this.x = pData.x != null ? pData.x : 0;
+			this.y = pData.y != null ? pData.y : 0;
 			
 			_returnData = pData.data;
 			
