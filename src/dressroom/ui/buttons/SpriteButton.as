@@ -14,16 +14,18 @@ package dressroom.ui.buttons
 		public var Text:flash.text.TextField;
 		
 		// Constructor
-		// pData = { x:Number, y:Number, width:Number, height:Number, obj:DisplayObject, ?obj_scale:Number, ?id:int, ?text:String }
+		// pData = { x:Number, y:Number, width:Number, height:Number, ?obj:DisplayObject, ?obj_scale:Number, ?id:int, ?text:String }
 		public function SpriteButton(pData:Object)
 		{
 			super(pData);
 			if(pData.id) { id = pData.id; }
 			
-			ChangeImage(pData.obj);
-			if(pData.obj_scale) {
-				this.Image.scaleX = pData.obj_scale ? pData.obj_scale : 0.75;
-				this.Image.scaleY = pData.obj_scale ? pData.obj_scale : 0.75;
+			if(pData.obj) {
+				ChangeImage(pData.obj);
+				if(pData.obj_scale) {
+					this.Image.scaleX = pData.obj_scale ? pData.obj_scale : 0.75;
+					this.Image.scaleY = pData.obj_scale ? pData.obj_scale : 0.75;
+				}
 			}
 			
 			if(pData.text) {

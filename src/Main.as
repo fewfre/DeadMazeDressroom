@@ -5,6 +5,7 @@ package
 	import com.fewfre.utils.AssetManager;
 	import com.fewfre.display.*;
 	import com.fewfre.events.*;
+	import com.fewfre.utils.*;
 	
 	import dressroom.ui.*;
 	import dressroom.ui.panes.*;
@@ -35,6 +36,7 @@ package
 		internal var shop			: RoundedRectangle;
 		internal var shopTabs		: ShopTabContainer;
 		internal var animateButton	: SpriteButton;
+		internal var linkTray		: LinkTray;
 		internal var scaleSlider	: FancySlider;
 		
 		internal var currentlyColoringType:String="";
@@ -82,9 +84,20 @@ package
 			/****************************
 			* Create Character
 			*****************************/
+			var parms:flash.net.URLVariables = null;
+			try {
+				var urlPath:String = ExternalInterface.call("eval", "window.location.href");
+				if(urlPath && urlPath.indexOf("?") > 0) {
+					urlPath = urlPath.substr(urlPath.indexOf("?") + 1, urlPath.length);
+					parms = new flash.net.URLVariables();
+					parms.decode(urlPath);
+				}
+			} catch (error:Error) { };
+			
 			this.character = addChild(new Character({ x:180, y:375,
 				skin:costumes.skins[costumes.defaultSkinIndex],
-				pose:costumes.poses[costumes.defaultPoseIndex]
+				pose:costumes.poses[costumes.defaultPoseIndex],
+				params:parms
 			}));
 			
 			/****************************
@@ -101,17 +114,25 @@ package
 			tools.drawSimpleGradient([ 0x112528, 0x1E3D42 ], 15, 0x6A8fA2, 0x11171C, 0x324650);
 			
 			var btn:ButtonBase, tButtonSize = 28, tButtonSizeSpace=5;
-			btn = tools.addChild(new SpriteButton({ x:tButtonSizeSpace, y:4, width:tButtonSize, height:tButtonSize, obj_scale:0.4, obj:new $LargeDownload(), id:1 }));
+			btn = tools.addChild(new SpriteButton({ x:tButtonSizeSpace, y:4, width:tButtonSize, height:tButtonSize, obj_scale:0.4, obj:new $LargeDownload() }));
 			btn.addEventListener(ButtonBase.CLICK, _onSaveClicked);
 			
-			animateButton = tools.addChild(new SpriteButton({ x:tButtonSizeSpace+(tButtonSize+tButtonSizeSpace), y:4, width:tButtonSize, height:tButtonSize, obj_scale:0.5, obj:new $PauseButton(), id:1 }));
+			animateButton = tools.addChild(new SpriteButton({ x:tButtonSizeSpace+(tButtonSize+tButtonSizeSpace), y:4, width:tButtonSize, height:tButtonSize, obj_scale:0.5, obj:new $PauseButton() }));
 			animateButton.addEventListener(ButtonBase.CLICK, _onPlayerAnimationToggle);
 			
-			btn = tools.addChild(new SpriteButton({ x:tools.width-tButtonSizeSpace-tButtonSize, y:4, width:tButtonSize, height:tButtonSize, obj_scale:0.35, obj:new $GitHubIcon(), id:1 }));
+			btn = tools.addChild(new SpriteButton({ x:tButtonSizeSpace+(tButtonSize+tButtonSizeSpace)*2, y:4, width:tButtonSize, height:tButtonSize, obj_scale:0.5, obj:new $Refresh() }));
+			btn.addEventListener(ButtonBase.CLICK, _onRandomizeDesignClicked);
+			
+			btn = tools.addChild(new SpriteButton({ x:tButtonSizeSpace+(tButtonSize+tButtonSizeSpace)*3, y:4, width:tButtonSize, height:tButtonSize, obj_scale:0.45, obj:new $Link() }));
+			btn.addEventListener(ButtonBase.CLICK, _onShareButtonClicked);
+			linkTray = new LinkTray({ x:stage.stageWidth * 0.5, y:stage.stageHeight * 0.5 });
+			linkTray.addEventListener(LinkTray.CLOSE, _onShareTrayClosed);
+			
+			btn = tools.addChild(new SpriteButton({ x:tools.width-tButtonSizeSpace-tButtonSize, y:4, width:tButtonSize, height:tButtonSize, obj_scale:0.35, obj:new $GitHubIcon() }));
 			btn.addEventListener(ButtonBase.CLICK, function():void { navigateToURL(new URLRequest(ConstantsApp.SOURCE_URL), "_blank");  });
 			
-			var tSliderWidth = 315 - (tButtonSize+tButtonSizeSpace)*2.5;
-			this.scaleSlider = tools.addChild(new FancySlider({ x:tools.width*0.5-tSliderWidth*0.5+(tButtonSize+tButtonSizeSpace)*0.5, y:tools.Height*0.5, value: character.outfit.scaleX*10, min:10, max:50, width:tSliderWidth }));
+			var tSliderWidth = 315 - (tButtonSize+tButtonSizeSpace)*4.5;
+			this.scaleSlider = tools.addChild(new FancySlider({ x:tools.width*0.5-tSliderWidth*0.5+(tButtonSize+tButtonSizeSpace)*1.5, y:tools.Height*0.5, value: character.outfit.scaleX*10, min:10, max:50, width:tSliderWidth }));
 			this.scaleSlider.addEventListener(FancySlider.CHANGE, _onScaleSliderChange);
 			
 			/****************************
@@ -136,13 +157,16 @@ package
 			
 			
 			// Create the panes
-			var tTypes = [ ITEM.OBJECT, ITEM.SKIN, ITEM.HAIR, ITEM.HEAD, ITEM.SHIRT, ITEM.PANTS, ITEM.SHOES, ITEM.POSE ];
+			var tTypes = [ ITEM.OBJECT, ITEM.SKIN, ITEM.HAIR, ITEM.HEAD, ITEM.SHIRT, ITEM.PANTS, ITEM.SHOES, ITEM.POSE ], tData:ItemData;
 			for(var i:int = 0; i < tTypes.length; i++) {
 				tabPanes.push( tabPanesMap[tTypes[i]] = _setupPane(tTypes[i]) );
+				// Based on what the character is wearing at start, toggle on the appropriate buttons.
+				tData = character.getItemData(tTypes[i]);
+				if(tData) {
+					var tIndex:int = FewfUtils.getIndexFromArrayWithKeyVal(costumes.getArrayByType(tTypes[i]), "id", tData.id);
+					tabPanesMap[tTypes[i]].buttons[ tIndex ].toggleOn();
+				}
 			}
-			// Select Default Items
-			tabPanesMap[ITEM.SKIN].buttons[costumes.defaultSkinIndex].toggleOn();
-			tabPanesMap[ITEM.POSE].buttons[costumes.defaultPoseIndex].toggleOn();
 			
 			// Select First Pane
 			shopTabs.tabs[0].toggleOn();
@@ -151,8 +175,9 @@ package
 		private function _setupPane(pType:String) : TabPane {
 			var tPane:TabPane = new TabPane();
 			_setupPaneButtons(tPane, costumes.getArrayByType(pType));
-			tPane.infoBar.colorWheel.addEventListener(MouseEvent.CLICK, function(){ _colorButtonClicked(pType); });
-			tPane.infoBar.imageCont.addEventListener(MouseEvent.CLICK, function(){ _removeItem(pType); });
+			tPane.infoBar.colorWheel.addEventListener(ButtonBase.CLICK, function(){ _colorButtonClicked(pType); });
+			tPane.infoBar.imageCont.addEventListener(ButtonBase.CLICK, function(){ _removeItem(pType); });
+			tPane.infoBar.refreshButton.addEventListener(ButtonBase.CLICK, function(){ _randomItemOfType(pType); });
 			return tPane;
 		}
 		
@@ -272,7 +297,7 @@ package
 				this.character.setItemData(tData);
 				
 				tInfoBar.addInfo( tData, costumes.getItemImage(tData) );
-				tInfoBar.colorWheelActive = costumes.getNumOfCustomColors(tButton.Image) > 0;
+				tInfoBar.showColorWheel(costumes.getNumOfCustomColors(tButton.Image) > 0);
 			} else {
 				_removeItem(tType);
 			}
@@ -291,6 +316,35 @@ package
 				tTabPane.infoBar.removeInfo();
 				tTabPane.buttons[ tTabPane.selectedButtonIndex ].toggleOff();
 			}
+		}
+		
+		private function _onRandomizeDesignClicked(pEvent:Event) : void {
+			for(var i:int = 0; i < ITEM.LAYERING.length; i++) {
+				_randomItemOfType(ITEM.LAYERING[i]);
+			}
+		}
+		
+		private function _randomItemOfType(pType:String) : void {
+			var tButtons = getButtonArrayByType(pType);
+			var tLength = tButtons.length; if(pType == ITEM.SKIN) { /* Don't select "transparent" */ tLength--; }
+			tButtons[ Math.floor(Math.random() * tLength) ].toggleOn();
+		}
+		
+		private function _onShareButtonClicked(pEvent:Event) : void {
+			var tURL = "";
+			try {
+				tURL = ExternalInterface.call("eval", "window.location.origin+window.location.pathname");
+				tURL += "?"+this.character.getParams();
+			} catch (error:Error) {
+				tURL = "<error creating link>";
+			};
+			
+			linkTray.open(tURL);
+			addChild(linkTray);
+		}
+		
+		private function _onShareTrayClosed(pEvent:Event) : void {
+			removeChild(linkTray);
 		}
 		
 		//{REGION Get TabPane data
@@ -374,7 +428,6 @@ package
 			
 			private function _colorButtonClicked(pType:String) : void {
 				if(this.character.getItemFromIndex(pType) == null) { return; }
-				if(getInfoBarByType(pType).colorWheelActive == false) { return; }
 				
 				var tData:ItemData = getInfoBarByType(pType).data;
 				this.colorTabPane.infoBar.addInfo( tData, costumes.getItemImage(tData) );

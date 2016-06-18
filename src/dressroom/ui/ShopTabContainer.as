@@ -19,27 +19,33 @@ package dressroom.ui
 			
 			this.drawSimpleGradient([ 0x112528, 0x1E3D42 ], 15, 0x6a8fa2, 0x11171c, 0x324650);
 			
-			var tXSpacing:Number = 0;//55;
-			var tX:Number = 5-tXSpacing;
-			var tYSpacing:Number = 43;//0;
-			var tY:Number = 10-tYSpacing;
-			var tWidth:Number = 50;
-			var tHeight:Number = 38;
+			var tTabInfo = [
+				{ text:"Config", type:"config" },
+				{ text:"Skin", type:ITEM.SKIN },
+				{ text:"Hair", type:ITEM.HAIR },
+				{ text:"Head", type:ITEM.HEAD },
+				{ text:"Shirts", type:ITEM.SHIRT },
+				{ text:"Pants", type:ITEM.PANTS },
+				{ text:"Shoes", type:ITEM.SHOES },
+				{ text:"Objects", type:ITEM.OBJECT },
+				{ text:"Pose", type:ITEM.POSE }
+			];
+			
+			var tXMargin:Number = 5;
+			var tYMargin:Number = 5;
+			var tHeight:Number = Math.min(65, (this.Height - tYMargin) / tTabInfo.length - tYMargin);
+			var tWidth:Number = this.Width - (tXMargin * 2);
+			var tYSpacing:Number = tHeight + tYMargin;
+			var tX:Number = tXMargin;
+			var tY:Number = tYMargin - tYSpacing; // Go back one space for when for loop adds one space.
 			
 			tabs = new Array();
-			
-			_addTab("Config", tX += tXSpacing, tY += tYSpacing, tWidth, tHeight, "config");
-			_addTab("Skin", tX += tXSpacing, tY += tYSpacing, tWidth, tHeight, ITEM.SKIN);
-			_addTab("Hair", tX += tXSpacing, tY += tYSpacing, tWidth, tHeight, ITEM.HAIR);
-			_addTab("Head", tX += tXSpacing, tY += tYSpacing, tWidth, tHeight, ITEM.HEAD);
-			_addTab("Shirts", tX += tXSpacing, tY += tYSpacing, tWidth, tHeight, ITEM.SHIRT);
-			_addTab("Pants", tX += tXSpacing, tY += tYSpacing, tWidth, tHeight, ITEM.PANTS);
-			_addTab("Shoes", tX += tXSpacing, tY += tYSpacing, tWidth, tHeight, ITEM.SHOES);
-			_addTab("Objects", tX += tXSpacing, tY += tYSpacing, tWidth, tHeight, ITEM.OBJECT);
-			_addTab("Pose", tX += tXSpacing, tY += tYSpacing, tWidth, tHeight, ITEM.POSE);
+			for(var i:int = 0; i < tTabInfo.length; i++) {
+				_createTab(tTabInfo[i].text, tX, tY += tYSpacing, tWidth, tHeight, tTabInfo[i].type);
+			}
 		}
 		
-		private function _addTab(pText:String, pX:Number, pY:Number, pWidth:Number, pHeight:Number, pEvent:String) : PushButton {
+		private function _createTab(pText:String, pX:Number, pY:Number, pWidth:Number, pHeight:Number, pEvent:String) : PushButton {
 			var tBttn:PushButton = new PushButton({ x:pX, y:pY, width:pWidth, height:pHeight, text:pText, allowToggleOff:false });
 			tabs.push(addChild(tBttn));
 			tBttn.addEventListener(PushButton.STATE_CHANGED_BEFORE, function(tBttn){ return function(){ untoggle(tBttn, pEvent); }; }(tBttn));//, false, 0, true

@@ -10,7 +10,7 @@ package dressroom.world.data
 		public var hair			: ItemData;
 		
 		// Constructor
-		public function SkinData(pID:int, pGender:String) {
+		public function SkinData(pID:String, pGender:String) {
 			super({ id:pID, type:ITEM.SKIN, gender:pGender });
 			
 			classMap = {};
@@ -46,6 +46,8 @@ package dressroom.world.data
 			// Feet
 			classMap.P1		= Main.assets.getLoadedClass( "M_"+id+"_P1" );
 			classMap.P2		= Main.assets.getLoadedClass( "M_"+id+"_P2" );
+			
+			if(gender) this.id += (gender == GENDER.FEMALE ? "F" : "M");
 		}
 	}
 }

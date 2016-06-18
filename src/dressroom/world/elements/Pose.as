@@ -1,5 +1,6 @@
 package dressroom.world.elements
 {
+	import com.fewfre.utils.*;
 	import dressroom.data.*;
 	import dressroom.world.data.*;
 	import flash.display.*;
@@ -35,20 +36,24 @@ package dressroom.world.elements
 			stop();
 		}
 		
-		// pData = { ?skin:SkinData, ?hair:ItemData, ?items:Array, ?skinColor:int, ?hairColor:int, ?secondaryColor:int, ?removeBlanks:Boolean=false }
+		// pData = { ?items:Array, ?removeBlanks:Boolean=false, ?skinColor:int, ?hairColor:int, ?secondaryColor:int }
 		public function apply(pData:Object) : MovieClip {
-			var tSkinData = pData.skin;
-			var tHairData = pData.hair ? pData.hair : (tSkinData ? tSkinData.hair : null);
+			if(!pData.items) pData.items = [];
+			
+			// If no hair data in array, add the skin's default hair style (if there is one).
+			var tHairData = FewfUtils.getFromArrayWithKeyVal(pData.items, "type", ITEM.HAIR);
+			if(!tHairData) {
+				var tSkinData = FewfUtils.getFromArrayWithKeyVal(pData.items, "type", ITEM.SKIN);
+				if(tSkinData) {
+					pData.items.unshift(tSkinData.hair);
+				}
+			}
 			
 			var tSkinColor:int = pData.skinColor != null ? pData.skinColor : Main.costumes.skinColors[0];
 			var tHairColor:int = pData.hairColor != null ? pData.hairColor : Main.costumes.hairColors[0];
 			var tSecondaryColor:int = pData.secondaryColor != null ? pData.secondaryColor : Main.costumes.secondaryColors[0];
 			
-			if(!pData.items) pData.items = [];
-			pData.items.unshift(tSkinData);
-			pData.items.unshift(tHairData);
 			var tShopData = _orderType(pData.items);
-			
 			var part:DisplayObject = null;
 			var tChild:* = null;
 			var tItemsOnChild:int = 0;

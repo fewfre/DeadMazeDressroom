@@ -6,6 +6,7 @@ package dressroom.world.elements
 	import flash.display.*;
 	import flash.events.*;
 	import flash.geom.*;
+	import flash.net.*;
 	
 	public class Character extends flash.display.Sprite
 	{
@@ -19,7 +20,7 @@ package dressroom.world.elements
 		public function set scale(pVal:Number) { outfit.scaleX = outfit.scaleY = pVal; }
 		
 		// Constructor
-		// pData = { x:NUmber, y:Number, [various "__Data"s] }
+		// pData = { x:Number, y:Number, [various "__Data"s], ?params:URLVariables }
 		public function Character(pData:Object)
 		{
 			super();
@@ -45,6 +46,8 @@ package dressroom.world.elements
 			_itemDataMap[ITEM.OBJECT] = pData.object;
 			_itemDataMap[ITEM.POSE] = pData.pose;
 			
+			if(pData.params) _parseParams(pData.params);
+			
 			updatePose();
 		}
 		
@@ -54,11 +57,13 @@ package dressroom.world.elements
 			outfit = addChild(new Pose(getItemData(ITEM.POSE).itemClass));
 			outfit.scaleX = outfit.scaleY = tScale;
 			
-			outfit.apply({ skin:getItemData(ITEM.SKIN), hair:getItemData(ITEM.HAIR),
+			outfit.apply({
 				skinColor:Main.costumes.skinColor,
 				hairColor:Main.costumes.hairColor,
 				secondaryColor:Main.costumes.secondaryColor,
 				items:[
+					getItemData(ITEM.SKIN),
+					getItemData(ITEM.HAIR),
 					getItemData(ITEM.HEAD),
 					getItemData(ITEM.SHIRT),
 					getItemData(ITEM.PANTS),
@@ -67,6 +72,53 @@ package dressroom.world.elements
 				]
 			});
 			if(animatePose) outfit.play(); else outfit.stopAtLastFrame();
+		}
+		
+		private function _parseParams(pParams:URLVariables) : void {
+			trace(pParams.toString());
+			if(pParams.hc) { Main.costumes.hairColor = uint("0x"+pParams.hc); }
+			if(pParams.sk) { Main.costumes.skinColor = uint("0x"+pParams.sk); }
+			if(pParams.oc) { Main.costumes.secondaryColor = uint("0x"+pParams.oc); }
+			
+			_setParamToType(pParams, ITEM.SKIN, "s", false);
+			_setParamToType(pParams, ITEM.HAIR, "d");
+			_setParamToType(pParams, ITEM.HEAD, "h");
+			_setParamToType(pParams, ITEM.SHIRT, "t");
+			_setParamToType(pParams, ITEM.PANTS, "b");
+			_setParamToType(pParams, ITEM.SHOES, "f");
+			_setParamToType(pParams, ITEM.OBJECT, "o");
+			_setParamToType(pParams, ITEM.POSE, "p", false);
+		}
+		private function _setParamToType(pParams:URLVariables, pType:String, pParam:String, pAllowNull:Boolean=true) {
+			var tData:ItemData = null;
+			if(pParams[pParam] != null) {
+				if(pParams[pParam] == '') {
+					tData = null;
+				} else {
+					tData = Main.costumes.getItemFromTypeID(pType, pParams[pParam]);
+				}
+			}
+			_itemDataMap[pType] = pAllowNull ? tData : ( tData == null ? _itemDataMap[pType] : tData );
+		}
+		
+		public function getParams() : URLVariables {
+			var tParms = new URLVariables();
+			
+			tParms.hc = Main.costumes.hairColor.toString(16);
+			tParms.sk = Main.costumes.skinColor.toString(16);
+			tParms.oc = Main.costumes.secondaryColor.toString(16);
+			
+			var tData:ItemData;
+			tParms.s = (tData = getItemData(ITEM.SKIN)) ? tData.id : '';
+			tParms.d = (tData = getItemData(ITEM.HAIR)) ? tData.id : '';
+			tParms.h = (tData = getItemData(ITEM.HEAD)) ? tData.id : '';
+			tParms.t = (tData = getItemData(ITEM.SHIRT)) ? tData.id : '';
+			tParms.b = (tData = getItemData(ITEM.PANTS)) ? tData.id : '';
+			tParms.f = (tData = getItemData(ITEM.SHOES)) ? tData.id : '';
+			tParms.o = (tData = getItemData(ITEM.OBJECT)) ? tData.id : '';
+			tParms.p = (tData = getItemData(ITEM.POSE)) ? tData.id : '';
+			
+			return tParms;
 		}
 
 		/****************************

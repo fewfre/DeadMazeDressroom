@@ -1,7 +1,7 @@
 package dressroom.data
 {
 	import com.adobe.images.*;
-	import com.fewfre.utils.AssetManager;
+	import com.fewfre.utils.*;
 	import dressroom.data.*;
 	import dressroom.world.data.*;
 	import dressroom.world.elements.*;
@@ -28,22 +28,22 @@ package dressroom.data
 		public var defaultSkinIndex:int;
 		public var defaultPoseIndex:int;
 		
-		public var skinColors:Array;
 		public var hairColors:Array;
+		public var skinColors:Array;
 		public var secondaryColors:Array;
 		
 		// Current
 		public var sex:String;
-		public var skinColor:int;
 		public var hairColor:int;
+		public var skinColor:int;
 		public var secondaryColor:int;
 		
 		public function Costumes(pAssets:AssetManager) {
 			super();
 			assets = pAssets;
 			
-			skinColors = [ 0xf5d3ae, 0xf3d9c1, 0xf9d28a, 0xf9d28a, 0xe0b484, 0xd3b18e, 0xd19a5e, 0x8a5a38, 0x4b3a2b, 0x563312 ];
 			hairColors = [ 0x211e24, 0xdcb33a, 0xe98537, 0xe0ae5b, 0xf9d28a, 0xc16333, 0xe98537, 0xab6e37, 0x89541c, 0xf5d3ae ];
+			skinColors = [ 0xf5d3ae, 0xf3d9c1, 0xf9d28a, 0xf9d28a, 0xe0b484, 0xd3b18e, 0xd19a5e, 0x8a5a38, 0x4b3a2b, 0x563312 ];
 			secondaryColors = [ 0xf5ece5, 0x2a312a, 0x076586, 0x87475a, 0x8a5a38, 0xd63343, 0xe98537, 0xf6c549, 0x50a341, 0x7841a2, 0x13a4b7 ];
 			
 			sex = GENDER.FEMALE;
@@ -74,18 +74,17 @@ package dressroom.data
 					this.skins.push( new SkinData( i, GENDER.MALE ) );
 				}
 			}
-			this.skins.push( new SkinData( 0, null ) );
-			this.skins[this.skins.length-1].id = "Invisible";
+			this.skins.push( new SkinData( "inv", null ) );
 			this.skins[this.skins.length-1].classMap = {};
 			this.skins[this.skins.length-1].hair = new ItemData({ type:ITEM.HAIR, classMap:{} });
-			this.defaultSkinIndex = 0;//getIndexFromArrayWithID(this.skins, ConstantsApp.DEFAULT_SKIN_ID);
+			this.defaultSkinIndex = 0;//FewfUtils.getIndexFromArrayWithKeyVal(this.skins, "id", ConstantsApp.DEFAULT_SKIN_ID);
 			
 			this.poses = [];
 			var tPoseClasses = [ "Statique", "Statique2", "Pousse", "Mort", "Manipulation", "CourseArme", "Course", "Attaque1", "Attaque2", "Attaque3" ];
 			for(i = 0; i < tPoseClasses.length; i++) {
 				this.poses.push(new ItemData({ id:tPoseClasses[i], type:ITEM.POSE, itemClass:assets.getLoadedClass( "$Anim"+tPoseClasses[i] ) }));
 			}
-			this.defaultPoseIndex = 0;//getIndexFromArrayWithID(this.poses, ConstantsApp.DEFAULT_POSE_ID);
+			this.defaultPoseIndex = 0;//FewfUtils.getIndexFromArrayWithKeyVal(this.poses, "id", ConstantsApp.DEFAULT_POSE_ID);
 			
 			return this;
 		}
@@ -110,7 +109,8 @@ package dressroom.data
 							}
 						}
 						if(tClassSuccess) {
-							tArray.push( new ItemData({ id:i, type:pData.type, classMap:tClassMap, itemClass:tClassSuccess, gender:(pData.sex && tSexSpecificParts > 0 ? ((g==0?GENDER.FEMALE:GENDER.MALE)) : null) }) );
+							var tIsSexSpecific = pData.sex && tSexSpecificParts > 0;
+							tArray.push( new ItemData({ id:i+(tIsSexSpecific ? (g==1 ? "M" : "F") : ""), type:pData.type, classMap:tClassMap, itemClass:tClassSuccess, gender:(tIsSexSpecific ? (g==1?GENDER.MALE:GENDER.FEMALE) : null) }) );
 						}
 						if(tSexSpecificParts == 0) {
 							break;
@@ -149,18 +149,8 @@ package dressroom.data
 			return null;
 		}
 		
-		public function getItemFromTypeID(pType:String, pID:int) : ItemData {
-			var tArray:Array = getArrayByType(pType);
-			return tArray[getIndexFromArrayWithID(tArray, pID)];
-		}
-		
-		public function getIndexFromArrayWithID(pArray:Array, pID:int) : int {
-			for(var i = 0; i < pArray.length; i++) {
-				if(pArray[i].id == pID) {
-					return i;
-				}
-			}
-			return -1;
+		public function getItemFromTypeID(pType:String, pID:String) : ItemData {
+			return FewfUtils.getFromArrayWithKeyVal(getArrayByType(pType), "id", pID);
 		}
 
 		/****************************
@@ -278,13 +268,15 @@ package dressroom.data
 				
 				tPose = new Pose(tPoseData.itemClass);
 				if(tSkinData.gender == GENDER.MALE) {
-					tPose.apply({ skin:tSkinData, items:[
+					tPose.apply({ items:[
+						tSkinData,
 						shirts[1],
 						pants[1],
 						shoes[0]
 					] });
 				} else {
-					tPose.apply({ skin:tSkinData, items:[
+					tPose.apply({ items:[
+						tSkinData,
 						shirts[0],
 						pants[0],
 						shoes[0]
@@ -301,7 +293,7 @@ package dressroom.data
 			if(!pObj){ return; }
 			
 			var tRect:flash.geom.Rectangle = pObj.getBounds(pObj);
-			var tBitmap:flash.display.BitmapData = new flash.display.BitmapData(pObj.width*pScale, pObj.height*pScale, true, 16777215);
+			var tBitmap:flash.display.BitmapData = new flash.display.BitmapData(pObj.width*pScale, pObj.height*pScale, true, 0xFFFFFF);
 			
 			var tMatrix:flash.geom.Matrix = new flash.geom.Matrix(1, 0, 0, 1, -tRect.left, -tRect.top);
 			tMatrix.scale(pScale, pScale);

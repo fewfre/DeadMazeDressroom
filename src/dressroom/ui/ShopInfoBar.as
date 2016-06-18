@@ -1,5 +1,6 @@
 package dressroom.ui
 {
+	import com.fewfre.display.ButtonBase;
 	import com.adobe.images.*;
 	import dressroom.data.*;
 	import dressroom.ui.*;
@@ -19,50 +20,50 @@ package dressroom.ui
 		
 		public var Image			: MovieClip;
 		public var imageCont		: RoundedRectangle;
+		
+		public var Text				: TextField;
 		public var colorWheel		: ScaleButton;
-		public var Text				: flash.text.TextField;
 		public var downloadButton	: SpriteButton;
+		public var refreshButton	: ScaleButton;
 		
-		public var colorWheelEnabled: Boolean = true;
-		
+		// Properties
 		public function get hasData() : Boolean { return data != null; }
-		public function get colorWheelActive() : Boolean { return colorWheel.alpha != 0; }
-		public function set colorWheelActive(pVal:Boolean) { colorWheelEnabled = pVal; colorWheel.alpha = pVal ? 1 : 0; }
 		
 		// Constructor
-		// pData = { ?showBackButton:Boolean }
+		// pData = { ?showBackButton:Boolean = false, ?noRefreshButton:Boolean = true }
 		public function ShopInfoBar(pData:Object=null) {
 			super();
 			pData = pData==null ? {} : pData;
 			this.Width = ConstantsApp.PANE_WIDTH;
 			data = null;
 			
-			imageCont = new RoundedRectangle(0, 0, 50, 50);
+			imageCont = addChild(new RoundedRectangle(0, 0, 50, 50));
 			imageCont.draw(0x6A7495, 15, 0x5d7d90, 0x11171c, 0x3c5064);
-			addChild( imageCont );
 			
 			ChangeImage( new $NoItem() );
 			
-			this.colorWheel = new ScaleButton({ x:80, y:24, obj:pData.showBackButton ? new $BackArrow() : new $ColorWheel() });
+			this.colorWheel = addChild(new ScaleButton({ x:80, y:24, obj:pData.showBackButton ? new $BackArrow() : new $ColorWheel() }));
 			this.colorWheel.x = 80;
 			this.colorWheel.y = 24;
-			addChild(this.colorWheel);
-			this.colorWheel.alpha = pData.showBackButton ? 1 : 0;
 			// Add event listener in Main
 			
-			this.Text = new flash.text.TextField();
+			this.Text = addChild(new TextField());
 			this.Text.x = 115;
 			this.Text.y = 13;
 			this.Text.defaultTextFormat = new flash.text.TextFormat("Verdana", 18, 0xc2c2da);
 			this.Text.autoSize = flash.text.TextFieldAutoSize.LEFT;
 			this.Text.text = "ID: ";
 			this.Text.alpha = 0;
-			addChild(this.Text);
 			
-			downloadButton = new SpriteButton({ x:this.Width - 50, y:0, width:50, height:50, obj:new $SimpleDownload(), id:1 });
-			addChild(downloadButton);
-			downloadButton.addEventListener(flash.events.MouseEvent.MOUSE_UP, saveSprite);
-			downloadButton.alpha = 0;
+			showColorWheel(pData.showBackButton);
+			
+			downloadButton = addChild(new SpriteButton({ x:this.Width - 50, y:0, width:50, height:50, obj:new $SimpleDownload() }));
+			downloadButton.addEventListener(ButtonBase.CLICK, saveSprite);
+			downloadButton.disable().alpha = 0;
+			
+			if(pData.noRefreshButton == null || pData.noRefreshButton) {
+				refreshButton = addChild(new ScaleButton({ x:this.Width - 85, y:24, obj:new $Refresh() }));
+			}
 			
 			_drawLine(5, 53, this.Width);
 		}
@@ -97,8 +98,18 @@ package dressroom.ui
 			imageCont.addChild(this.Image);
 		}
 		
+		public function showColorWheel(pVal:Boolean=true) : void {
+			if(pVal) {
+				colorWheel.enable().alpha = 1;
+				this.Text.x = 115;
+			} else {
+				colorWheel.disable().alpha = 0;
+				this.Text.x = 65;
+			}
+		}
+		
 		private function _updateID() : void {
-			this.Text.text = "ID: "+data.id+(data.gender ? (data.gender == GENDER.MALE ? "M" : "F") : "");
+			this.Text.text = "ID: "+data.id;
 		}
 		
 		public function addInfo(pData:ItemData, pMC:MovieClip) : void {
@@ -110,25 +121,24 @@ package dressroom.ui
 			ChangeImage(pMC);
 			_updateID();
 			
-			colorWheelActive = colorWheelEnabled;
 			Text.alpha = 1;
-			downloadButton.alpha = 1;
+			downloadButton.enable().alpha = 1;
 		}
 		
 		public function removeInfo() : void {
 			data = null;
 			ChangeImage(new $NoItem());
 			
-			colorWheel.alpha = 0;
 			Text.alpha = 0;
 			this.Text.text = "ID: ";
-			downloadButton.alpha = 0;
+			showColorWheel(false);
+			downloadButton.disable().alpha = 0;
 		}
 		
 		internal function saveSprite(pEvent:Event) : void
 		{
 			if(!data) { return; }
-			var tName = "shop-"+data.type+data.id+(data.gender ? (data.gender == GENDER.MALE ? "M" : "F") : "");
+			var tName = "shop-"+data.type+data.id;
 			Main.costumes.saveMovieClipAsBitmap(Main.costumes.getItemImage(data), tName, ConstantsApp.ITEM_SAVE_SCALE);
 		}
 	}

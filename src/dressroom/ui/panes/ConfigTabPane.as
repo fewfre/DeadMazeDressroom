@@ -33,7 +33,7 @@ package dressroom.ui.panes
 			super();
 			character = pCharacter;
 			
-			var i:int, xx:Number, yy:Number, spacing:Number, sizex:Number, sizey:Number, clr:int;
+			var i:int, xx:Number, yy:Number, spacing:Number, sizex:Number, sizey:Number, clr:int, tIndex:int;
 			
 			i = 0; xx = 100; yy = 50; spacing = 100; sizex = 80; sizey = 35;
 			_newTextField({ text:"Items", x:36, y:yy+3 });
@@ -52,10 +52,11 @@ package dressroom.ui.panes
 				clr = Main.costumes.hairColors[i];
 				hairColorButtons.push( addChild( new PushButton({ x:xx + (spacing*i), y:yy, width:sizex, height:sizey, obj:_colorSpriteBox({ color:clr }), id:clr, allowToggleOff:false }) ) );
 			}
-			hairColorButtons.push( addChild( hairColorPickerButton = new PushButton({ x:xx + (spacing*i), y:yy, width:sizex, height:sizey, obj:new $ColorWheel(), obj_scale:0.7, id:Main.costumes.hairColors[0], allowToggleOff:false }) ) );
+			hairColorButtons.push( addChild( hairColorPickerButton = new PushButton({ x:xx + (spacing*i), y:yy, width:sizex, height:sizey, obj:new $ColorWheel(), obj_scale:0.7, id:Main.costumes.hairColor, allowToggleOff:false }) ) );
 			hairColorPickerButtonBox = hairColorPickerButton.addChild(_colorSpriteBox({ color:hairColorPickerButton.id, size:MINI_BOX_SIZE, x:(sizex-MINI_BOX_SIZE)*0.5, y:(sizey-MINI_BOX_SIZE)*0.5 }));
 			_registerClickHandler(hairColorButtons, _onHairColorButtonClicked);
-			hairColorButtons[0].toggleOn();
+			tIndex = Main.costumes.hairColors.indexOf(Main.costumes.hairColor);
+			hairColorButtons[tIndex > -1 ? tIndex : (hairColorButtons.length-1)].toggleOn();
 			
 			i = 0; spacing = 34; xx = ConstantsApp.PANE_WIDTH*0.5 - spacing*(Main.costumes.skinColors.length+0.5)*0.5; yy = 230; sizex = 30; sizey = 30;
 			_newTextField({ text:"Skin", x:ConstantsApp.PANE_WIDTH*0.5, y:yy-40 });
@@ -64,10 +65,11 @@ package dressroom.ui.panes
 				clr = Main.costumes.skinColors[i];
 				skinColorButtons.push( addChild( new PushButton({ x:xx + (spacing*i), y:yy, width:sizex, height:sizey, obj:_colorSpriteBox({ color:clr }), id:clr, allowToggleOff:false }) ) );
 			}
-			skinColorButtons.push( addChild( skinColorPickerButton = new PushButton({ x:xx + (spacing*i), y:yy, width:sizex, height:sizey, obj:new $ColorWheel(), obj_scale:0.7, id:Main.costumes.skinColors[0], allowToggleOff:false }) ) );
+			skinColorButtons.push( addChild( skinColorPickerButton = new PushButton({ x:xx + (spacing*i), y:yy, width:sizex, height:sizey, obj:new $ColorWheel(), obj_scale:0.7, id:Main.costumes.skinColor, allowToggleOff:false }) ) );
 			skinColorPickerButtonBox = skinColorPickerButton.addChild(_colorSpriteBox({ color:skinColorPickerButton.id, size:MINI_BOX_SIZE, x:(sizex-MINI_BOX_SIZE)*0.5, y:(sizey-MINI_BOX_SIZE)*0.5 }));
 			_registerClickHandler(skinColorButtons, _onSkinColorButtonClicked);
-			skinColorButtons[0].toggleOn();
+			tIndex = Main.costumes.skinColors.indexOf(Main.costumes.skinColor);
+			skinColorButtons[tIndex > -1 ? tIndex : (skinColorButtons.length-1)].toggleOn();
 			
 			i = 0; spacing = 34; xx = ConstantsApp.PANE_WIDTH*0.5 - spacing*(Main.costumes.secondaryColors.length+0.5)*0.5; yy = 320; sizex = 30; sizey = 30;
 			_newTextField({ text:"Other", x:ConstantsApp.PANE_WIDTH*0.5, y:yy-40 });
@@ -76,10 +78,11 @@ package dressroom.ui.panes
 				clr = Main.costumes.secondaryColors[i];
 				secondaryColorButtons.push( addChild( new PushButton({ x:xx + (spacing*i), y:yy, width:sizex, height:sizey, obj:_colorSpriteBox({ color:clr }), id:clr, allowToggleOff:false }) ) );
 			}
-			secondaryColorButtons.push( addChild( secondaryColorPickerButton = new PushButton({ x:xx + (spacing*i), y:yy, width:sizex, height:sizey, obj:new $ColorWheel(), obj_scale:0.7, id:Main.costumes.secondaryColors[0], allowToggleOff:false }) ) );
+			secondaryColorButtons.push( addChild( secondaryColorPickerButton = new PushButton({ x:xx + (spacing*i), y:yy, width:sizex, height:sizey, obj:new $ColorWheel(), obj_scale:0.7, id:Main.costumes.secondaryColor, allowToggleOff:false }) ) );
 			secondaryColorPickerButtonBox = secondaryColorPickerButton.addChild(_colorSpriteBox({ color:secondaryColorPickerButton.id, size:MINI_BOX_SIZE, x:(sizex-MINI_BOX_SIZE)*0.5, y:(sizey-MINI_BOX_SIZE)*0.5 }));
 			_registerClickHandler(secondaryColorButtons, _onSecondaryColorButtonClicked);
-			secondaryColorButtons[0].toggleOn();
+			tIndex = Main.costumes.secondaryColors.indexOf(Main.costumes.secondaryColor);
+			secondaryColorButtons[tIndex > -1 ? tIndex : (secondaryColorButtons.length-1)].toggleOn();
 		}
 		
 		// pData = { text:String, x:Number, y:Number, size:int, color:int }

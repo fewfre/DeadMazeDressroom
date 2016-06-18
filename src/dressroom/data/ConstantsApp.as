@@ -35,5 +35,10 @@ package dressroom.data
 		
 		public static const COLOR_BUTTON_OUTSET_BOTTOM		: int = 0x11171C;
 		public static const COLOR_BUTTON_OUTSET_TOP			: int = 0x5D7D90;
+		
+		public static const COLOR_TRAY_GRADIENT				: Array = [ 0x112528, 0x1E3D42 ];
+		public static const COLOR_TRAY_B_1					: int = 0x6A8fA2;
+		public static const COLOR_TRAY_B_2					: int = 0x11171C;
+		public static const COLOR_TRAY_B_3					: int = 0x324650;
 	}
 }
