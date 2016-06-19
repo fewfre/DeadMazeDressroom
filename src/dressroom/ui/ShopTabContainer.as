@@ -9,6 +9,9 @@ package dressroom.ui
 	
 	public class ShopTabContainer extends RoundedRectangle
 	{
+		// Constants
+		public static const EVENT_SHOP_TAB_CLICKED			: String = "shop_tab_clicked";
+		
 		// Storage
 		public var tabs:Array;
 		
@@ -65,7 +68,7 @@ package dressroom.ui
 				}
 			}
 			
-			if(pEvent!=null) { dispatchEvent(new DataEvent(ConstantsApp.EVENT_SHOP_TAB_CLICKED, false, false, pEvent)); }
+			if(pEvent!=null) { dispatchEvent(new DataEvent(EVENT_SHOP_TAB_CLICKED, false, false, pEvent)); }
 		}
 	}
 }

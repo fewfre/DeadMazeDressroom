@@ -14,16 +14,12 @@ package dressroom.data
 		*****************************/
 		public static const SOURCE_URL				: String = "https://github.com/fewfre/DeadMazeDressroom";
 		
-		public static const DEFAULT_SKIN_INDEX		: int = 7;
-		
 		public static const DEFAULT_SKIN_ID			: int = 0;
 		public static const DEFAULT_POSE_ID			: int = 0;
 		
 		public static const NUM_ITEMS_PER_ROW		: int = 7;
 		
 		public static const ITEM_SAVE_SCALE			: int = 8; // Power of two is probably best
-		
-		public static const EVENT_SHOP_TAB_CLICKED			: String = "shop_tab_clicked";
 		
 		/****************************
 		* Colors

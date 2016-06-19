@@ -73,7 +73,7 @@ package
 			stage.addEventListener(MouseEvent.MOUSE_WHEEL, handleMouseWheel);
 		}
 		
-		internal function _onLoadComplete(event:Event):*
+		internal function _onLoadComplete(event:Event) : void
 		{
 			removeChild( loadingSpinner );
 			loadingSpinner = null;
@@ -107,7 +107,7 @@ package
 			this.shop.drawSimpleGradient([ 0x112528, 0x1E3D42 ], 15, 0x6A8fA2, 0x11171C, 0x324650);
 			
 			this.shopTabs = addChild(new ShopTabContainer(380, 10, 60, ConstantsApp.APP_HEIGHT));
-			this.shopTabs.addEventListener(ConstantsApp.EVENT_SHOP_TAB_CLICKED, _onTabClicked);
+			this.shopTabs.addEventListener(ShopTabContainer.EVENT_SHOP_TAB_CLICKED, _onTabClicked);
 			
 			// Toolbox
 			var tools:RoundedRectangle = addChild(new RoundedRectangle(5, 10, 365, 35));
@@ -176,7 +176,7 @@ package
 			var tPane:TabPane = new TabPane();
 			_setupPaneButtons(tPane, costumes.getArrayByType(pType));
 			tPane.infoBar.colorWheel.addEventListener(ButtonBase.CLICK, function(){ _colorButtonClicked(pType); });
-			tPane.infoBar.imageCont.addEventListener(ButtonBase.CLICK, function(){ _removeItem(pType); });
+			tPane.infoBar.imageCont.addEventListener(MouseEvent.CLICK, function(){ _removeItem(pType); });
 			tPane.infoBar.refreshButton.addEventListener(ButtonBase.CLICK, function(){ _randomItemOfType(pType); });
 			return tPane;
 		}
@@ -322,6 +322,7 @@ package
 			for(var i:int = 0; i < ITEM.LAYERING.length; i++) {
 				_randomItemOfType(ITEM.LAYERING[i]);
 			}
+			_randomItemOfType(ITEM.POSE);
 		}
 		
 		private function _randomItemOfType(pType:String) : void {

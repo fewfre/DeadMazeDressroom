@@ -8,7 +8,7 @@ package dressroom.world.elements
 	import flash.geom.*;
 	import flash.net.*;
 	
-	public class Character extends flash.display.Sprite
+	public class Character extends Sprite
 	{
 		// Storage
 		public var outfit:MovieClip;
