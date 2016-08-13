@@ -21,7 +21,7 @@ package dressroom.ui.buttons
 		// pData = { x:Number, y:Number, width:Number, height:Number }
 		public function GameButton(pData:Object)
 		{
-			_bg = addChild(new RoundedRectangle(0, 0, pData.width, pData.height));
+			_bg = addChild(new RoundedRectangle({ x:0, y:0, width:pData.width, height:pData.height }));
 			super(pData);
 		}
 

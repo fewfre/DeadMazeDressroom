@@ -3,50 +3,58 @@ package dressroom.world.data
 	import dressroom.data.*;
 	import flash.display.*;
 	import flash.geom.*;
-	
+
 	public class SkinData extends ItemData
 	{
 		// Storage
 		public var hair			: ItemData;
-		
+
 		// Constructor
 		public function SkinData(pID:String, pGender:String) {
 			super({ id:pID, type:ITEM.SKIN, gender:pGender });
-			
+
 			classMap = {};
-			var tSex = gender == GENDER.FEMALE ? "1" : "2";
-			
+			var tSex = gender == GENDER.FEMALE ? "_1" : "_2";
+			var tPrefix = "M_"+id+"_";
+
 			// Hair may be replaced, so we don't want it in the classMap.
-			hair		= new ItemData({ type:ITEM.HAIR, classMap:{ T:Main.assets.getLoadedClass( "M_"+id+"_C_"+tSex ), CH:Main.assets.getLoadedClass( "M_"+id+"_CB_"+tSex ) } });
-			//classMap.T	= Main.assets.getLoadedClass( "M_"+id+"_C_"+tSex );
-			//classMap.CH	= Main.assets.getLoadedClass( "M_"+id+"_CB_"+tSex );
-			
-			// Head
-			classMap.T		= Main.assets.getLoadedClass( "M_"+id+"_T_"+tSex );
+			/*hair = new ItemData({ type:ITEM.HAIR, classMap:{
+				T: Main.assets.getLoadedClass( tPrefix+"C"+tSex ),
+				CH: Main.assets.getLoadedClass( tPrefix+"CB"+tSex )
+			} });*/
+
+			var tSkinParts = [ "T", "TS", "B", "BS1", "BS2", "BI1", "BI2", "M1", "M2", "CO", "JS1", "JS2", "JI1", "JI2", "P1", "P2" ];
+			for each(var part in tSkinParts) {
+				classMap[part]		= Main.assets.getLoadedClass( tPrefix+part+tSex );
+			}
+			/*// Head
+			classMap.T		= Main.assets.getLoadedClass( tSk+"T"+tSex );
 			// Torso / Pelvis
-			classMap.TS		= Main.assets.getLoadedClass( "M_"+id+"_TS_"+tSex );
-			classMap.B		= Main.assets.getLoadedClass( "M_"+id+"_B_"+tSex );
-			
+			classMap.TS		= Main.assets.getLoadedClass( tSk+"TS"+tSex );
+			classMap.B		= Main.assets.getLoadedClass( tSk+"B"+tSex );
+
 			// Upper Arms
-			classMap.BS1	= Main.assets.getLoadedClass( "M_"+id+"_BS1_"+tSex );
-			classMap.BS2	= Main.assets.getLoadedClass( "M_"+id+"_BS2_"+tSex );
+			classMap.BS1	= Main.assets.getLoadedClass( tSk+"BS1"+tSex );
+			classMap.BS2	= Main.assets.getLoadedClass( tSk+"BS2"+tSex );
 			// Lower Arms
-			classMap.BI1	= Main.assets.getLoadedClass( "M_"+id+"_BI1" );
-			classMap.BI2	= Main.assets.getLoadedClass( "M_"+id+"_BI2" );
+			classMap.BI1	= Main.assets.getLoadedClass( tSk+"BI1"+tSex );
+			classMap.BI2	= Main.assets.getLoadedClass( tSk+"BI2"+tSex );
 			// Hands
-			classMap.M1		= Main.assets.getLoadedClass( "M_"+id+"_M1" );
-			classMap.M2		= Main.assets.getLoadedClass( "M_"+id+"_M2" );
-			
+			classMap.M1		= Main.assets.getLoadedClass( tSk+"M1"+tSex );
+			classMap.M2		= Main.assets.getLoadedClass( tSk+"M2"+tSex );
+
+			classMap.CO		= Main.assets.getLoadedClass( tSk+"CO"+tSex );
+
 			// Upper Legs
-			classMap.JS1	= Main.assets.getLoadedClass( "M_"+id+"_JS1" );
-			classMap.JS2	= Main.assets.getLoadedClass( "M_"+id+"_JS2" );
+			classMap.JS1	= Main.assets.getLoadedClass( tSk+"JS1"+tSex );
+			classMap.JS2	= Main.assets.getLoadedClass( tSk+"JS2"+tSex );
 			// Lower Legs
-			classMap.JI1	= Main.assets.getLoadedClass( "M_"+id+"_JI1" );
-			classMap.JI2	= Main.assets.getLoadedClass( "M_"+id+"_JI2" );
+			classMap.JI1	= Main.assets.getLoadedClass( tSk+"JI1"+tSex );
+			classMap.JI2	= Main.assets.getLoadedClass( tSk+"JI2"+tSex );
 			// Feet
-			classMap.P1		= Main.assets.getLoadedClass( "M_"+id+"_P1" );
-			classMap.P2		= Main.assets.getLoadedClass( "M_"+id+"_P2" );
-			
+			classMap.P1		= Main.assets.getLoadedClass( tSk+"P1"+tSex );
+			classMap.P2		= Main.assets.getLoadedClass( tSk+"P2"+tSex );*/
+
 			if(gender) this.id += (gender == GENDER.FEMALE ? "F" : "M");
 		}
 	}

@@ -7,32 +7,32 @@ package dressroom.world.elements
 	import flash.events.*;
 	import flash.geom.*;
 	import flash.net.*;
-	
+
 	public class Character extends Sprite
 	{
 		// Storage
 		public var outfit:MovieClip;
 		public var animatePose:Boolean;
-		
+
 		private var _itemDataMap:Object;
-		
+
 		// Properties
 		public function set scale(pVal:Number) { outfit.scaleX = outfit.scaleY = pVal; }
-		
+
 		// Constructor
-		// pData = { x:Number, y:Number, [various "__Data"s], ?params:URLVariables }
+		// pData = { x:Number, y:Number, scale:Number, [various "__Data"s], ?params:URLVariables }
 		public function Character(pData:Object)
 		{
 			super();
 			animatePose = true;
-			
+
 			this.x = pData.x;
 			this.y = pData.y;
-			
+
 			this.buttonMode = true;
 			this.addEventListener(MouseEvent.MOUSE_DOWN, function () { startDrag(); });
 			this.addEventListener(MouseEvent.MOUSE_UP, function () { stopDrag(); });
-			
+
 			/****************************
 			* Store Data
 			*****************************/
@@ -45,18 +45,18 @@ package dressroom.world.elements
 			_itemDataMap[ITEM.SHOES] = pData.shoes;
 			_itemDataMap[ITEM.OBJECT] = pData.object;
 			_itemDataMap[ITEM.POSE] = pData.pose;
-			
+
 			if(pData.params) _parseParams(pData.params);
-			
-			updatePose();
+
+			updatePose(pData.scale);
 		}
-		
-		public function updatePose() {
-			var tScale = 3;
+
+		public function updatePose(pScale:Number=-1) {
+			var tScale = pScale;
 			if(outfit != null) { tScale = outfit.scaleX; removeChild(outfit); }
 			outfit = addChild(new Pose(getItemData(ITEM.POSE).itemClass));
 			outfit.scaleX = outfit.scaleY = tScale;
-			
+
 			outfit.apply({
 				skinColor:Main.costumes.skinColor,
 				hairColor:Main.costumes.hairColor,
@@ -73,13 +73,13 @@ package dressroom.world.elements
 			});
 			if(animatePose) outfit.play(); else outfit.stopAtLastFrame();
 		}
-		
+
 		private function _parseParams(pParams:URLVariables) : void {
 			trace(pParams.toString());
 			if(pParams.hc) { Main.costumes.hairColor = uint("0x"+pParams.hc); }
 			if(pParams.sk) { Main.costumes.skinColor = uint("0x"+pParams.sk); }
 			if(pParams.oc) { Main.costumes.secondaryColor = uint("0x"+pParams.oc); }
-			
+
 			_setParamToType(pParams, ITEM.SKIN, "s", false);
 			_setParamToType(pParams, ITEM.HAIR, "d");
 			_setParamToType(pParams, ITEM.HEAD, "h");
@@ -100,14 +100,14 @@ package dressroom.world.elements
 			}
 			_itemDataMap[pType] = pAllowNull ? tData : ( tData == null ? _itemDataMap[pType] : tData );
 		}
-		
+
 		public function getParams() : URLVariables {
 			var tParms = new URLVariables();
-			
+
 			tParms.hc = Main.costumes.hairColor.toString(16);
 			tParms.sk = Main.costumes.skinColor.toString(16);
 			tParms.oc = Main.costumes.secondaryColor.toString(16);
-			
+
 			var tData:ItemData;
 			tParms.s = (tData = getItemData(ITEM.SKIN)) ? tData.id : '';
 			tParms.d = (tData = getItemData(ITEM.HAIR)) ? tData.id : '';
@@ -117,7 +117,7 @@ package dressroom.world.elements
 			tParms.f = (tData = getItemData(ITEM.SHOES)) ? tData.id : '';
 			tParms.o = (tData = getItemData(ITEM.OBJECT)) ? tData.id : '';
 			tParms.p = (tData = getItemData(ITEM.POSE)) ? tData.id : '';
-			
+
 			return tParms;
 		}
 
@@ -127,12 +127,12 @@ package dressroom.world.elements
 		public function getItemData(pType:String) : ItemData {
 			return _itemDataMap[pType];
 		}
-		
+
 		public function setItemData(pItem:ItemData) : void {
 			_itemDataMap[pItem.type] = pItem;
 			updatePose();
 		}
-		
+
 		public function removeItem(pType:String) : void {
 			_itemDataMap[pType] = null;
 			updatePose();

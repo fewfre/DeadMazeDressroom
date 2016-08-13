@@ -1,0 +1,4 @@
+- Allow genders to be switched without resetting outfit
+	- need both male and female data in one data object.
+	- if there's an item with no male/female counterpart, default to uniquip option.
+- Allow a toggle for "back view"
