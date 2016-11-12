@@ -13,9 +13,9 @@ package dressroom.world.data
 		public function SkinData(pID:String, pGender:String) {
 			super({ id:pID, type:ITEM.SKIN, gender:pGender });
 
-			classMap = {};
+			/*classMap = {};
 			var tSex = gender == GENDER.FEMALE ? "_1" : "_2";
-			var tPrefix = "M_"+id+"_";
+			var tPrefix = "M_"+id+"_";*/
 
 			// Hair may be replaced, so we don't want it in the classMap.
 			/*hair = new ItemData({ type:ITEM.HAIR, classMap:{
@@ -23,10 +23,11 @@ package dressroom.world.data
 				CH: Main.assets.getLoadedClass( tPrefix+"CB"+tSex )
 			} });*/
 
-			var tSkinParts = [ "T", "TS", "B", "BS1", "BS2", "BI1", "BI2", "M1", "M2", "CO", "JS1", "JS2", "JI1", "JI2", "P1", "P2" ];
+			/*var tSkinParts = [ "T", "TS", "B", "BS1", "BS2", "BI1", "BI2", "M1", "M2", "CO", "JS1", "JS2", "JI1", "JI2", "P1", "P2" ];
 			for each(var part in tSkinParts) {
 				classMap[part]		= Main.assets.getLoadedClass( tPrefix+part+tSex );
-			}
+			}*/
+			
 			/*// Head
 			classMap.T		= Main.assets.getLoadedClass( tSk+"T"+tSex );
 			// Torso / Pelvis
@@ -55,7 +56,22 @@ package dressroom.world.data
 			classMap.P1		= Main.assets.getLoadedClass( tSk+"P1"+tSex );
 			classMap.P2		= Main.assets.getLoadedClass( tSk+"P2"+tSex );*/
 
-			if(gender) this.id += (gender == GENDER.FEMALE ? "F" : "M");
+			/*if(gender) this.id += (gender == GENDER.FEMALE ? "F" : "M");*/
+		}
+		
+		// pOptions = { ?facingForward:Boolean=true, ?sex:GENDER }
+		public override function getPart(pID:String, pOptions:Object=null) : Class {
+			var facingForward = Main.costumes.facingForward;
+			var sex = Main.costumes.sex;
+			if(pOptions != null) {
+				if(pOptions.facingForward) { facingForward = pOptions.facingForward; }
+				if(pOptions.sex) { sex = pOptions.sex; }
+			}
+			var tSex = sex == GENDER.MALE ? "_2" : "_1";
+			var tFacing = facingForward ? "" : "_dos";
+			
+			var tClass = Main.assets.getLoadedClass( "M_"+_assetID+"_"+pID+tFacing+tSex );
+			return tClass;
 		}
 	}
 }

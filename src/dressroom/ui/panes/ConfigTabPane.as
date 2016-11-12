@@ -1,6 +1,7 @@
 package dressroom.ui.panes
 {
 	import com.fewfre.events.FewfEvent;
+	import com.fewfre.display.TextBase;
 	import dressroom.data.*;
 	import dressroom.ui.*;
 	import dressroom.ui.buttons.*;
@@ -17,6 +18,7 @@ package dressroom.ui.panes
 		// Storage
 		public var character:Character;
 		public var sexButtons:Array;
+		public var facingButtons:Array;
 		public var hairColorButtons:Array;
 		public var skinColorButtons:Array;
 		public var secondaryColorButtons:Array;
@@ -36,8 +38,8 @@ package dressroom.ui.panes
 
 			var i:int, xx:Number, yy:Number, spacing:Number, sizex:Number, sizey:Number, clr:int, tIndex:int;
 
-			i = 0; xx = 100; yy = 50; spacing = 100; sizex = 80; sizey = 35;
-			_newTextField({ text:"Items", x:36, y:yy+3 });
+			i = 0; xx = 70; yy = 50; spacing = 75; sizex = 60; sizey = 35;
+			addChild(new TextBase({ text:"Sex", x:35, y:yy+3, size:17, originY:0 }));
 			sexButtons = [
 				addChild( new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"Female", allowToggleOff:false, data:{ id:GENDER.FEMALE } }) ),
 				addChild( new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"Male", allowToggleOff:false, data:{ id:GENDER.MALE } }) )
@@ -45,9 +47,19 @@ package dressroom.ui.panes
 			];
 			_registerClickHandler(sexButtons, _onSexButtonClicked);
 			sexButtons[ Main.costumes.sex == GENDER.MALE ? 1 : 0].toggleOn();
+			
+			i = 0; xx = 285;
+			addChild(new TextBase({ text:"Face", x:250, y:yy+3, size:17, originY:0 }));
+			facingButtons = [
+				addChild( new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"Front", allowToggleOff:false, data:{ id:true } }) ),
+				addChild( new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"Back", allowToggleOff:false, data:{ id:false } }) )
+				//addChild( new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"All", allowToggleOff:false }) )
+			];
+			_registerClickHandler(facingButtons, _onFacingButtonClicked);
+			facingButtons[ Main.costumes.facingForward == false ? 1 : 0].toggleOn();
 
-			i = 0; spacing = 34; xx = ConstantsApp.PANE_WIDTH*0.5 - spacing*(Main.costumes.hairColors.length+0.5)*0.5; yy = 140; sizex = 30; sizey = 30;
-			_newTextField({ text:"Hair", x:ConstantsApp.PANE_WIDTH*0.5, y:yy-40 });
+			i = 0; spacing = 34; xx = ConstantsApp.PANE_WIDTH*0.5 - spacing*(Main.costumes.hairColors.length+0.5)*0.5; yy = yy+90; sizex = 30; sizey = 30;
+			addChild(new TextBase({ text:"Hair", x:ConstantsApp.PANE_WIDTH*0.5, y:yy-40, size:17, originY:0 }));
 			hairColorButtons = [];
 			for(i = 0; i < Main.costumes.hairColors.length; i++) {
 				clr = Main.costumes.hairColors[i];
@@ -59,8 +71,8 @@ package dressroom.ui.panes
 			tIndex = Main.costumes.hairColors.indexOf(Main.costumes.hairColor);
 			hairColorButtons[tIndex > -1 ? tIndex : (hairColorButtons.length-1)].toggleOn();
 
-			i = 0; spacing = 34; xx = ConstantsApp.PANE_WIDTH*0.5 - spacing*(Main.costumes.skinColors.length+0.5)*0.5; yy = 230; sizex = 30; sizey = 30;
-			_newTextField({ text:"Skin", x:ConstantsApp.PANE_WIDTH*0.5, y:yy-40 });
+			i = 0; spacing = 34; xx = ConstantsApp.PANE_WIDTH*0.5 - spacing*(Main.costumes.skinColors.length+0.5)*0.5; yy = yy+90; sizex = 30; sizey = 30;
+			addChild(new TextBase({ text:"Skin", x:ConstantsApp.PANE_WIDTH*0.5, y:yy-40, size:17, originY:0 }));
 			skinColorButtons = [];
 			for(i = 0; i < Main.costumes.skinColors.length; i++) {
 				clr = Main.costumes.skinColors[i];
@@ -72,8 +84,8 @@ package dressroom.ui.panes
 			tIndex = Main.costumes.skinColors.indexOf(Main.costumes.skinColor);
 			skinColorButtons[tIndex > -1 ? tIndex : (skinColorButtons.length-1)].toggleOn();
 
-			i = 0; spacing = 34; xx = ConstantsApp.PANE_WIDTH*0.5 - spacing*(Main.costumes.secondaryColors.length+0.5)*0.5; yy = 320; sizex = 30; sizey = 30;
-			_newTextField({ text:"Other", x:ConstantsApp.PANE_WIDTH*0.5, y:yy-40 });
+			i = 0; spacing = 34; xx = ConstantsApp.PANE_WIDTH*0.5 - spacing*(Main.costumes.secondaryColors.length+0.5)*0.5; yy = yy+90; sizex = 30; sizey = 30;
+			addChild(new TextBase({ text:"Other", x:ConstantsApp.PANE_WIDTH*0.5, y:yy-40, size:17, originY:0 }));
 			secondaryColorButtons = [];
 			for(i = 0; i < Main.costumes.secondaryColors.length; i++) {
 				clr = Main.costumes.secondaryColors[i];
@@ -84,17 +96,6 @@ package dressroom.ui.panes
 			_registerClickHandler(secondaryColorButtons, _onSecondaryColorButtonClicked);
 			tIndex = Main.costumes.secondaryColors.indexOf(Main.costumes.secondaryColor);
 			secondaryColorButtons[tIndex > -1 ? tIndex : (secondaryColorButtons.length-1)].toggleOn();
-		}
-
-		// pData = { text:String, x:Number, y:Number, size:int, color:int }
-		private function _newTextField(pData:Object) : TextField {
-			var tText = addChild(new TextField());
-			tText.defaultTextFormat = new flash.text.TextFormat("Verdana", pData.size ? pData.size : 17, pData.color ? pData.color : 0xC2C2DA);
-
-			tText.text = pData.text;
-			tText.x = pData.x;
-			tText.y = pData.y;
-			return tText;
 		}
 
 		// pData = { color:int, box:Sprite[optional], size:Number=20, x:Number[optional], y:Number[optional] }
@@ -120,6 +121,13 @@ package dressroom.ui.panes
 			Main.costumes.sex = pEvent.data.id;
 			character.updatePose();
 			dispatchEvent(new Event("sex_change"));
+		}
+
+		private function _onFacingButtonClicked(pEvent:FewfEvent) {
+			_untoggle(facingButtons, pEvent.target);
+			Main.costumes.facingForward = pEvent.data.id;
+			character.updatePose();
+			dispatchEvent(new Event("facing_change"));
 		}
 
 		private function _onHairColorButtonClicked(pEvent:Event) {

@@ -30,7 +30,7 @@ package dressroom.ui
 		public function get hasData() : Boolean { return data != null; }
 		
 		// Constructor
-		// pData = { ?showBackButton:Boolean = false, ?noRefreshButton:Boolean = true }
+		// pData = { ?showBackButton:Boolean = false, ?showRefreshButton:Boolean = true }
 		public function ShopInfoBar(pData:Object=null) {
 			super();
 			pData = pData==null ? {} : pData;
@@ -61,7 +61,7 @@ package dressroom.ui
 			downloadButton.addEventListener(ButtonBase.CLICK, saveSprite);
 			downloadButton.disable().alpha = 0;
 			
-			if(pData.noRefreshButton == null || pData.noRefreshButton) {
+			if(pData.showRefreshButton == null || pData.showRefreshButton) {
 				refreshButton = addChild(new ScaleButton({ x:this.Width - 85, y:24, obj:new $Refresh() }));
 			}
 			

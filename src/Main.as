@@ -42,10 +42,12 @@ package
 		internal var currentlyColoringType:String="";
 		internal var configCurrentlyColoringType:String;
 
-		internal var tabPanes:Array; // Must contain all TabPanes to be able to close them properly.
-		internal var tabPanesMap:Object; // Tab pane should be stored in here to easy access the one you desire.
-		internal var colorTabPane:TabPane;
-		internal var configColorTabPane:TabPane;
+		internal var _paneManager:PaneManager;
+		
+		// Constants
+		public static const COLOR_PANE_ID = "colorPane";
+		public static const CONFIG_PANE_ID = "configPane";
+		public static const CONFIG_COLOR_PANE_ID = "configColorPane";
 
 		// Constructor
 		public function Main()
@@ -103,10 +105,11 @@ package
 			*****************************/
 			this.shop = addChild(new RoundedRectangle({ x:450, y:10, width:ConstantsApp.SHOP_WIDTH, height:ConstantsApp.APP_HEIGHT }));
 			this.shop.drawSimpleGradient(ConstantsApp.COLOR_TRAY_GRADIENT, 15, ConstantsApp.COLOR_TRAY_B_1, ConstantsApp.COLOR_TRAY_B_2, ConstantsApp.COLOR_TRAY_B_3);
-
+			_paneManager = this.shop.addChild(new PaneManager());
+			
 			this.shopTabs = addChild(new ShopTabContainer({ x:380, y:10, width:60, height:ConstantsApp.APP_HEIGHT,
 				tabs:[
-					{ text:"Config", event:"config" },
+					{ text:"Config", event:CONFIG_PANE_ID },
 					{ text:"Skin", event:ITEM.SKIN },
 					{ text:"Hair", event:ITEM.HAIR },
 					/*{ text:"Head", event:ITEM.HEAD },*/
@@ -151,45 +154,70 @@ package
 			/****************************
 			* Create tabs and panes
 			*****************************/
-			this.tabPanes = new Array();
-			this.tabPanesMap = new Object();
+			var tPane = null;
+			
+			tPane = _paneManager.addPane(COLOR_PANE_ID, new ColorPickerTabPane({}));
+			tPane.addEventListener(ColorPickerTabPane.EVENT_COLOR_PICKED, _onColorPickChanged);
+			tPane.addEventListener(ColorPickerTabPane.EVENT_DEFAULT_CLICKED, _onDefaultsButtonClicked);
+			tPane.addEventListener(ColorPickerTabPane.EVENT_EXIT, _onColorPickerBackClicked);
+			
+			tPane = _paneManager.addPane(CONFIG_PANE_ID, new ConfigTabPane(character));
+			tPane.hairColorPickerButton.addEventListener(ButtonBase.CLICK, function(pEvent:Event){ _configColorButtonClicked("hair", pEvent.target.id); });
+			tPane.skinColorPickerButton.addEventListener(ButtonBase.CLICK, function(pEvent:Event){ _configColorButtonClicked("skin", pEvent.target.id); });
+			tPane.secondaryColorPickerButton.addEventListener(ButtonBase.CLICK, function(pEvent:Event){ _configColorButtonClicked("secondary", pEvent.target.id); });
+			tPane.addEventListener("sex_change", _onSexChanged);
+			tPane.addEventListener("facing_change", _onFacingChanged);
 
-			tabPanes.push( colorTabPane = new ColorPickerTabPane({}) );
-			colorTabPane.addEventListener(ColorPickerTabPane.EVENT_COLOR_PICKED, _onColorPickChanged);
-			colorTabPane.addEventListener(ColorPickerTabPane.EVENT_DEFAULT_CLICKED, _onDefaultsButtonClicked);
-			colorTabPane.addEventListener(ColorPickerTabPane.EVENT_EXIT, _onColorPickerBackClicked);
-
-			tabPanes.push( tabPanesMap["config"] = new ConfigTabPane(character) );
-			tabPanesMap["config"].hairColorPickerButton.addEventListener(ButtonBase.CLICK, function(pEvent:Event){ _configColorButtonClicked("hair", pEvent.target.id); });
-			tabPanesMap["config"].skinColorPickerButton.addEventListener(ButtonBase.CLICK, function(pEvent:Event){ _configColorButtonClicked("skin", pEvent.target.id); });
-			tabPanesMap["config"].secondaryColorPickerButton.addEventListener(ButtonBase.CLICK, function(pEvent:Event){ _configColorButtonClicked("secondary", pEvent.target.id); });
-			tabPanesMap["config"].addEventListener("sex_change", _onSexChanged);
-
-			tabPanes.push( configColorTabPane = new ColorPickerTabPane({ hide_default:true }) );
-			configColorTabPane.addEventListener(ColorPickerTabPane.EVENT_COLOR_PICKED, _onConfigColorPickChanged);
-			configColorTabPane.addEventListener(ColorPickerTabPane.EVENT_EXIT, function(pEvent:Event){ _selectTab(getTabByType("config")); });
+			tPane = _paneManager.addPane(CONFIG_COLOR_PANE_ID, new ColorPickerTabPane({ hide_default:true }));
+			tPane.addEventListener(ColorPickerTabPane.EVENT_COLOR_PICKED, _onConfigColorPickChanged);
+			tPane.addEventListener(ColorPickerTabPane.EVENT_EXIT, function(pEvent:Event){ _paneManager.openPane(CONFIG_PANE_ID); });
 
 
 			// Create the panes
 			var tTypes = [ ITEM.OBJECT, ITEM.SKIN, ITEM.HAIR, /*ITEM.HEAD,*/ ITEM.SHIRT, ITEM.PANTS, ITEM.SHOES, ITEM.POSE ], tData:ItemData, tType:String;
 			for(var i:int = 0; i < tTypes.length; i++) { tType = tTypes[i];
-				tabPanes.push( tabPanesMap[tType] = _setupPane(tType) );
+				tPane = _paneManager.addPane(tType, _setupPane(tType));
 				// Based on what the character is wearing at start, toggle on the appropriate buttons.
 				tData = character.getItemData(tType);
 				if(tData) {
-					for(var b = 0; b < tabPanesMap[tType].buttons.length; b++) {
-						if(tabPanesMap[tType].buttons[b].data.data.id == tData.id) {
-							tabPanesMap[tType].buttons[b].toggleOn();
+					for(var b = 0; b < tPane.buttons.length; b++) {
+						if(tPane.buttons[b].data.data.id == tData.id) {
+							tPane.buttons[b].toggleOn();
 							break;
 						}
 					}
 					//var tIndex:int = FewfUtils.getIndexFromArrayWithKeyVal(costumes.getArrayByType(tType), "id", tData.id);
-					//tabPanesMap[tType].buttons[ tIndex ].toggleOn();
+					//tPane.buttons[ tIndex ].toggleOn();
 				}
+				_setupDirtyPanePopulation(tType);
 			}
 
 			// Select First Pane
 			shopTabs.tabs[0].toggleOn();
+			
+			tPane = null;
+			tTypes = null;
+			tData = null;
+		}
+		
+		private function _setupDirtyPanePopulation(tType:String) : void {
+			_paneManager.getPane(tType).populateFunction = function(){
+				_setupPaneButtons(_paneManager.getPane(tType), costumes.getArrayByType(tType));
+				//_removeItem(tType);
+				
+				var tPane = _paneManager.getPane(tType);
+				var tData = character.getItemData(tType);
+				if(tData) {
+					for(var b = 0; b < tPane.buttons.length; b++) {
+						if(tPane.buttons[b].data.data.id == tData.id) {
+							tPane.buttons[b].toggleOn();
+							break;
+						}
+					}
+				}
+				tData = null;
+				tPane = null;
+			}
 		}
 
 		private function _setupPane(pType:String) : TabPane {
@@ -215,9 +243,7 @@ package
 			}
 
 			var grid:Grid = pPane.grid;
-			if(!grid) {
-				grid = pPane.addGrid( new Grid({ x:15, y:5, width:385, columns:buttonPerRow, margin:5 }) );
-			}
+			if(!grid) { grid = pPane.addGrid( new Grid({ x:15, y:5, width:385, columns:buttonPerRow, margin:5 }) ); }
 			grid.reset();
 
 			var shopItem : Sprite;
@@ -315,10 +341,14 @@ package
 				tTabPane.buttons[ tTabPane.selectedButtonIndex ].toggleOff();
 			}
 		}
+		
+		private function _onTabClicked(pEvent:flash.events.DataEvent) : void {
+			_paneManager.openPane(pEvent.data);
+		}
 
 		private function _onRandomizeDesignClicked(pEvent:Event) : void {
 			for(var i:int = 0; i < ITEM.LAYERING.length; i++) {
-				if(tabPanesMap[ITEM.LAYERING[i]]) _randomItemOfType(ITEM.LAYERING[i]);
+				if(_paneManager.getPane(ITEM.LAYERING[i])) _randomItemOfType(ITEM.LAYERING[i]);
 			}
 			_randomItemOfType(ITEM.POSE);
 		}
@@ -348,17 +378,23 @@ package
 
 		private function _onSexChanged(pEvent:Event) : void {
 			var tTypes = [ ITEM.OBJECT, ITEM.SKIN, ITEM.HAIR, ITEM.HEAD, ITEM.SHIRT, ITEM.PANTS, ITEM.SHOES, ITEM.POSE ];
-			for(var i in tTypes) { tType = tTypes[i];
-				if(tabPanesMap[tType]) {
-					_setupPaneButtons(tabPanesMap[tType], costumes.getArrayByType(tType));
+			/*for(var i in tTypes) { tType = tTypes[i];
+				if(_paneManager.getPane(tType)) {
+					_setupPaneButtons(_paneManager.getPane(tType), costumes.getArrayByType(tType));
 					_removeItem(tType);
 				}
-			}
+			}*/
+			_paneManager.dirtyAllPanes();
+			character.updatePose();
+		}
+
+		private function _onFacingChanged(pEvent:Event) : void {
+			character.updatePose();
 		}
 
 		//{REGION Get TabPane data
 			private function getTabByType(pType:String) : TabPane {
-				return tabPanesMap[pType];
+				return _paneManager.getPane(pType);
 			}
 
 			private function getInfoBarByType(pType:String) : ShopInfoBar {
@@ -378,48 +414,24 @@ package
 			}
 		//}END Get TabPane data
 
-		//{REGION TabPane Management
-			private function _onTabClicked(pEvent:flash.events.DataEvent) : void {
-				_selectTab( getTabByType(pEvent.data) );
-			}
-
-			private function _selectTab(pTab:TabPane) : void {
-				_hideAllTabs();
-				this.shop.addChild(pTab).active = true;
-			}
-
-			private function _hideTab(pTab:TabPane) : void {
-				if(!pTab.active) { return; }
-				this.shop.removeChild(pTab).active = false;
-			}
-
-			private function _hideAllTabs() : void {
-				for(var i = 0; i < this.tabPanes.length; i++) {
-					_hideTab(this.tabPanes[ i ]);
-				}
-			}
-		//}END TabPane Management
-
 		//{REGION Color Tab
 			private function _onColorPickChanged(pEvent:flash.events.DataEvent):void
 			{
 				var tVal:uint = uint(pEvent.data);
 
-				this.character.colorItem(this.currentlyColoringType, this.colorTabPane.selectedSwatch, tVal.toString(16));
+				this.character.colorItem(this.currentlyColoringType, _paneManager.getPane(COLOR_PANE_ID).selectedSwatch, tVal.toString(16));
 				var tItem:MovieClip = this.character.getItemFromIndex(this.currentlyColoringType);
 				if (tItem != null) {
 					costumes.copyColor( tItem, getButtonArrayByType(this.currentlyColoringType)[ getCurItemID(this.currentlyColoringType) ].Image );
 					costumes.copyColor(tItem, getInfoBarByType( this.currentlyColoringType ).Image );
-					costumes.copyColor(tItem, this.colorTabPane.infoBar.Image);
+					costumes.copyColor(tItem, _paneManager.getPane(COLOR_PANE_ID).infoBar.Image);
 				}
-				return;
 			}
 
 			private function _onConfigColorPickChanged(pEvent:flash.events.DataEvent):void
 			{
 				var tVal:uint = uint(pEvent.data);
-				tabPanesMap["config"].updateCustomColor(configCurrentlyColoringType, tVal);
-				return;
+				_paneManager.getPane(CONFIG_PANE_ID).updateCustomColor(configCurrentlyColoringType, tVal);
 			}
 
 			private function _onDefaultsButtonClicked(pEvent:Event) : void
@@ -430,8 +442,8 @@ package
 					costumes.colorDefault(tMC);
 					costumes.copyColor( tMC, getButtonArrayByType(this.currentlyColoringType)[ getCurItemID(this.currentlyColoringType) ].Image );
 					costumes.copyColor(tMC, getInfoBarByType(this.currentlyColoringType).Image);
-					costumes.copyColor(tMC, this.colorTabPane.infoBar.Image);
-					this.colorTabPane.setupSwatches( this.character.getColors(this.currentlyColoringType) );
+					costumes.copyColor(tMC, _paneManager.getPane(COLOR_PANE_ID).infoBar.Image);
+					_paneManager.getPane(COLOR_PANE_ID).setupSwatches( this.character.getColors(this.currentlyColoringType) );
 				}
 			}
 
@@ -439,20 +451,20 @@ package
 				if(this.character.getItemFromIndex(pType) == null) { return; }
 
 				var tData:ItemData = getInfoBarByType(pType).data;
-				this.colorTabPane.infoBar.addInfo( tData, costumes.getItemImage(tData) );
+				_paneManager.getPane(COLOR_PANE_ID).infoBar.addInfo( tData, costumes.getItemImage(tData) );
 				this.currentlyColoringType = pType;
-				this.colorTabPane.setupSwatches( this.character.getColors(pType) );
-				_selectTab(this.colorTabPane);
+				_paneManager.getPane(COLOR_PANE_ID).setupSwatches( this.character.getColors(pType) );
+				_paneManager.openPane(COLOR_PANE_ID);
 			}
 
 			private function _configColorButtonClicked(pType:String, pColor:int) : void {
 				this.configCurrentlyColoringType = pType;
-				this.configColorTabPane.setupSwatches( [ pColor ] );
-				_selectTab(this.configColorTabPane);
+				_paneManager.getPane(CONFIG_COLOR_PANE_ID).setupSwatches( [ pColor ] );
+				_paneManager.openPane(CONFIG_COLOR_PANE_ID);
 			}
 
 			private function _onColorPickerBackClicked(pEvent:Event):void {
-				_selectTab( getTabByType( this.colorTabPane.infoBar.data.type ) );
+				_paneManager.openPane(_paneManager.getPane(COLOR_PANE_ID).infoBar.data.type);
 			}
 		//}END Color Tab
 	}

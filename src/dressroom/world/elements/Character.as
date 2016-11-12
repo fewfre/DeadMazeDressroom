@@ -17,7 +17,7 @@ package dressroom.world.elements
 		private var _itemDataMap:Object;
 
 		// Properties
-		public function set scale(pVal:Number) { outfit.scaleX = outfit.scaleY = pVal; }
+		public function set scale(pVal:Number) : void { outfit.scaleX = outfit.scaleY = pVal; }
 
 		// Constructor
 		// pData = { x:Number, y:Number, scale:Number, [various "__Data"s], ?params:URLVariables }
@@ -54,7 +54,7 @@ package dressroom.world.elements
 		public function updatePose(pScale:Number=-1) {
 			var tScale = pScale;
 			if(outfit != null) { tScale = outfit.scaleX; removeChild(outfit); }
-			outfit = addChild(new Pose(getItemData(ITEM.POSE).itemClass));
+			outfit = addChild(new Pose(getItemData(ITEM.POSE)));
 			outfit.scaleX = outfit.scaleY = tScale;
 
 			outfit.apply({
@@ -88,6 +88,9 @@ package dressroom.world.elements
 			_setParamToType(pParams, ITEM.SHOES, "f");
 			_setParamToType(pParams, ITEM.OBJECT, "o");
 			_setParamToType(pParams, ITEM.POSE, "p", false);
+			
+			if(pParams.sex) { Main.costumes.sex = pParams.sex == GENDER.MALE ? GENDER.MALE : GENDER.FEMALE; }
+			if(pParams.ff) { Main.costumes.facingForward = pParams.ff != "0"; }
 		}
 		private function _setParamToType(pParams:URLVariables, pType:String, pParam:String, pAllowNull:Boolean=true) {
 			var tData:ItemData = null;
@@ -117,6 +120,9 @@ package dressroom.world.elements
 			tParms.f = (tData = getItemData(ITEM.SHOES)) ? tData.id : '';
 			tParms.o = (tData = getItemData(ITEM.OBJECT)) ? tData.id : '';
 			tParms.p = (tData = getItemData(ITEM.POSE)) ? tData.id : '';
+			
+			tParms.sex = Main.costumes.sex;
+			tParms.ff = Main.costumes.facingForward ? "1" : "0";
 
 			return tParms;
 		}
