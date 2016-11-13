@@ -27,8 +27,8 @@ package dressroom.data
 
 		//public var defaultSkinIndex:int;
 		//public var defaultPoseIndex:int;
-		public function get defaultSkinIndex():int { return sex == GENDER.MALE ? 0/*1*/ : 0; }
-		public function get defaultPoseIndex():int { return sex == GENDER.MALE ? 0/*1*/ : 0; }
+		public function get defaultSkinIndex():int { return sex == SEX.MALE ? 0/*1*/ : 0; }
+		public function get defaultPoseIndex():int { return sex == SEX.MALE ? 0/*1*/ : 0; }
 
 		public var hairColors:Array;
 		public var skinColors:Array;
@@ -42,11 +42,11 @@ package dressroom.data
 		public var facingForward:Boolean;
 
 		/*public function get sexNum():String {
-			return sex == GENDER.MALE ? "_2" : "_1"; // Default to female
+			return sex == SEX.MALE ? "_2" : "_1"; // Default to female
 		}
 
 		public function get sexChar():String {
-			return sex == GENDER.MALE ? "H" : "F"; // Default to female
+			return sex == SEX.MALE ? "H" : "F"; // Default to female
 		}*/
 
 		public function Costumes(pAssets:AssetManager) {
@@ -57,7 +57,7 @@ package dressroom.data
 			skinColors = [ 0xf5d3ae, 0xf3d9c1, 0xf9d28a, 0xf9d28a, 0xe0b484, 0xd3b18e, 0xd19a5e, 0x8a5a38, 0x4b3a2b, 0x563312 ];
 			secondaryColors = [ 0xf5ece5, 0x2a312a, 0x076586, 0x87475a, 0x8a5a38, 0xd63343, 0xe98537, 0xf6c549, 0x50a341, 0x7841a2, 0x13a4b7 ];
 
-			sex = GENDER.FEMALE;
+			sex = SEX.FEMALE;
 			skinColor = skinColors[0];
 			hairColor = hairColors[0];
 			secondaryColor = secondaryColors[0];
@@ -79,10 +79,10 @@ package dressroom.data
 
 			for(i = 0; i < _MAX_COSTUMES_TO_CHECK_TO; i++) {
 				/*if(assets.getLoadedClass( "M_"+i+"_BS1_1" ) != null) {
-					this.skins.push( new SkinData( i, GENDER.FEMALE ) );
+					this.skins.push( new SkinData( i, SEX.FEMALE ) );
 				}
 				if(assets.getLoadedClass( "M_"+i+"_BS1_2" ) != null) {
-					this.skins.push( new SkinData( i, GENDER.MALE ) );
+					this.skins.push( new SkinData( i, SEX.MALE ) );
 				}*/
 				if(assets.getLoadedClass( "M_"+i+"_BS1_1" ) != null) {
 					this.skins.push( new SkinData( i, null ) );
@@ -109,13 +109,13 @@ package dressroom.data
 			var tClass:Class, tClassName:String;
 			for(i = 0; i < tPoseClasses.length; i++) {
 				/*if((tClass = assets.getLoadedClass( "$Anim"+(tClassName=strReplace(tPoseClasses[i], "{0}", "F")) )) != null) {
-					this.poses.push(new PoseData({ id:tClassName, type:ITEM.POSE, itemClass:tClass, gender:GENDER.FEMALE }));
+					this.poses.push(new PoseData({ id:tClassName, type:ITEM.POSE, itemClass:tClass, sex:SEX.FEMALE }));
 				}
 				if((tClass = assets.getLoadedClass( "$Anim"+(tClassName=strReplace(tPoseClasses[i], "{0}", "H")) )) != null) {
-					this.poses.push(new PoseData({ id:tClassName, type:ITEM.POSE, itemClass:tClass, gender:GENDER.MALE }));
+					this.poses.push(new PoseData({ id:tClassName, type:ITEM.POSE, itemClass:tClass, sex:SEX.MALE }));
 				}*/
 				if((tClass = assets.getLoadedClass( "$Anim"+strReplace(tPoseClasses[i], "{0}", "F") )) != null) {
-					this.poses.push(new PoseData({ id:strReplace(tPoseClasses[i], "_{0}", ""), assetID:tPoseClasses[i], type:ITEM.POSE, itemClass:tClass, gender:null }));
+					this.poses.push(new PoseData({ id:strReplace(tPoseClasses[i], "_{0}", ""), assetID:tPoseClasses[i], type:ITEM.POSE, itemClass:tClass, sex:null }));
 				}
 			}
 			/*this.defaultPoseIndex = 0;//FewfUtils.getIndexFromArrayWithKeyVal(this.poses, "id", ConstantsApp.DEFAULT_POSE_ID);*/
@@ -148,7 +148,7 @@ package dressroom.data
 						}
 						if(tClassSuccess) {
 							var tIsSexSpecific = pData.sex && tSexSpecificParts > 0;
-							tArray.push( new ItemData({ id:i+(tIsSexSpecific ? ""/*(g==1 ? "M" : "F")*/ : ""), assetID:pData.base+(pData.pad ? zeroPad(i, pData.pad) : i), type:pData.type, classMap:tClassMap, itemClass:tClassSuccess, gender:(tIsSexSpecific ? null/*(g==1?GENDER.MALE:GENDER.FEMALE)*/ : null) }) );
+							tArray.push( new ItemData({ id:i+(tIsSexSpecific ? ""/*(g==1 ? "M" : "F")*/ : ""), assetID:pData.base+(pData.pad ? zeroPad(i, pData.pad) : i), type:pData.type, classMap:tClassMap, itemClass:tClassSuccess, sex:(tIsSexSpecific ? null/*(g==1?SEX.MALE:SEX.FEMALE)*/ : null) }) );
 						}
 						if(tSexSpecificParts == 0) {
 							break;
@@ -316,7 +316,7 @@ package dressroom.data
 				var tSkinData = pData.skin ? pData.skin : skins[defaultSkinIndex];
 
 				tPose = new Pose(tPoseData);
-				/*if(tSkinData.gender == GENDER.MALE) {
+				/*if(tSkinData.sex == SEX.MALE) {
 					tPose.apply({ items:[
 						tSkinData,
 						shirts[1],

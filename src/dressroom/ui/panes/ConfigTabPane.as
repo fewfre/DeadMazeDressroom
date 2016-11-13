@@ -41,12 +41,12 @@ package dressroom.ui.panes
 			i = 0; xx = 70; yy = 50; spacing = 75; sizex = 60; sizey = 35;
 			addChild(new TextBase({ text:"Sex", x:35, y:yy+3, size:17, originY:0 }));
 			sexButtons = [
-				addChild( new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"Female", allowToggleOff:false, data:{ id:GENDER.FEMALE } }) ),
-				addChild( new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"Male", allowToggleOff:false, data:{ id:GENDER.MALE } }) )
+				addChild( new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"Female", allowToggleOff:false, data:{ id:SEX.FEMALE } }) ),
+				addChild( new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"Male", allowToggleOff:false, data:{ id:SEX.MALE } }) )
 				//addChild( new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"All", allowToggleOff:false }) )
 			];
 			_registerClickHandler(sexButtons, _onSexButtonClicked);
-			sexButtons[ Main.costumes.sex == GENDER.MALE ? 1 : 0].toggleOn();
+			sexButtons[ Main.costumes.sex == SEX.MALE ? 1 : 0].toggleOn();
 			
 			i = 0; xx = 285;
 			addChild(new TextBase({ text:"Face", x:250, y:yy+3, size:17, originY:0 }));

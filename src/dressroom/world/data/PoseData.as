@@ -10,7 +10,7 @@ package dressroom.world.data
 			super(pData);
 		}
 		
-		// pOptions = { ?facingForward:Boolean=true, ?sex:GENDER }
+		// pOptions = { ?facingForward:Boolean=true, ?sex:SEX }
 		public function getClass(pOptions:Object=null) : Class {
 			var facingForward = Main.costumes.facingForward;
 			var sex = Main.costumes.sex;
@@ -18,7 +18,7 @@ package dressroom.world.data
 				if(pOptions.facingForward) { facingForward = pOptions.facingForward; }
 				if(pOptions.sex) { sex = pOptions.sex; }
 			}
-			var tSex = sex == GENDER.MALE ? "H" : "F";
+			var tSex = sex == SEX.MALE ? "H" : "F";
 			var tFacing = facingForward ? "" : "D";
 			
 			var tClass = Main.assets.getLoadedClass( "$Anim"+strReplace(_assetID, "{0}", tSex)+tFacing );

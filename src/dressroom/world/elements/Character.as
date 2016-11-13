@@ -89,7 +89,7 @@ package dressroom.world.elements
 			_setParamToType(pParams, ITEM.OBJECT, "o");
 			_setParamToType(pParams, ITEM.POSE, "p", false);
 			
-			if(pParams.sex) { Main.costumes.sex = pParams.sex == GENDER.MALE ? GENDER.MALE : GENDER.FEMALE; }
+			if(pParams.sex) { Main.costumes.sex = pParams.sex == SEX.MALE ? SEX.MALE : SEX.FEMALE; }
 			if(pParams.ff) { Main.costumes.facingForward = pParams.ff != "0"; }
 		}
 		private function _setParamToType(pParams:URLVariables, pType:String, pParam:String, pAllowNull:Boolean=true) {

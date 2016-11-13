@@ -43,7 +43,7 @@ package dressroom.world.elements
 			stop();
 		}
 		
-		// pData = { ?items:Array, ?removeBlanks:Boolean=false, ?skinColor:int, ?hairColor:int, ?secondaryColor:int, ?facingForward:Boolean=true, ?sex:GENDER }
+		// pData = { ?items:Array, ?removeBlanks:Boolean=false, ?skinColor:int, ?hairColor:int, ?secondaryColor:int, ?facingForward:Boolean=true, ?sex:SEX }
 		public function apply(pData:Object) : MovieClip {
 			if(!pData.items) pData.items = [];
 			

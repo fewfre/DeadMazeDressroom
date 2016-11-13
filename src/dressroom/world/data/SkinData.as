@@ -10,11 +10,11 @@ package dressroom.world.data
 		public var hair			: ItemData;
 
 		// Constructor
-		public function SkinData(pID:String, pGender:String) {
-			super({ id:pID, type:ITEM.SKIN, gender:pGender });
+		public function SkinData(pID:String, pSex:String) {
+			super({ id:pID, type:ITEM.SKIN, sex:pSex });
 
 			/*classMap = {};
-			var tSex = gender == GENDER.FEMALE ? "_1" : "_2";
+			var tSex = sex == SEX.FEMALE ? "_1" : "_2";
 			var tPrefix = "M_"+id+"_";*/
 
 			// Hair may be replaced, so we don't want it in the classMap.
@@ -56,10 +56,10 @@ package dressroom.world.data
 			classMap.P1		= Main.assets.getLoadedClass( tSk+"P1"+tSex );
 			classMap.P2		= Main.assets.getLoadedClass( tSk+"P2"+tSex );*/
 
-			/*if(gender) this.id += (gender == GENDER.FEMALE ? "F" : "M");*/
+			/*if(sex) this.id += (sex == SEX.FEMALE ? "F" : "M");*/
 		}
 		
-		// pOptions = { ?facingForward:Boolean=true, ?sex:GENDER }
+		// pOptions = { ?facingForward:Boolean=true, ?sex:SEX }
 		public override function getPart(pID:String, pOptions:Object=null) : Class {
 			var facingForward = Main.costumes.facingForward;
 			var sex = Main.costumes.sex;
@@ -67,7 +67,7 @@ package dressroom.world.data
 				if(pOptions.facingForward) { facingForward = pOptions.facingForward; }
 				if(pOptions.sex) { sex = pOptions.sex; }
 			}
-			var tSex = sex == GENDER.MALE ? "_2" : "_1";
+			var tSex = sex == SEX.MALE ? "_2" : "_1";
 			var tFacing = facingForward ? "" : "_dos";
 			
 			var tClass = Main.assets.getLoadedClass( "M_"+_assetID+"_"+pID+tFacing+tSex );

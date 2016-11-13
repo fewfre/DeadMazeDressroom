@@ -32,17 +32,14 @@ package
 
 		internal var character		: Character;
 		internal var loaderDisplay	: LoaderDisplay;
+		internal var _paneManager	: PaneManager;
 
-		internal var shop			: RoundedRectangle;
 		internal var shopTabs		: ShopTabContainer;
-		internal var animateButton	: SpriteButton;
+		internal var _toolbox		: Toolbox;
 		internal var linkTray		: LinkTray;
-		internal var scaleSlider	: FancySlider;
 
 		internal var currentlyColoringType:String="";
 		internal var configCurrentlyColoringType:String;
-
-		internal var _paneManager:PaneManager;
 		
 		// Constants
 		public static const COLOR_PANE_ID = "colorPane";
@@ -67,7 +64,7 @@ package
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.frameRate = 10;
 
-			addEventListener(Event.ENTER_FRAME, update);
+			BrowserMouseWheelPrevention.init(stage);
 			stage.addEventListener(MouseEvent.MOUSE_WHEEL, handleMouseWheel);
 		}
 
@@ -103,9 +100,9 @@ package
 			/****************************
 			* Setup UI
 			*****************************/
-			this.shop = addChild(new RoundedRectangle({ x:450, y:10, width:ConstantsApp.SHOP_WIDTH, height:ConstantsApp.APP_HEIGHT }));
-			this.shop.drawSimpleGradient(ConstantsApp.COLOR_TRAY_GRADIENT, 15, ConstantsApp.COLOR_TRAY_B_1, ConstantsApp.COLOR_TRAY_B_2, ConstantsApp.COLOR_TRAY_B_3);
-			_paneManager = this.shop.addChild(new PaneManager());
+			var tShop:RoundedRectangle = addChild(new RoundedRectangle({ x:450, y:10, width:ConstantsApp.SHOP_WIDTH, height:ConstantsApp.APP_HEIGHT }));
+			tShop.drawSimpleGradient(ConstantsApp.COLOR_TRAY_GRADIENT, 15, ConstantsApp.COLOR_TRAY_B_1, ConstantsApp.COLOR_TRAY_B_2, ConstantsApp.COLOR_TRAY_B_3);
+			_paneManager = tShop.addChild(new PaneManager());
 			
 			this.shopTabs = addChild(new ShopTabContainer({ x:380, y:10, width:60, height:ConstantsApp.APP_HEIGHT,
 				tabs:[
@@ -123,33 +120,13 @@ package
 			this.shopTabs.addEventListener(ShopTabContainer.EVENT_SHOP_TAB_CLICKED, _onTabClicked);
 
 			// Toolbox
-			var tools:RoundedRectangle = addChild(new RoundedRectangle({ x:5, y:10, width:365, height:35 }));
-			tools.drawSimpleGradient(ConstantsApp.COLOR_TRAY_GRADIENT, 15, ConstantsApp.COLOR_TRAY_B_1, ConstantsApp.COLOR_TRAY_B_2, ConstantsApp.COLOR_TRAY_B_3);
-
-			var btn:ButtonBase, tButtonSize = 28, tButtonSizeSpace=5;
-			btn = tools.addChild(new SpriteButton({ x:tButtonSizeSpace, y:4, width:tButtonSize, height:tButtonSize, obj_scale:0.4, obj:new $LargeDownload() }));
-			btn.addEventListener(ButtonBase.CLICK, _onSaveClicked);
-
-			animateButton = tools.addChild(new SpriteButton({ x:tButtonSizeSpace+(tButtonSize+tButtonSizeSpace), y:4, width:tButtonSize, height:tButtonSize, obj_scale:0.5, obj:new $PauseButton() }));
-			animateButton.addEventListener(ButtonBase.CLICK, _onPlayerAnimationToggle);
-
-			btn = tools.addChild(new SpriteButton({ x:tButtonSizeSpace+(tButtonSize+tButtonSizeSpace)*2, y:4, width:tButtonSize, height:tButtonSize, obj_scale:0.5, obj:new $Refresh() }));
-			btn.addEventListener(ButtonBase.CLICK, _onRandomizeDesignClicked);
-
-			btn = tools.addChild(new SpriteButton({ x:tButtonSizeSpace+(tButtonSize+tButtonSizeSpace)*3, y:4, width:tButtonSize, height:tButtonSize, obj_scale:0.45, obj:new $Link() }));
-			btn.addEventListener(ButtonBase.CLICK, _onShareButtonClicked);
+			_toolbox = addChild(new Toolbox({
+				x:188, y:28, character:character,
+				onSave:_onSaveClicked, onAnimate:_onPlayerAnimationToggle, onRandomize:_onRandomizeDesignClicked,
+				onShare:_onShareButtonClicked, onScale:_onScaleSliderChange
+			}));
 			linkTray = new LinkTray({ x:stage.stageWidth * 0.5, y:stage.stageHeight * 0.5 });
 			linkTray.addEventListener(LinkTray.CLOSE, _onShareTrayClosed);
-
-			btn = tools.addChild(new SpriteButton({ x:tools.width-tButtonSizeSpace-tButtonSize, y:4, width:tButtonSize, height:tButtonSize, obj_scale:0.35, obj:new $GitHubIcon() }));
-			btn.addEventListener(ButtonBase.CLICK, function():void { navigateToURL(new URLRequest(ConstantsApp.SOURCE_URL), "_blank");  });
-
-			var tSliderWidth = 315 - (tButtonSize+tButtonSizeSpace)*4.5;
-			this.scaleSlider = tools.addChild(new FancySlider({
-				x:tools.width*0.5-tSliderWidth*0.5+(tButtonSize+tButtonSizeSpace)*1.5, y:tools.Height*0.5,
-				value: character.outfit.scaleX*10, min:10, max:40, width:tSliderWidth
-			}));
-			this.scaleSlider.addEventListener(FancySlider.CHANGE, _onScaleSliderChange);
 
 			/****************************
 			* Create tabs and panes
@@ -239,7 +216,7 @@ package
 					buttonPerRow = 4;
 					scale = 0.8;
 			} else if(tType == ITEM.HAIR) {
-				/*scale = costumes.sex == GENDER.MALE ? 0.8 : 0.7;*/
+				/*scale = costumes.sex == SEX.MALE ? 0.8 : 0.7;*/
 			}
 
 			var grid:Grid = pPane.grid;
@@ -251,7 +228,7 @@ package
 			var i = -1;
 			pPane.buttons = [];
 			while (i < pItemArray.length-1) { i++;
-				if(pItemArray[i].gender != costumes.sex && pItemArray[i].gender != null) { continue; }
+				if(pItemArray[i].sex != costumes.sex && pItemArray[i].sex != null) { continue; }
 				if(tType == ITEM.SKIN && i == pItemArray.length-1) {
 					shopItem = new TextBase({ size:15, color:0xC2C2DA, text:"Invisible" });
 				} else {
@@ -267,31 +244,25 @@ package
 			pPane.UpdatePane();
 		}
 
-		public function update(pEvent:Event):void
-		{
-			if(loaderDisplay != null) { loaderDisplay.update(0.1); }
-		}
-
 		private function handleMouseWheel(pEvent:MouseEvent) : void {
 			if(this.mouseX < this.shopTabs.x) {
-				scaleSlider.updateViaMouseWheelDelta(pEvent.delta);
-				character.scale = scaleSlider.getValueAsScale();
+				_toolbox.scaleSlider.updateViaMouseWheelDelta(pEvent.delta);
+				character.scale = _toolbox.scaleSlider.getValueAsScale();
 			}
 		}
 
 		private function _onScaleSliderChange(pEvent:Event):void {
-			character.scale = scaleSlider.getValueAsScale();
+			character.scale = _toolbox.scaleSlider.getValueAsScale();
 		}
 
 		private function _onPlayerAnimationToggle(pEvent:Event):void {
 			character.animatePose = !character.animatePose;
 			if(character.animatePose) {
 				character.outfit.play();
-				animateButton.ChangeImage(new $PauseButton());
 			} else {
 				character.outfit.stop();
-				animateButton.ChangeImage(new $PlayButton());
 			}
+			_toolbox.toggleAnimateButtonAsset(character.animatePose);
 		}
 
 		private function _onSaveClicked(pEvent:Event) : void {
