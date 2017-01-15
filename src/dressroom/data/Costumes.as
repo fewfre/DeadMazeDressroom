@@ -13,8 +13,6 @@ package dressroom.data
 	{
 		private const _MAX_COSTUMES_TO_CHECK_TO:Number = 350;//999;
 
-		public var assets:AssetManager;
-
 		public var hair:Array;
 		public var head:Array;
 		public var shirts:Array;
@@ -49,10 +47,8 @@ package dressroom.data
 			return sex == SEX.MALE ? "H" : "F"; // Default to female
 		}*/
 
-		public function Costumes(pAssets:AssetManager) {
+		public function Costumes() {
 			super();
-			assets = pAssets;
-
 			hairColors = [ 0x211e24, 0xdcb33a, 0xe98537, 0xe0ae5b, 0xf9d28a, 0xc16333, 0xe98537, 0xab6e37, 0x89541c, 0xf5d3ae ];
 			skinColors = [ 0xf5d3ae, 0xf3d9c1, 0xf9d28a, 0xf9d28a, 0xe0b484, 0xd3b18e, 0xd19a5e, 0x8a5a38, 0x4b3a2b, 0x563312 ];
 			secondaryColors = [ 0xf5ece5, 0x2a312a, 0x076586, 0x87475a, 0x8a5a38, 0xd63343, 0xe98537, 0xf6c549, 0x50a341, 0x7841a2, 0x13a4b7 ];
@@ -78,13 +74,13 @@ package dressroom.data
 			this.skins = new Array();
 
 			for(i = 0; i < _MAX_COSTUMES_TO_CHECK_TO; i++) {
-				/*if(assets.getLoadedClass( "M_"+i+"_BS1_1" ) != null) {
+				/*if(Fewf.assets.getLoadedClass( "M_"+i+"_BS1_1" ) != null) {
 					this.skins.push( new SkinData( i, SEX.FEMALE ) );
 				}
-				if(assets.getLoadedClass( "M_"+i+"_BS1_2" ) != null) {
+				if(Fewf.assets.getLoadedClass( "M_"+i+"_BS1_2" ) != null) {
 					this.skins.push( new SkinData( i, SEX.MALE ) );
 				}*/
-				if(assets.getLoadedClass( "M_"+i+"_BS1_1" ) != null) {
+				if(Fewf.assets.getLoadedClass( "M_"+i+"_BS1_1" ) != null) {
 					this.skins.push( new SkinData( i, null ) );
 				}
 			}
@@ -108,13 +104,13 @@ package dressroom.data
 			];
 			var tClass:Class, tClassName:String;
 			for(i = 0; i < tPoseClasses.length; i++) {
-				/*if((tClass = assets.getLoadedClass( "$Anim"+(tClassName=strReplace(tPoseClasses[i], "{0}", "F")) )) != null) {
+				/*if((tClass = Fewf.assets.getLoadedClass( "$Anim"+(tClassName=strReplace(tPoseClasses[i], "{0}", "F")) )) != null) {
 					this.poses.push(new PoseData({ id:tClassName, type:ITEM.POSE, itemClass:tClass, sex:SEX.FEMALE }));
 				}
-				if((tClass = assets.getLoadedClass( "$Anim"+(tClassName=strReplace(tPoseClasses[i], "{0}", "H")) )) != null) {
+				if((tClass = Fewf.assets.getLoadedClass( "$Anim"+(tClassName=strReplace(tPoseClasses[i], "{0}", "H")) )) != null) {
 					this.poses.push(new PoseData({ id:tClassName, type:ITEM.POSE, itemClass:tClass, sex:SEX.MALE }));
 				}*/
-				if((tClass = assets.getLoadedClass( "$Anim"+strReplace(tPoseClasses[i], "{0}", "F") )) != null) {
+				if((tClass = Fewf.assets.getLoadedClass( "$Anim"+strReplace(tPoseClasses[i], "{0}", "F") )) != null) {
 					this.poses.push(new PoseData({ id:strReplace(tPoseClasses[i], "_{0}", ""), assetID:tPoseClasses[i], type:ITEM.POSE, itemClass:tClass, sex:null }));
 				}
 			}
@@ -139,10 +135,10 @@ package dressroom.data
 						var tClassMap = {  }, tClassSuccess = null;
 						tSexSpecificParts = 0;
 						for(var j = 0; j <= pData.map.length; j++) {
-							tClass = assets.getLoadedClass( tClassName = pData.base+(pData.pad ? zeroPad(i, pData.pad) : i)+(pData.after ? pData.after : "")+pData.map[j] );
+							tClass = Fewf.assets.getLoadedClass( tClassName = pData.base+(pData.pad ? zeroPad(i, pData.pad) : i)+(pData.after ? pData.after : "")+pData.map[j] );
 							if(tClass) { tClassMap[pData.map[j]] = tClass; tClassSuccess = tClass; }
 							else if(pData.sex){
-								tClass = assets.getLoadedClass( tClassName+"_"+(g==0?1:2) );
+								tClass = Fewf.assets.getLoadedClass( tClassName+"_"+(g==0?1:2) );
 								if(tClass) { tClassMap[pData.map[j]] = tClass; tClassSuccess = tClass; tSexSpecificParts++ }
 							}
 						}
@@ -155,7 +151,7 @@ package dressroom.data
 						}
 					}
 				} else {
-					tClass = assets.getLoadedClass( pData.base+(pData.pad ? zeroPad(i, pData.pad) : i)+(pData.after ? pData.after : "") );
+					tClass = Fewf.assets.getLoadedClass( pData.base+(pData.pad ? zeroPad(i, pData.pad) : i)+(pData.after ? pData.after : "") );
 					if(tClass != null) {
 						tArray.push( new ItemData({ id:i, type:pData.type, itemClass:tClass}) );
 						if(pData.itemClassToClassMap) {

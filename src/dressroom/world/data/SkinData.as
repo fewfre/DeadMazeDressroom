@@ -1,5 +1,6 @@
 package dressroom.world.data
 {
+	import com.fewfre.utils.Fewf;
 	import dressroom.data.*;
 	import flash.display.*;
 	import flash.geom.*;
@@ -19,42 +20,42 @@ package dressroom.world.data
 
 			// Hair may be replaced, so we don't want it in the classMap.
 			/*hair = new ItemData({ type:ITEM.HAIR, classMap:{
-				T: Main.assets.getLoadedClass( tPrefix+"C"+tSex ),
-				CH: Main.assets.getLoadedClass( tPrefix+"CB"+tSex )
+				T: Fewf.assets.getLoadedClass( tPrefix+"C"+tSex ),
+				CH: Fewf.assets.getLoadedClass( tPrefix+"CB"+tSex )
 			} });*/
 
 			/*var tSkinParts = [ "T", "TS", "B", "BS1", "BS2", "BI1", "BI2", "M1", "M2", "CO", "JS1", "JS2", "JI1", "JI2", "P1", "P2" ];
 			for each(var part in tSkinParts) {
-				classMap[part]		= Main.assets.getLoadedClass( tPrefix+part+tSex );
+				classMap[part]		= Fewf.assets.getLoadedClass( tPrefix+part+tSex );
 			}*/
 			
 			/*// Head
-			classMap.T		= Main.assets.getLoadedClass( tSk+"T"+tSex );
+			classMap.T		= Fewf.assets.getLoadedClass( tSk+"T"+tSex );
 			// Torso / Pelvis
-			classMap.TS		= Main.assets.getLoadedClass( tSk+"TS"+tSex );
-			classMap.B		= Main.assets.getLoadedClass( tSk+"B"+tSex );
+			classMap.TS		= Fewf.assets.getLoadedClass( tSk+"TS"+tSex );
+			classMap.B		= Fewf.assets.getLoadedClass( tSk+"B"+tSex );
 
 			// Upper Arms
-			classMap.BS1	= Main.assets.getLoadedClass( tSk+"BS1"+tSex );
-			classMap.BS2	= Main.assets.getLoadedClass( tSk+"BS2"+tSex );
+			classMap.BS1	= Fewf.assets.getLoadedClass( tSk+"BS1"+tSex );
+			classMap.BS2	= Fewf.assets.getLoadedClass( tSk+"BS2"+tSex );
 			// Lower Arms
-			classMap.BI1	= Main.assets.getLoadedClass( tSk+"BI1"+tSex );
-			classMap.BI2	= Main.assets.getLoadedClass( tSk+"BI2"+tSex );
+			classMap.BI1	= Fewf.assets.getLoadedClass( tSk+"BI1"+tSex );
+			classMap.BI2	= Fewf.assets.getLoadedClass( tSk+"BI2"+tSex );
 			// Hands
-			classMap.M1		= Main.assets.getLoadedClass( tSk+"M1"+tSex );
-			classMap.M2		= Main.assets.getLoadedClass( tSk+"M2"+tSex );
+			classMap.M1		= Fewf.assets.getLoadedClass( tSk+"M1"+tSex );
+			classMap.M2		= Fewf.assets.getLoadedClass( tSk+"M2"+tSex );
 
-			classMap.CO		= Main.assets.getLoadedClass( tSk+"CO"+tSex );
+			classMap.CO		= Fewf.assets.getLoadedClass( tSk+"CO"+tSex );
 
 			// Upper Legs
-			classMap.JS1	= Main.assets.getLoadedClass( tSk+"JS1"+tSex );
-			classMap.JS2	= Main.assets.getLoadedClass( tSk+"JS2"+tSex );
+			classMap.JS1	= Fewf.assets.getLoadedClass( tSk+"JS1"+tSex );
+			classMap.JS2	= Fewf.assets.getLoadedClass( tSk+"JS2"+tSex );
 			// Lower Legs
-			classMap.JI1	= Main.assets.getLoadedClass( tSk+"JI1"+tSex );
-			classMap.JI2	= Main.assets.getLoadedClass( tSk+"JI2"+tSex );
+			classMap.JI1	= Fewf.assets.getLoadedClass( tSk+"JI1"+tSex );
+			classMap.JI2	= Fewf.assets.getLoadedClass( tSk+"JI2"+tSex );
 			// Feet
-			classMap.P1		= Main.assets.getLoadedClass( tSk+"P1"+tSex );
-			classMap.P2		= Main.assets.getLoadedClass( tSk+"P2"+tSex );*/
+			classMap.P1		= Fewf.assets.getLoadedClass( tSk+"P1"+tSex );
+			classMap.P2		= Fewf.assets.getLoadedClass( tSk+"P2"+tSex );*/
 
 			/*if(sex) this.id += (sex == SEX.FEMALE ? "F" : "M");*/
 		}
@@ -70,7 +71,7 @@ package dressroom.world.data
 			var tSex = sex == SEX.MALE ? "_2" : "_1";
 			var tFacing = facingForward ? "" : "_dos";
 			
-			var tClass = Main.assets.getLoadedClass( "M_"+_assetID+"_"+pID+tFacing+tSex );
+			var tClass = Fewf.assets.getLoadedClass( "M_"+_assetID+"_"+pID+tFacing+tSex );
 			return tClass;
 		}
 	}

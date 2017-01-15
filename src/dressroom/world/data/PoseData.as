@@ -1,5 +1,6 @@
 package dressroom.world.data
 {
+	import com.fewfre.utils.Fewf;
 	import dressroom.data.*;
 	import flash.display.*;
 	import flash.geom.*;
@@ -21,7 +22,7 @@ package dressroom.world.data
 			var tSex = sex == SEX.MALE ? "H" : "F";
 			var tFacing = facingForward ? "" : "D";
 			
-			var tClass = Main.assets.getLoadedClass( "$Anim"+strReplace(_assetID, "{0}", tSex)+tFacing );
+			var tClass = Fewf.assets.getLoadedClass( "$Anim"+strReplace(_assetID, "{0}", tSex)+tFacing );
 			return tClass;
 		}
 		

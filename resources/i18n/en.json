@@ -1,0 +1,44 @@
+{
+	"defaultFont": "Verdana",
+	"defaultScale": 1,
+	"strings": {
+		"example":				{
+			"text":"Only text field is required. Scale is 1 by default. Any {0}s will be replaced by a value. Comma placement is important.",
+			"scale":0.7,
+			"font":"Wingdings"
+		},
+		"example2":				{ "text":"Example", "scale":0.9, "font":"Monospace" },
+		
+		"label_sex":			{ "text":"Sex" },
+		"btn_female":			{ "text":"Female" },
+		"btn_male":				{ "text":"Male" },
+		
+		"label_face_dir":		{ "text":"Face" },
+		"btn_face_front":		{ "text":"Front" },
+		"btn_face_back":		{ "text":"Back" },
+		
+		"label_hair_color":		{ "text":"Hair" },
+		"label_skin_color":		{ "text":"Skin" },
+		"label_other_color":	{ "text":"Other" },
+		
+		"tab_config":			{ "text":"Config" },
+		"tab_skins":			{ "text":"Skin" },
+		"tab_hair":				{ "text":"Hair" },
+		"tab_head":				{ "text":"Head" },
+		"tab_shirts":			{ "text":"Shirts" },
+		"tab_pants":			{ "text":"Pants" },
+		"tab_shoes":			{ "text":"Shoes" },
+		"tab_objects":			{ "text":"Objects" },
+		"tab_poses":			{ "text":"Pose" },
+		
+		"skin_invisible":		{ "text":"Invisible" },
+		
+		"btn_color_defaults":	{ "text":"Defaults" },
+		
+		"share_header":			{ "text":"Share your Creation!" },
+		"share_link_copied":	{ "text":"Link copied to clipboard! Paste to use." },
+		"share_copy":			{ "text":"copy" },
+		
+		"infobar_id":			{ "text":"ID: {0}" }
+	}
+}

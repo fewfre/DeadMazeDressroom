@@ -2,7 +2,6 @@ package
 {
 	import com.adobe.images.*;
 	import com.piterwilson.utils.*;
-	import com.fewfre.utils.AssetManager;
 	import com.fewfre.display.*;
 	import com.fewfre.events.*;
 	import com.fewfre.utils.*;
@@ -47,34 +46,52 @@ package
 		public static const CONFIG_COLOR_PANE_ID = "configColorPane";
 
 		// Constructor
-		public function Main()
-		{
+		public function Main() {
 			super();
-
-			assets = new AssetManager();
-			assets.load([
-				"resources/resources.swf",
-				"resources/resources2.swf"
-			]);
-			assets.addEventListener(AssetManager.LOADING_FINISHED, _onLoadComplete);
-
-			loaderDisplay = addChild( new LoaderDisplay({ x:stage.stageWidth * 0.5, y:stage.stageHeight * 0.5, assetManager:assets }) );
-
+			Fewf.init();
+			
 			stage.align = StageAlign.TOP;
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.frameRate = 10;
-
+			
 			BrowserMouseWheelPrevention.init(stage);
 			stage.addEventListener(MouseEvent.MOUSE_WHEEL, handleMouseWheel);
+			
+			// Start preload
+			Fewf.assets.load([
+				"resources/config.json",
+			]);
+			Fewf.assets.addEventListener(AssetManager.LOADING_FINISHED, _onPreloadComplete);
+
+			loaderDisplay = addChild( new LoaderDisplay({ x:stage.stageWidth * 0.5, y:stage.stageHeight * 0.5 }) );
+		}
+		
+		internal function _onPreloadComplete(event:Event) : void {
+			Fewf.assets.removeEventListener(AssetManager.LOADING_FINISHED, _onPreloadComplete);
+			ConstantsApp.lang = Fewf.assets.getData("config").language;
+			
+			// Start main load
+			Fewf.assets.load([
+				"resources/resources.swf",
+				"resources/resources2.swf",
+				"resources/i18n/"+ConstantsApp.lang+".json",
+			]);
+			Fewf.assets.addEventListener(AssetManager.LOADING_FINISHED, _onLoadComplete);
 		}
 
-		internal function _onLoadComplete(event:Event) : void
-		{
+		internal function _onLoadComplete(event:Event) : void {
+			Fewf.assets.removeEventListener(AssetManager.LOADING_FINISHED, _onLoadComplete);
 			loaderDisplay.destroy();
 			removeChild( loaderDisplay );
 			loaderDisplay = null;
-
-			costumes = new Costumes( assets );
+			
+			Fewf.i18n.parseFile(Fewf.assets.getData(ConstantsApp.lang));
+			
+			_init();
+		}
+		
+		private function _init() : void {
+			costumes = new Costumes();
 			costumes.init();
 
 			/****************************
@@ -106,15 +123,15 @@ package
 			
 			this.shopTabs = addChild(new ShopTabContainer({ x:380, y:10, width:60, height:ConstantsApp.APP_HEIGHT,
 				tabs:[
-					{ text:"Config", event:CONFIG_PANE_ID },
-					{ text:"Skin", event:ITEM.SKIN },
-					{ text:"Hair", event:ITEM.HAIR },
-					/*{ text:"Head", event:ITEM.HEAD },*/
-					{ text:"Shirts", event:ITEM.SHIRT },
-					{ text:"Pants", event:ITEM.PANTS },
-					{ text:"Shoes", event:ITEM.SHOES },
-					{ text:"Objects", event:ITEM.OBJECT },
-					{ text:"Pose", event:ITEM.POSE }
+					{ text:"tab_config", event:CONFIG_PANE_ID },
+					{ text:"tab_skins", event:ITEM.SKIN },
+					{ text:"tab_hair", event:ITEM.HAIR },
+					/*{ text:"tab_head", event:ITEM.HEAD },*/
+					{ text:"tab_shirts", event:ITEM.SHIRT },
+					{ text:"tab_pants", event:ITEM.PANTS },
+					{ text:"tab_shoes", event:ITEM.SHOES },
+					{ text:"tab_objects", event:ITEM.OBJECT },
+					{ text:"tab_poses", event:ITEM.POSE }
 				]
 			}));
 			this.shopTabs.addEventListener(ShopTabContainer.EVENT_SHOP_TAB_CLICKED, _onTabClicked);
@@ -230,7 +247,7 @@ package
 			while (i < pItemArray.length-1) { i++;
 				if(pItemArray[i].sex != costumes.sex && pItemArray[i].sex != null) { continue; }
 				if(tType == ITEM.SKIN && i == pItemArray.length-1) {
-					shopItem = new TextBase({ size:15, color:0xC2C2DA, text:"Invisible" });
+					shopItem = new TextBase({ size:15, color:0xC2C2DA, text:"skin_invisible" });
 				} else {
 					shopItem = costumes.getItemImage(pItemArray[i]);
 					shopItem.scaleX = shopItem.scaleY = scale;

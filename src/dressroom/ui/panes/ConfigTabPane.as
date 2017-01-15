@@ -35,31 +35,31 @@ package dressroom.ui.panes
 		{
 			super();
 			character = pCharacter;
-
+			
 			var i:int, xx:Number, yy:Number, spacing:Number, sizex:Number, sizey:Number, clr:int, tIndex:int;
 
 			i = 0; xx = 70; yy = 50; spacing = 75; sizex = 60; sizey = 35;
-			addChild(new TextBase({ text:"Sex", x:35, y:yy+3, size:17, originY:0 }));
+			addChild(new TextBase({ text:"label_sex", x:35, y:yy+3, size:17, originY:0 }));
 			sexButtons = [
-				addChild( new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"Female", allowToggleOff:false, data:{ id:SEX.FEMALE } }) ),
-				addChild( new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"Male", allowToggleOff:false, data:{ id:SEX.MALE } }) )
+				addChild( new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"btn_female", allowToggleOff:false, data:{ id:SEX.FEMALE } }) ),
+				addChild( new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"btn_male", allowToggleOff:false, data:{ id:SEX.MALE } }) )
 				//addChild( new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"All", allowToggleOff:false }) )
 			];
 			_registerClickHandler(sexButtons, _onSexButtonClicked);
 			sexButtons[ Main.costumes.sex == SEX.MALE ? 1 : 0].toggleOn();
 			
 			i = 0; xx = 285;
-			addChild(new TextBase({ text:"Face", x:250, y:yy+3, size:17, originY:0 }));
+			addChild(new TextBase({ text:"label_face_dir", x:250, y:yy+3, size:17, originY:0 }));
 			facingButtons = [
-				addChild( new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"Front", allowToggleOff:false, data:{ id:true } }) ),
-				addChild( new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"Back", allowToggleOff:false, data:{ id:false } }) )
+				addChild( new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"btn_face_front", allowToggleOff:false, data:{ id:true } }) ),
+				addChild( new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"btn_face_back", allowToggleOff:false, data:{ id:false } }) )
 				//addChild( new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"All", allowToggleOff:false }) )
 			];
 			_registerClickHandler(facingButtons, _onFacingButtonClicked);
 			facingButtons[ Main.costumes.facingForward == false ? 1 : 0].toggleOn();
 
 			i = 0; spacing = 34; xx = ConstantsApp.PANE_WIDTH*0.5 - spacing*(Main.costumes.hairColors.length+0.5)*0.5; yy = yy+90; sizex = 30; sizey = 30;
-			addChild(new TextBase({ text:"Hair", x:ConstantsApp.PANE_WIDTH*0.5, y:yy-40, size:17, originY:0 }));
+			addChild(new TextBase({ text:"label_hair_color", x:ConstantsApp.PANE_WIDTH*0.5, y:yy-40, size:17, originY:0 }));
 			hairColorButtons = [];
 			for(i = 0; i < Main.costumes.hairColors.length; i++) {
 				clr = Main.costumes.hairColors[i];
@@ -72,7 +72,7 @@ package dressroom.ui.panes
 			hairColorButtons[tIndex > -1 ? tIndex : (hairColorButtons.length-1)].toggleOn();
 
 			i = 0; spacing = 34; xx = ConstantsApp.PANE_WIDTH*0.5 - spacing*(Main.costumes.skinColors.length+0.5)*0.5; yy = yy+90; sizex = 30; sizey = 30;
-			addChild(new TextBase({ text:"Skin", x:ConstantsApp.PANE_WIDTH*0.5, y:yy-40, size:17, originY:0 }));
+			addChild(new TextBase({ text:"label_skin_color", x:ConstantsApp.PANE_WIDTH*0.5, y:yy-40, size:17, originY:0 }));
 			skinColorButtons = [];
 			for(i = 0; i < Main.costumes.skinColors.length; i++) {
 				clr = Main.costumes.skinColors[i];
@@ -85,7 +85,7 @@ package dressroom.ui.panes
 			skinColorButtons[tIndex > -1 ? tIndex : (skinColorButtons.length-1)].toggleOn();
 
 			i = 0; spacing = 34; xx = ConstantsApp.PANE_WIDTH*0.5 - spacing*(Main.costumes.secondaryColors.length+0.5)*0.5; yy = yy+90; sizex = 30; sizey = 30;
-			addChild(new TextBase({ text:"Other", x:ConstantsApp.PANE_WIDTH*0.5, y:yy-40, size:17, originY:0 }));
+			addChild(new TextBase({ text:"label_other_color", x:ConstantsApp.PANE_WIDTH*0.5, y:yy-40, size:17, originY:0 }));
 			secondaryColorButtons = [];
 			for(i = 0; i < Main.costumes.secondaryColors.length; i++) {
 				clr = Main.costumes.secondaryColors[i];
