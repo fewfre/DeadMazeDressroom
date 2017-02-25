@@ -48,7 +48,7 @@ package dressroom.ui.panes
 			_registerClickHandler(sexButtons, _onSexButtonClicked);
 			sexButtons[ Main.costumes.sex == SEX.MALE ? 1 : 0].toggleOn();
 			
-			i = 0; xx = 285;
+			/*i = 0; xx = 285;
 			addChild(new TextBase({ text:"label_face_dir", x:250, y:yy+3, size:17, originY:0 }));
 			facingButtons = [
 				addChild( new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"btn_face_front", allowToggleOff:false, data:{ id:true } }) ),
@@ -56,7 +56,7 @@ package dressroom.ui.panes
 				//addChild( new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"All", allowToggleOff:false }) )
 			];
 			_registerClickHandler(facingButtons, _onFacingButtonClicked);
-			facingButtons[ Main.costumes.facingForward == false ? 1 : 0].toggleOn();
+			facingButtons[ Main.costumes.facingForward == false ? 1 : 0].toggleOn();*/
 
 			i = 0; spacing = 34; xx = ConstantsApp.PANE_WIDTH*0.5 - spacing*(Main.costumes.hairColors.length+0.5)*0.5; yy = yy+90; sizex = 30; sizey = 30;
 			addChild(new TextBase({ text:"label_hair_color", x:ConstantsApp.PANE_WIDTH*0.5, y:yy-40, size:17, originY:0 }));

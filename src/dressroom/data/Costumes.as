@@ -11,8 +11,9 @@ package dressroom.data
 
 	public class Costumes
 	{
-		private const _MAX_COSTUMES_TO_CHECK_TO:Number = 350;//999;
-
+		private const _MAX_COSTUMES_TO_CHECK_TO:Number = 500;//999;
+		
+		public var faces:Array;
 		public var hair:Array;
 		public var head:Array;
 		public var shirts:Array;
@@ -64,11 +65,12 @@ package dressroom.data
 			var i:int;
 			var tSkinParts = [ "B", "JI1", "JI2", "JS1", "JS2", "P1", "P2", "M1", "M2", "BI1", "BI2", "BS1", "BS2", "TS", "T", "CH" ];
 
-			this.hair = _setupCostumeArray({ base:"M_1", type:ITEM.HAIR, pad:3, after:"_", map:tSkinParts, sex:true });
-			/*this.head = _setupCostumeArray({ base:"M_2", type:ITEM.HEAD, pad:3, after:"_", map:tSkinParts });*/
-			this.shirts = _setupCostumeArray({ base:"M_3", type:ITEM.SHIRT, pad:3, after:"_", map:tSkinParts, sex:true });
-			this.pants = _setupCostumeArray({ base:"M_4", type:ITEM.PANTS, pad:3, after:"_", map:tSkinParts, sex:true });
-			this.shoes = _setupCostumeArray({ base:"M_5", type:ITEM.SHOES, pad:3, after:"_", map:tSkinParts, sex:true });
+			this.hair = _setupCostumeArray({ base:"M_1", type:ITEM.HAIR, pad:4, after:"_", map:tSkinParts });
+			this.head = _setupCostumeArray({ base:"M_2", type:ITEM.HEAD, pad:4, after:"_", map:tSkinParts });
+			this.shirts = _setupCostumeArray({ base:"M_3", type:ITEM.SHIRT, pad:4, after:"_", map:tSkinParts, sex:true });
+			this.pants = _setupCostumeArray({ base:"M_4", type:ITEM.PANTS, pad:4, after:"_", map:tSkinParts, sex:true });
+			this.shoes = _setupCostumeArray({ base:"M_5", type:ITEM.SHOES, pad:4, after:"_", map:tSkinParts });
+			this.faces = _setupCostumeArray({ base:"M_5", type:ITEM.FACE, pad:3, after:"_", map:tSkinParts, sex:true });
 			this.objects = _setupCostumeArray({ base:"dmo_", type:ITEM.OBJECT, itemClassToClassMap:"_Arme" });
 
 			this.skins = new Array();
@@ -80,7 +82,8 @@ package dressroom.data
 				if(Fewf.assets.getLoadedClass( "M_"+i+"_BS1_2" ) != null) {
 					this.skins.push( new SkinData( i, SEX.MALE ) );
 				}*/
-				if(Fewf.assets.getLoadedClass( "M_"+i+"_BS1_1" ) != null) {
+				/*if(Fewf.assets.getLoadedClass( "M_"+i+"_BS1_1" ) != null) {*/
+				if(Fewf.assets.getLoadedClass( "M_"+i+"_BS1" ) != null) {
 					this.skins.push( new SkinData( i, null ) );
 				}
 			}
@@ -92,15 +95,28 @@ package dressroom.data
 
 			this.poses = [];
 			var tPoseClasses = [
-				"Statique_{0}",
-				"Mort_{0}",
-				"Manip_{0}",
-				"Manger_{0}",
-				"Course_{0}",
+				"Statique",//_{0}",
+				"Mort",//_{0}",
+				"Manip",//_{0}",
+				/*"Manger",//_{0}",*/
+				"Course",//_{0}",
+				"Stun",
+				"Sort_1", "Sort_2",
 				//"Combat_{0}",
-				"Boire_{0}",
-				"Attaque_{0}_1", "Attaque_{0}_2", "Attaque_{0}_3",
-				"AttaqueMN_{0}_1", "AttaqueMN_{0}_2", "AttaqueMN_{0}_3",
+				"Boire",//_{0}",
+				/*"Attaque_{0}_1", "Attaque_{0}_2", "Attaque_{0}_3",*/
+				"Attaque_1", "Attaque_2", "Attaque_3",
+				/*"AttaqueMN_{0}_1", "AttaqueMN_{0}_2", "AttaqueMN_{0}_3",*/
+				"AttaqueMN_1", "AttaqueMN_2", "AttaqueMN_3",
+				"Arc",
+				"Pistolet",
+				
+				"ZombieStatique",
+				"ZombieMort",
+				"ZombieCourse",
+				"ZombieStun",
+				"ZombieTouche",
+				"ZombieAttaque",
 			];
 			var tClass:Class, tClassName:String;
 			for(i = 0; i < tPoseClasses.length; i++) {
@@ -110,8 +126,9 @@ package dressroom.data
 				if((tClass = Fewf.assets.getLoadedClass( "$Anim"+(tClassName=strReplace(tPoseClasses[i], "{0}", "H")) )) != null) {
 					this.poses.push(new PoseData({ id:tClassName, type:ITEM.POSE, itemClass:tClass, sex:SEX.MALE }));
 				}*/
-				if((tClass = Fewf.assets.getLoadedClass( "$Anim"+strReplace(tPoseClasses[i], "{0}", "F") )) != null) {
-					this.poses.push(new PoseData({ id:strReplace(tPoseClasses[i], "_{0}", ""), assetID:tPoseClasses[i], type:ITEM.POSE, itemClass:tClass, sex:null }));
+				/*if((tClass = Fewf.assets.getLoadedClass( "$Anim"+strReplace(tPoseClasses[i], "{0}", "F") )) != null) {*/
+				if((tClass = Fewf.assets.getLoadedClass( "$Anim"+tPoseClasses[i] )) != null) {
+					this.poses.push(new PoseData({ id:tPoseClasses[i], assetID:tPoseClasses[i], type:ITEM.POSE, itemClass:tClass, sex:null }));
 				}
 			}
 			/*this.defaultPoseIndex = 0;//FewfUtils.getIndexFromArrayWithKeyVal(this.poses, "id", ConstantsApp.DEFAULT_POSE_ID);*/
@@ -134,12 +151,12 @@ package dressroom.data
 					for(var g:int = 0; g < (pData.sex ? 1/*2*/ : 1); g++) {
 						var tClassMap = {  }, tClassSuccess = null;
 						tSexSpecificParts = 0;
-						for(var j = 0; j <= pData.map.length; j++) {
+						for(var j = 0; j < pData.map.length; j++) {
 							tClass = Fewf.assets.getLoadedClass( tClassName = pData.base+(pData.pad ? zeroPad(i, pData.pad) : i)+(pData.after ? pData.after : "")+pData.map[j] );
 							if(tClass) { tClassMap[pData.map[j]] = tClass; tClassSuccess = tClass; }
 							else if(pData.sex){
 								tClass = Fewf.assets.getLoadedClass( tClassName+"_"+(g==0?1:2) );
-								if(tClass) { tClassMap[pData.map[j]] = tClass; tClassSuccess = tClass; tSexSpecificParts++ }
+								if(tClass) { tClassMap[pData.map[j]] = tClass; tClassSuccess = tClass; tSexSpecificParts++; }
 							}
 						}
 						if(tClassSuccess) {
@@ -179,6 +196,7 @@ package dressroom.data
 
 		public function getArrayByType(pType:String) : Array {
 			switch(pType) {
+				case ITEM.FACE:		return faces;
 				case ITEM.HAIR:		return hair;
 				case ITEM.HEAD:		return head;
 				case ITEM.SHIRT:	return shirts;
@@ -324,7 +342,8 @@ package dressroom.data
 						tSkinData,
 						shirts[0],
 						pants[0],
-						shoes[0]
+						shoes[0],
+						faces[0]
 					], facingForward:true });
 				/*}*/
 				tPose.stopAtLastFrame();

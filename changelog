@@ -1,3 +1,10 @@
+== V1.1 - 24 February 2017 ==
+- Added alpha 4.6 asset changes
+	- Had to update some code to work with some assets now having a mix of sex-specific and non sex-specific parts.
+- Removing "facing" option (no longer seems to be in game)
+- Added "face" option (since face is no longer part of the head asset)
+- Re-added "head item" option (since V4.6 assets include them again)
+
 == V1.0 - 14 January 2017 ==
 - Using version numbers
 - Added localization support.

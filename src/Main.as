@@ -125,8 +125,9 @@ package
 				tabs:[
 					{ text:"tab_config", event:CONFIG_PANE_ID },
 					{ text:"tab_skins", event:ITEM.SKIN },
+					{ text:"tab_face", event:ITEM.FACE },
 					{ text:"tab_hair", event:ITEM.HAIR },
-					/*{ text:"tab_head", event:ITEM.HEAD },*/
+					{ text:"tab_head", event:ITEM.HEAD },
 					{ text:"tab_shirts", event:ITEM.SHIRT },
 					{ text:"tab_pants", event:ITEM.PANTS },
 					{ text:"tab_shoes", event:ITEM.SHOES },
@@ -168,7 +169,7 @@ package
 
 
 			// Create the panes
-			var tTypes = [ ITEM.OBJECT, ITEM.SKIN, ITEM.HAIR, /*ITEM.HEAD,*/ ITEM.SHIRT, ITEM.PANTS, ITEM.SHOES, ITEM.POSE ], tData:ItemData, tType:String;
+			var tTypes = [ ITEM.OBJECT, ITEM.SKIN, ITEM.FACE, ITEM.HAIR, ITEM.HEAD, ITEM.SHIRT, ITEM.PANTS, ITEM.SHOES, ITEM.POSE ], tData:ItemData, tType:String;
 			for(var i:int = 0; i < tTypes.length; i++) { tType = tTypes[i];
 				tPane = _paneManager.addPane(tType, _setupPane(tType));
 				// Based on what the character is wearing at start, toggle on the appropriate buttons.
@@ -225,6 +226,7 @@ package
 		}
 
 		private function _setupPaneButtons(pPane:TabPane, pItemArray:Array) : void {
+			if(pItemArray == null || pItemArray.length <= 0) { trace("[Main](_setupPaneButtons) Item array is null"); return; }
 			var tType:String = pItemArray[0].type;
 
 			var buttonPerRow = 6;
@@ -365,13 +367,13 @@ package
 		}
 
 		private function _onSexChanged(pEvent:Event) : void {
-			var tTypes = [ ITEM.OBJECT, ITEM.SKIN, ITEM.HAIR, ITEM.HEAD, ITEM.SHIRT, ITEM.PANTS, ITEM.SHOES, ITEM.POSE ];
-			/*for(var i in tTypes) { tType = tTypes[i];
+			var tTypes = [ ITEM.OBJECT, ITEM.SKIN, ITEM.FACE, ITEM.HAIR, ITEM.HEAD, ITEM.SHIRT, ITEM.PANTS, ITEM.SHOES, ITEM.POSE ];
+			for(var i in tTypes) { tType = tTypes[i];
 				if(_paneManager.getPane(tType)) {
 					_setupPaneButtons(_paneManager.getPane(tType), costumes.getArrayByType(tType));
 					_removeItem(tType);
 				}
-			}*/
+			}
 			_paneManager.dirtyAllPanes();
 			character.updatePose();
 		}

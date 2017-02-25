@@ -38,6 +38,7 @@ package dressroom.world.elements
 			*****************************/
 			_itemDataMap = {};
 			_itemDataMap[ITEM.SKIN] = pData.skin;
+			_itemDataMap[ITEM.FACE] = pData.face;
 			_itemDataMap[ITEM.HAIR] = pData.hair;
 			_itemDataMap[ITEM.HEAD] = pData.head;
 			_itemDataMap[ITEM.SHIRT] = pData.shirt;
@@ -63,6 +64,7 @@ package dressroom.world.elements
 				secondaryColor:Main.costumes.secondaryColor,
 				items:[
 					getItemData(ITEM.SKIN),
+					getItemData(ITEM.FACE),
 					getItemData(ITEM.HAIR),
 					getItemData(ITEM.HEAD),
 					getItemData(ITEM.SHIRT),
@@ -82,6 +84,7 @@ package dressroom.world.elements
 
 			_setParamToType(pParams, ITEM.SKIN, "s", false);
 			_setParamToType(pParams, ITEM.HAIR, "d");
+			_setParamToType(pParams, ITEM.FACE, "fc");
 			_setParamToType(pParams, ITEM.HEAD, "h");
 			_setParamToType(pParams, ITEM.SHIRT, "t");
 			_setParamToType(pParams, ITEM.PANTS, "b");
@@ -90,7 +93,7 @@ package dressroom.world.elements
 			_setParamToType(pParams, ITEM.POSE, "p", false);
 			
 			if(pParams.sex) { Main.costumes.sex = pParams.sex == SEX.MALE ? SEX.MALE : SEX.FEMALE; }
-			if(pParams.ff) { Main.costumes.facingForward = pParams.ff != "0"; }
+			/*if(pParams.ff) { Main.costumes.facingForward = pParams.ff != "0"; }*/
 		}
 		private function _setParamToType(pParams:URLVariables, pType:String, pParam:String, pAllowNull:Boolean=true) {
 			var tData:ItemData = null;
@@ -120,9 +123,10 @@ package dressroom.world.elements
 			tParms.f = (tData = getItemData(ITEM.SHOES)) ? tData.id : '';
 			tParms.o = (tData = getItemData(ITEM.OBJECT)) ? tData.id : '';
 			tParms.p = (tData = getItemData(ITEM.POSE)) ? tData.id : '';
+			tParms.fc = (tData = getItemData(ITEM.FACE)) ? tData.id : '';
 			
 			tParms.sex = Main.costumes.sex;
-			tParms.ff = Main.costumes.facingForward ? "1" : "0";
+			/*tParms.ff = Main.costumes.facingForward ? "1" : "0";*/
 
 			return tParms;
 		}

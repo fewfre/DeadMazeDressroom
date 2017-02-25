@@ -72,6 +72,7 @@ package dressroom.world.data
 			var tFacing = facingForward ? "" : "_dos";
 			
 			var tClass = Fewf.assets.getLoadedClass( "M_"+_assetID+"_"+pID+tFacing+tSex );
+			if(tClass == null) { tClass = Fewf.assets.getLoadedClass( "M_"+_assetID+"_"+pID+tFacing ); }
 			return tClass;
 		}
 	}

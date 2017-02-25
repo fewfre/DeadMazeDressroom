@@ -19,10 +19,11 @@ package dressroom.world.data
 				if(pOptions.facingForward) { facingForward = pOptions.facingForward; }
 				if(pOptions.sex) { sex = pOptions.sex; }
 			}
-			var tSex = sex == SEX.MALE ? "H" : "F";
-			var tFacing = facingForward ? "" : "D";
+			/*var tSex = sex == SEX.MALE ? "H" : "F";
+			var tFacing = facingForward ? "" : "D";*/
 			
-			var tClass = Fewf.assets.getLoadedClass( "$Anim"+strReplace(_assetID, "{0}", tSex)+tFacing );
+			/*var tClass = Fewf.assets.getLoadedClass( "$Anim"+strReplace(_assetID, "{0}", tSex)+tFacing );*/
+			var tClass = Fewf.assets.getLoadedClass( "$Anim"+_assetID );
 			return tClass;
 		}
 		
