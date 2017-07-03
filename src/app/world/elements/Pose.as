@@ -117,7 +117,7 @@ package app.world.elements
 				}
 				else { Costumes.instance.colorDefault(part); }*/
 				
-				if(pData.type == ITEM.HAIR && pOptions.hairColor != null) {
+				if((pData.type == ITEM.HAIR || pData.type == ITEM.BEARD) && pOptions.hairColor != null) {
 					Costumes.instance.applyColorToObject(part,  pOptions.hairColor);
 				}
 				Costumes.instance.colorItem({ obj:part, color: pOptions.skinColor, name:"$0" });

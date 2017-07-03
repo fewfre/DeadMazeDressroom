@@ -40,6 +40,7 @@ package app.world.elements
 			_itemDataMap[ITEM.SKIN] = pData.skin;
 			_itemDataMap[ITEM.FACE] = pData.face;
 			_itemDataMap[ITEM.HAIR] = pData.hair;
+			_itemDataMap[ITEM.BEARD] = pData.beard;
 			_itemDataMap[ITEM.HEAD] = pData.head;
 			_itemDataMap[ITEM.SHIRT] = pData.shirt;
 			_itemDataMap[ITEM.PANTS] = pData.pants;
@@ -66,6 +67,7 @@ package app.world.elements
 					getItemData(ITEM.SKIN),
 					getItemData(ITEM.FACE),
 					getItemData(ITEM.HAIR),
+					getItemData(ITEM.BEARD),
 					getItemData(ITEM.HEAD),
 					getItemData(ITEM.SHIRT),
 					getItemData(ITEM.PANTS),
@@ -84,6 +86,7 @@ package app.world.elements
 
 			_setParamToType(pParams, ITEM.SKIN, "s", false);
 			_setParamToType(pParams, ITEM.HAIR, "d");
+			_setParamToType(pParams, ITEM.BEARD, "fh");
 			_setParamToType(pParams, ITEM.FACE, "fc");
 			_setParamToType(pParams, ITEM.HEAD, "h");
 			_setParamToType(pParams, ITEM.SHIRT, "t");
@@ -117,6 +120,7 @@ package app.world.elements
 			var tData:ItemData;
 			tParms.s = (tData = getItemData(ITEM.SKIN)) ? tData.id : '';
 			tParms.d = (tData = getItemData(ITEM.HAIR)) ? tData.id : '';
+			tParms.fh = (tData = getItemData(ITEM.BEARD)) ? tData.id : '';
 			tParms.h = (tData = getItemData(ITEM.HEAD)) ? tData.id : '';
 			tParms.t = (tData = getItemData(ITEM.SHIRT)) ? tData.id : '';
 			tParms.b = (tData = getItemData(ITEM.PANTS)) ? tData.id : '';

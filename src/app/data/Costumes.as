@@ -13,14 +13,16 @@ package app.data
 	{
 		private static var _instance:Costumes;
 		public static function get instance() : Costumes {
-			if(!_instance) { _instance = new Costumes(); }
+			if(!_instance) { new Costumes(); }
 			return _instance;
 		}
 		
-		private const _MAX_COSTUMES_TO_CHECK_TO:Number = 500;//999;
+		private const _MAX_COSTUMES_TO_CHECK_TO:Number = 100;
+		private const _MAX_OBJECTS_TO_CHECK_TO:Number = 650;
 		
 		public var faces:Array;
 		public var hair:Array;
+		public var beards:Array;
 		public var head:Array;
 		public var shirts:Array;
 		public var pants:Array;
@@ -32,8 +34,9 @@ package app.data
 
 		//public var defaultSkinIndex:int;
 		//public var defaultPoseIndex:int;
-		public function get defaultSkinIndex():int { return sex == SEX.MALE ? 0/*1*/ : 0; }
-		public function get defaultPoseIndex():int { return sex == SEX.MALE ? 0/*1*/ : 0; }
+		public function get defaultSkinIndex():int { return sex == SEX.MALE ? 1 : 0; }
+		public function get defaultPoseIndex():int { return 0; }//sex == SEX.MALE ? 1 : 0; }
+		public function get defaultFaceIndex():int { return sex == SEX.MALE ? 1 : 0; }
 
 		public var hairColors:Array;
 		public var skinColors:Array;
@@ -56,6 +59,7 @@ package app.data
 
 		public function Costumes() {
 			if(_instance){ throw new Error("Singleton class; Call using Costumes.instance"); }
+			_instance = this;
 			
 			hairColors = [ 0x211e24, 0xdcb33a, 0xe98537, 0xe0ae5b, 0xf9d28a, 0xc16333, 0xe98537, 0xab6e37, 0x89541c, 0xf5d3ae ];
 			skinColors = [ 0xf5d3ae, 0xf3d9c1, 0xf9d28a, 0xf9d28a, 0xe0b484, 0xd3b18e, 0xd19a5e, 0x8a5a38, 0x4b3a2b, 0x563312 ];
@@ -76,7 +80,8 @@ package app.data
 			this.pants = _setupCostumeArray({ base:"M_4", type:ITEM.PANTS, pad:4, after:"_", map:tSkinParts, sex:true });
 			this.shoes = _setupCostumeArray({ base:"M_5", type:ITEM.SHOES, pad:4, after:"_", map:tSkinParts });
 			this.faces = _setupCostumeArray({ base:"M_5", type:ITEM.FACE, pad:3, after:"_", map:tSkinParts, sex:true });
-			this.objects = _setupCostumeArray({ base:"dmo_", type:ITEM.OBJECT, itemClassToClassMap:"_Arme" });
+			this.beards = _setupCostumeArray({ base:"M_7", type:ITEM.BEARD, pad:3, after:"_", map:tSkinParts, sex:true });
+			this.objects = _setupCostumeArray({ base:"dmo_", type:ITEM.OBJECT, itemClassToClassMap:"_Arme", numToCheck:_MAX_OBJECTS_TO_CHECK_TO });
 
 			this.skins = new Array();
 
@@ -116,14 +121,53 @@ package app.data
 				"Arc",
 				"Pistolet",
 				
+				"$Camp1",
+				"$Camp2",
+				"$Camp3",
+				"$Camp4",
+				
 				"ZombieStatique",
 				"ZombieMort",
 				"ZombieCourse",
 				"ZombieStun",
 				"ZombieTouche",
 				"ZombieAttaque",
+				
+				"Statique_PNJblesse",
+				"Statique_chloeblessee",
+				"Releve_chloeblessee",
+				"Course_pieton",
+				"Course_croise",
+				"Course_chloeblessee",
+				"Course_blesse",
+				
+				"$posture_wallace_1",
+				"$posture_pistolet_1",
+				"$posture_murphy_1",
+				"$posture_manuel_1",
+				"$posture_manuel_2",
+				"$posture_lynn_1",
+				"$posture_karen_1",
+				"$posture_jared_1",
+				"$posture_jardin_1",
+				"$posture_gary_1",
+				"$posture_fusil_1",
+				"$posture_fusil_2",
+				"$posture_fusil_3",
+				"$posture_fusil_4",
+				"$posture_epee_1",
+				"$posture_epee_2",
+				"$posture_croise_1",
+				"$posture_chloe_1",
+				"$posture_chloe_2",
+				"$posture_carte_1",
+				"$posture_carte_2",
+				"$posture_arc_1",
+				"$posture_arc_2",
+				"$posture_arc_3",
+				"$posture_arc_4",
 			];
-			var tClass:Class, tClassName:String;
+			var tClass:Class, tClassName:String, tClassNameSimple:String;
 			for(i = 0; i < tPoseClasses.length; i++) {
 				/*if((tClass = Fewf.assets.getLoadedClass( "$Anim"+(tClassName=strReplace(tPoseClasses[i], "{0}", "F")) )) != null) {
 					this.poses.push(new PoseData({ id:tClassName, type:ITEM.POSE, itemClass:tClass, sex:SEX.FEMALE }));
@@ -132,8 +176,14 @@ package app.data
 					this.poses.push(new PoseData({ id:tClassName, type:ITEM.POSE, itemClass:tClass, sex:SEX.MALE }));
 				}*/
 				/*if((tClass = Fewf.assets.getLoadedClass( "$Anim"+strReplace(tPoseClasses[i], "{0}", "F") )) != null) {*/
-				if((tClass = Fewf.assets.getLoadedClass( "$Anim"+tPoseClasses[i] )) != null) {
-					this.poses.push(new PoseData({ id:tPoseClasses[i], assetID:tPoseClasses[i], type:ITEM.POSE, itemClass:tClass, sex:null }));
+				tClassName = tClassNameSimple = tPoseClasses[i];
+				if(tClassName.indexOf("$") == 0) {
+					tClassNameSimple = tClassNameSimple.slice(1);
+				} else {
+					tClassName = "$Anim"+tClassName;
+				}
+				if((tClass = Fewf.assets.getLoadedClass( tClassName )) != null) {
+					this.poses.push(new PoseData({ id:tClassNameSimple, assetID:tClassNameSimple, type:ITEM.POSE, itemClass:tClass, sex:null }));
 				}
 			}
 			/*this.defaultPoseIndex = 0;//FewfUtils.getIndexFromArrayWithKeyVal(this.poses, "id", ConstantsApp.DEFAULT_POSE_ID);*/
@@ -143,15 +193,16 @@ package app.data
 			return str.split(search).join(replace);
 		}
 
-		// pData = { base:String, type:String, after:String, pad:int, map:Array, sex:Boolean, itemClassToClassMap:String OR Array }
+		// pData = { base:String, type:String, after:String, pad:int, map:Array, sex:Boolean, itemClassToClassMap:String OR Array, numToCheck:int=null }
 		private function _setupCostumeArray(pData:Object) : Array {
 			var tArray:Array = new Array();
 			var tClassName:String;
 			var tClass:Class;
 			var tSexSpecificParts:int;
-			for(var i = 0; i <= _MAX_COSTUMES_TO_CHECK_TO; i++) {
+			var tLength:int = pData.numToCheck ? pData.numToCheck : _MAX_COSTUMES_TO_CHECK_TO;
+			for(var i = 0; i <= tLength; i++) {
 				if(pData.map) {
-					for(var g:int = 0; g < (pData.sex ? 1/*2*/ : 1); g++) {
+					for(var g:int = 0; g < (pData.sex ? 2 : 1); g++) {
 						var tClassMap = {  }, tClassSuccess = null;
 						tSexSpecificParts = 0;
 						for(var j = 0; j < pData.map.length; j++) {
@@ -164,9 +215,9 @@ package app.data
 						}
 						if(tClassSuccess) {
 							var tIsSexSpecific = pData.sex && tSexSpecificParts > 0;
-							tArray.push( new ItemData({ id:i+(tIsSexSpecific ? ""/*(g==1 ? "M" : "F")*/ : ""), assetID:pData.base+(pData.pad ? zeroPad(i, pData.pad) : i), type:pData.type, classMap:tClassMap, itemClass:tClassSuccess, sex:(tIsSexSpecific ? null/*(g==1?SEX.MALE:SEX.FEMALE)*/ : null) }) );
+							tArray.push( new ItemData({ id:i+(tIsSexSpecific ? (g==1 ? "M" : "F") : ""), assetID:pData.base+(pData.pad ? zeroPad(i, pData.pad) : i), type:pData.type, classMap:tClassMap, itemClass:tClassSuccess, sex:(tIsSexSpecific ? (g==1?SEX.MALE:SEX.FEMALE) : null) }) );
 						}
-						if(tSexSpecificParts == 0) {
+						if(tSexSpecificParts == 0 && tClassSuccess) {
 							break;
 						}
 					}
@@ -201,6 +252,7 @@ package app.data
 			switch(pType) {
 				case ITEM.FACE:		return faces;
 				case ITEM.HAIR:		return hair;
+				case ITEM.BEARD:	return beards;
 				case ITEM.HEAD:		return head;
 				case ITEM.SHIRT:	return shirts;
 				case ITEM.PANTS:	return pants;
@@ -313,10 +365,12 @@ package app.data
 					case ITEM.POSE:
 						tItem = getDefaultPoseSetup({ pose:pData });
 						break;
+					// Items with multiple parts (or needs to be colored) that must be added onto a pose to show properly
 					case ITEM.SHIRT:
 					case ITEM.PANTS:
 					case ITEM.SHOES:
 					case ITEM.HAIR:
+					case ITEM.BEARD:
 						tItem = new Pose(poses[defaultPoseIndex]).apply({ items:[ pData ], removeBlanks:true, facingForward:true });
 						break;
 					default:
@@ -333,14 +387,14 @@ package app.data
 				var tSkinData = pData.skin ? pData.skin : skins[defaultSkinIndex];
 
 				tPose = new Pose(tPoseData);
-				/*if(tSkinData.sex == SEX.MALE) {
+				if(tSkinData.sex == SEX.MALE) {
 					tPose.apply({ items:[
 						tSkinData,
 						shirts[1],
 						pants[1],
 						shoes[0]
 					] });
-				} else {*/
+				} else {
 					tPose.apply({ items:[
 						tSkinData,
 						shirts[0],
@@ -348,25 +402,10 @@ package app.data
 						shoes[0],
 						faces[0]
 					], facingForward:true });
-				/*}*/
+				}
 				tPose.stopAtLastFrame();
 
 				return tPose;
 			}
-
-		// Converts the image to a PNG bitmap and prompts the user to save.
-		public function saveMovieClipAsBitmap(pObj:DisplayObject, pName:String="character", pScale:Number=1) : void
-		{
-			if(!pObj){ return; }
-
-			var tRect:flash.geom.Rectangle = pObj.getBounds(pObj);
-			var tBitmap:flash.display.BitmapData = new flash.display.BitmapData(tRect.width*pScale, tRect.height*pScale, true, 0xFFFFFF);
-
-			var tMatrix:flash.geom.Matrix = new flash.geom.Matrix(1, 0, 0, 1, -tRect.left, -tRect.top);
-			tMatrix.scale(pScale, pScale);
-
-			tBitmap.draw(pObj, tMatrix);
-			( new flash.net.FileReference() ).save( com.adobe.images.PNGEncoder.encode(tBitmap), pName+".png" );
-		}
 	}
 }
