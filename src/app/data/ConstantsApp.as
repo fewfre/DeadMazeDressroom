@@ -12,8 +12,7 @@ package app.data
 		/****************************
 		* General
 		*****************************/
-		public static const VERSION					: int = 1.3;
-		public static var LANG						: String= "en";
+		public static const VERSION					: String = "1.4";
 		public static const SOURCE_URL				: String = "https://github.com/fewfre/DeadMazeDressroom";
 
 		public static const DEFAULT_SKIN_ID			: int = 0;

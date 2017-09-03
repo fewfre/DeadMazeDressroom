@@ -2,4 +2,3 @@
 	- need both male and female data in one data object.
 	- if there's an item with no male/female counterpart, default to unequip option.
 - Figure out what to do with the 60###_AC items (ranged weapons?)
-- Fix guitar

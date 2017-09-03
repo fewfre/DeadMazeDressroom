@@ -65,9 +65,10 @@ package app.ui.panes
 				clr = Costumes.instance.hairColors[i];
 				hairColorButtons.push( addChild( new PushButton({ x:xx + (spacing*i), y:yy, width:sizex, height:sizey, obj:_colorSpriteBox({ color:clr }), id:clr, allowToggleOff:false }) ) );
 			}
-			hairColorButtons.push( addChild( hairColorPickerButton = new PushButton({ x:xx + (spacing*i), y:yy, width:sizex, height:sizey, obj:new $ColorWheel(), obj_scale:0.7, id:Costumes.instance.hairColor, allowToggleOff:false }) ) );
+			hairColorButtons.push( addChild( hairColorPickerButton = new PushButton({ x:xx + (spacing*i), y:yy, width:sizex, height:sizey, obj:new $ColorWheel(), obj_scale:0.7, id:Costumes.instance.hairColor }) ) );
 			hairColorPickerButtonBox = hairColorPickerButton.addChild(_colorSpriteBox({ color:hairColorPickerButton.id, size:MINI_BOX_SIZE, x:(sizex-MINI_BOX_SIZE)*0.5, y:(sizey-MINI_BOX_SIZE)*0.5 }));
 			_registerClickHandler(hairColorButtons, _onHairColorButtonClicked);
+			hairColorPickerButtonBox.addEventListener(PushButton.STATE_CHANGED_BEFORE, _onColorPickerButtonClicked);
 			tIndex = Costumes.instance.hairColors.indexOf(Costumes.instance.hairColor);
 			hairColorButtons[tIndex > -1 ? tIndex : (hairColorButtons.length-1)].toggleOn();
 
@@ -78,9 +79,10 @@ package app.ui.panes
 				clr = Costumes.instance.skinColors[i];
 				skinColorButtons.push( addChild( new PushButton({ x:xx + (spacing*i), y:yy, width:sizex, height:sizey, obj:_colorSpriteBox({ color:clr }), id:clr, allowToggleOff:false }) ) );
 			}
-			skinColorButtons.push( addChild( skinColorPickerButton = new PushButton({ x:xx + (spacing*i), y:yy, width:sizex, height:sizey, obj:new $ColorWheel(), obj_scale:0.7, id:Costumes.instance.skinColor, allowToggleOff:false }) ) );
+			skinColorButtons.push( addChild( skinColorPickerButton = new PushButton({ x:xx + (spacing*i), y:yy, width:sizex, height:sizey, obj:new $ColorWheel(), obj_scale:0.7, id:Costumes.instance.skinColor }) ) );
 			skinColorPickerButtonBox = skinColorPickerButton.addChild(_colorSpriteBox({ color:skinColorPickerButton.id, size:MINI_BOX_SIZE, x:(sizex-MINI_BOX_SIZE)*0.5, y:(sizey-MINI_BOX_SIZE)*0.5 }));
 			_registerClickHandler(skinColorButtons, _onSkinColorButtonClicked);
+			skinColorPickerButton.addEventListener(PushButton.STATE_CHANGED_BEFORE, _onColorPickerButtonClicked);
 			tIndex = Costumes.instance.skinColors.indexOf(Costumes.instance.skinColor);
 			skinColorButtons[tIndex > -1 ? tIndex : (skinColorButtons.length-1)].toggleOn();
 
@@ -91,9 +93,10 @@ package app.ui.panes
 				clr = Costumes.instance.secondaryColors[i];
 				secondaryColorButtons.push( addChild( new PushButton({ x:xx + (spacing*i), y:yy, width:sizex, height:sizey, obj:_colorSpriteBox({ color:clr }), id:clr, allowToggleOff:false }) ) );
 			}
-			secondaryColorButtons.push( addChild( secondaryColorPickerButton = new PushButton({ x:xx + (spacing*i), y:yy, width:sizex, height:sizey, obj:new $ColorWheel(), obj_scale:0.7, id:Costumes.instance.secondaryColor, allowToggleOff:false }) ) );
+			secondaryColorButtons.push( addChild( secondaryColorPickerButton = new PushButton({ x:xx + (spacing*i), y:yy, width:sizex, height:sizey, obj:new $ColorWheel(), obj_scale:0.7, id:Costumes.instance.secondaryColor }) ) );
 			secondaryColorPickerButtonBox = secondaryColorPickerButton.addChild(_colorSpriteBox({ color:secondaryColorPickerButton.id, size:MINI_BOX_SIZE, x:(sizex-MINI_BOX_SIZE)*0.5, y:(sizey-MINI_BOX_SIZE)*0.5 }));
 			_registerClickHandler(secondaryColorButtons, _onSecondaryColorButtonClicked);
+			secondaryColorPickerButton.addEventListener(PushButton.STATE_CHANGED_BEFORE, _onColorPickerButtonClicked);
 			tIndex = Costumes.instance.secondaryColors.indexOf(Costumes.instance.secondaryColor);
 			secondaryColorButtons[tIndex > -1 ? tIndex : (secondaryColorButtons.length-1)].toggleOn();
 		}
@@ -134,18 +137,28 @@ package app.ui.panes
 			_untoggle(hairColorButtons, pEvent.target);
 			Costumes.instance.hairColor = pEvent.target.id;
 			character.updatePose();
+			dispatchEvent(new FewfEvent("color_changed", { type:"hair" }));
 		}
 
 		private function _onSkinColorButtonClicked(pEvent:Event) {
 			_untoggle(skinColorButtons, pEvent.target);
 			Costumes.instance.skinColor = pEvent.target.id;
 			character.updatePose();
+			dispatchEvent(new FewfEvent("color_changed", { type:"skin" }));
 		}
 
 		private function _onSecondaryColorButtonClicked(pEvent:Event) {
 			_untoggle(secondaryColorButtons, pEvent.target);
 			Costumes.instance.secondaryColor = pEvent.target.id;
 			character.updatePose();
+			dispatchEvent(new FewfEvent("color_changed", { type:"secondary" }));
+		}
+		
+		// Unlike the default color buttons, "allowToggleOff" is set to true
+		// since need to be able to click even after selected.
+		// This simply forces it to show as selected even when toggled off.
+		private function _onColorPickerButtonClicked(pEvent:Event) {
+			pEvent.target.toggleOff(false);
 		}
 
 		private function _untoggle(pList:Array, pButton:PushButton=null) : void {
@@ -182,6 +195,7 @@ package app.ui.panes
 					break;
 				}
 			}
+			dispatchEvent(new FewfEvent("color_changed", { type:pType }));
 		}
 	}
 }

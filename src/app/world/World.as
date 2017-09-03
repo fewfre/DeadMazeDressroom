@@ -8,6 +8,7 @@ package app.world
 
 	import app.ui.*;
 	import app.ui.panes.*;
+	import app.ui.lang.*;
 	import app.ui.buttons.*;
 	import app.data.*;
 	import app.world.data.*;
@@ -34,6 +35,7 @@ package app.world
 		internal var shopTabs		: ShopTabContainer;
 		internal var _toolbox		: Toolbox;
 		internal var linkTray		: LinkTray;
+		internal var _langScreen	: LangScreen;
 
 		internal var currentlyColoringType:String="";
 		internal var configCurrentlyColoringType:String;
@@ -42,6 +44,7 @@ package app.world
 		public static const COLOR_PANE_ID = "colorPane";
 		public static const CONFIG_PANE_ID = "configPane";
 		public static const CONFIG_COLOR_PANE_ID = "configColorPane";
+		public static const COLOR_FINDER_PANE_ID = "colorFinderPane";
 		
 		// Constructor
 		public function World(pStage:Stage) {
@@ -81,7 +84,7 @@ package app.world
 			tShop.drawSimpleGradient(ConstantsApp.COLOR_TRAY_GRADIENT, 15, ConstantsApp.COLOR_TRAY_B_1, ConstantsApp.COLOR_TRAY_B_2, ConstantsApp.COLOR_TRAY_B_3);
 			_paneManager = tShop.addChild(new PaneManager());
 			
-			this.shopTabs = addChild(new ShopTabContainer({ x:380, y:10, width:60, height:ConstantsApp.APP_HEIGHT,
+			this.shopTabs = addChild(new ShopTabContainer({ x:375, y:10, width:70, height:ConstantsApp.APP_HEIGHT,
 				tabs:[
 					{ text:"tab_config", event:CONFIG_PANE_ID },
 					{ text:"tab_skins", event:ITEM.SKIN },
@@ -104,8 +107,21 @@ package app.world
 				onSave:_onSaveClicked, onAnimate:_onPlayerAnimationToggle, onRandomize:_onRandomizeDesignClicked,
 				onShare:_onShareButtonClicked, onScale:_onScaleSliderChange
 			}));
+			
+			var tLangButton = addChild(new LangButton({ x:22, y:pStage.stageHeight-17, width:30, height:25, origin:0.5 }));
+			tLangButton.addEventListener(ButtonBase.CLICK, _onLangButtonClicked);
+			
+			addChild(new AppInfoBox({ x:tLangButton.x+(tLangButton.Width*0.5)+(25*0.5)+2, y:pStage.stageHeight-17 }));
+			
+			/****************************
+			* Screens
+			*****************************/
 			linkTray = new LinkTray({ x:pStage.stageWidth * 0.5, y:pStage.stageHeight * 0.5 });
 			linkTray.addEventListener(LinkTray.CLOSE, _onShareTrayClosed);
+			
+			_langScreen = new LangScreen({  });
+			_langScreen.addEventListener(LangScreen.CLOSE, _onLangScreenClosed);
+
 
 			/****************************
 			* Create tabs and panes
@@ -123,10 +139,14 @@ package app.world
 			tPane.secondaryColorPickerButton.addEventListener(ButtonBase.CLICK, function(pEvent:Event){ _configColorButtonClicked("secondary", pEvent.target.id); });
 			tPane.addEventListener("sex_change", _onSexChanged);
 			tPane.addEventListener("facing_change", _onFacingChanged);
+			tPane.addEventListener("color_changed", _onConfigColorChanged);
 
 			tPane = _paneManager.addPane(CONFIG_COLOR_PANE_ID, new ColorPickerTabPane({ hide_default:true }));
 			tPane.addEventListener(ColorPickerTabPane.EVENT_COLOR_PICKED, _onConfigColorPickChanged);
 			tPane.addEventListener(ColorPickerTabPane.EVENT_EXIT, function(pEvent:Event){ _paneManager.openPane(CONFIG_PANE_ID); });
+			
+			tPane = _paneManager.addPane(COLOR_FINDER_PANE_ID, new ColorFinderPane({ }));
+			tPane.addEventListener(ColorPickerTabPane.EVENT_EXIT, _onColorFinderBackClicked);
 
 
 			// Create the panes
@@ -178,11 +198,14 @@ package app.world
 
 		private function _setupPane(pType:String) : TabPane {
 			var tPane:TabPane = new TabPane();
-			tPane.addInfoBar( new ShopInfoBar({}) );
+			tPane.addInfoBar( new ShopInfoBar({ showEyeDropButton:pType!=ITEM.POSE }) );
 			_setupPaneButtons(tPane, costumes.getArrayByType(pType));
 			tPane.infoBar.colorWheel.addEventListener(ButtonBase.CLICK, function(){ _colorButtonClicked(pType); });
 			tPane.infoBar.imageCont.addEventListener(MouseEvent.CLICK, function(){ _removeItem(pType); });
 			tPane.infoBar.refreshButton.addEventListener(ButtonBase.CLICK, function(){ _randomItemOfType(pType); });
+			if(tPane.infoBar.eyeDropButton) {
+				tPane.infoBar.eyeDropButton.addEventListener(ButtonBase.CLICK, function(){ _eyeDropButtonClicked(pType); });
+			}
 			return tPane;
 		}
 
@@ -220,6 +243,20 @@ package app.world
 				pPane.buttons.push(shopItemButton);
 				grid.add(shopItemButton)
 				shopItemButton.addEventListener(PushButton.STATE_CHANGED_AFTER, _onItemToggled);
+			}
+			// Guitar state button
+			if(tType == ITEM.OBJECT) {
+				var tIndex = FewfUtils.getIndexFromArrayWithKeyVal(pItemArray, "id", 41);
+				var tButton = pPane.buttons[tIndex];
+				var tMiniButton = tButton.parent.addChild(new ScaleButton({ x:tButton.x + 50, y:tButton.y + 12, obj:new $PlayButton(), obj_scale:0.5 }));
+				tMiniButton.addEventListener(ButtonBase.CLICK, function(){
+					tButton.toggleOn();
+					// Mod over total frame (note that frame go to 1 -> max frames, not 0 -> max frames-1)
+					pItemArray[tIndex].stopFrame++;
+					pItemArray[tIndex].stopFrame %= (pPane.buttons[tIndex].Image.totalFrames+1);
+					pItemArray[tIndex].stopFrame = Math.max(pItemArray[tIndex].stopFrame, 1);
+					_refreshSelectedItemColor(tType, true);
+				});
 			}
 			pPane.UpdatePane();
 		}
@@ -271,7 +308,7 @@ package app.world
 				setCurItemID(tType, pEvent.data.index);
 				this.character.setItemData(tData);
 
-				tInfoBar.addInfo( tData, costumes.getItemImage(tData) );
+				tInfoBar.addInfo( tData, costumes.getColoredItemImage(tData) );
 				tInfoBar.showColorWheel(costumes.getNumOfCustomColors(tButton.Image) > 0);
 			} else {
 				_removeItem(tType);
@@ -305,6 +342,7 @@ package app.world
 		}
 
 		private function _randomItemOfType(pType:String) : void {
+			if(getInfoBarByType(pType).isRefreshLocked) { return; }
 			var tButtons = getButtonArrayByType(pType);
 			if(tButtons.length == 0) { return; }
 			var tLength = tButtons.length; if(pType == ITEM.SKIN) { /* Don't select "transparent" */ tLength--; }
@@ -326,6 +364,15 @@ package app.world
 
 		private function _onShareTrayClosed(pEvent:Event) : void {
 			removeChild(linkTray);
+		}
+
+		private function _onLangButtonClicked(pEvent:Event) : void {
+			_langScreen.open();
+			addChild(_langScreen);
+		}
+
+		private function _onLangScreenClosed(pEvent:Event) : void {
+			removeChild(_langScreen);
 		}
 
 		private function _onSexChanged(pEvent:Event) : void {
@@ -367,36 +414,62 @@ package app.world
 		//}END Get TabPane data
 
 		//{REGION Color Tab
+			private function _eyeDropButtonClicked(pType:String) : void {
+				if(this.character.getItemData(pType) == null) { return; }
+
+				var tData:ItemData = getInfoBarByType(pType).data;
+				var tItem:MovieClip = costumes.getColoredItemImage(tData);
+				var tItem2:MovieClip = costumes.getColoredItemImage(tData);
+				_paneManager.getPane(COLOR_FINDER_PANE_ID).infoBar.addInfo( tData, tItem );
+				this.currentlyColoringType = pType;
+				_paneManager.getPane(COLOR_FINDER_PANE_ID).setItem(tItem2);
+				_paneManager.openPane(COLOR_FINDER_PANE_ID);
+			}
+
+			private function _onColorFinderBackClicked(pEvent:Event):void {
+				_paneManager.openPane(_paneManager.getPane(COLOR_FINDER_PANE_ID).infoBar.data.type);
+			}
+			
 			private function _onColorPickChanged(pEvent:flash.events.DataEvent):void
 			{
 				var tVal:uint = uint(pEvent.data);
-
-				this.character.colorItem(this.currentlyColoringType, _paneManager.getPane(COLOR_PANE_ID).selectedSwatch, tVal.toString(16));
-				var tItem:MovieClip = this.character.getItemFromIndex(this.currentlyColoringType);
-				if (tItem != null) {
-					costumes.copyColor( tItem, getButtonArrayByType(this.currentlyColoringType)[ getCurItemID(this.currentlyColoringType) ].Image );
-					costumes.copyColor(tItem, getInfoBarByType( this.currentlyColoringType ).Image );
-					costumes.copyColor(tItem, _paneManager.getPane(COLOR_PANE_ID).infoBar.Image);
-				}
-			}
-
-			private function _onConfigColorPickChanged(pEvent:flash.events.DataEvent):void
-			{
-				var tVal:uint = uint(pEvent.data);
-				_paneManager.getPane(CONFIG_PANE_ID).updateCustomColor(configCurrentlyColoringType, tVal);
+				this.character.getItemData(this.currentlyColoringType).colors[_paneManager.getPane(COLOR_PANE_ID).selectedSwatch] = tVal;
+				_refreshSelectedItemColor(this.currentlyColoringType);
 			}
 
 			private function _onDefaultsButtonClicked(pEvent:Event) : void
 			{
-				var tMC:MovieClip = this.character.getItemFromIndex(this.currentlyColoringType);
-				if (tMC != null)
-				{
-					costumes.colorDefault(tMC);
-					costumes.copyColor( tMC, getButtonArrayByType(this.currentlyColoringType)[ getCurItemID(this.currentlyColoringType) ].Image );
-					costumes.copyColor(tMC, getInfoBarByType(this.currentlyColoringType).Image);
-					costumes.copyColor(tMC, _paneManager.getPane(COLOR_PANE_ID).infoBar.Image);
-					_paneManager.getPane(COLOR_PANE_ID).setupSwatches( this.character.getColors(this.currentlyColoringType) );
+				this.character.getItemData(this.currentlyColoringType).setColorsToDefault();
+				_refreshSelectedItemColor(this.currentlyColoringType);
+				_paneManager.getPane(COLOR_PANE_ID).setupSwatches( this.character.getColors(this.currentlyColoringType) );
+			}
+			
+			private function _refreshSelectedItemColor(pType:String, pForceReplace:Boolean=false) : void {
+				character.updatePose();
+				
+				var tItemData = this.character.getItemData(pType);
+				if(pType != ITEM.SKIN && !pForceReplace) {
+					var tItem:MovieClip = costumes.getColoredItemImage(tItemData);
+					costumes.copyColor(tItem, getButtonArrayByType(pType)[ getCurItemID(pType) ].Image );
+					costumes.copyColor(tItem, getInfoBarByType(pType).Image );
+					costumes.copyColor(tItem, _paneManager.getPane(COLOR_PANE_ID).infoBar.Image);
+				} else {
+					_replaceImageWithNewImage(getButtonArrayByType(pType)[ getCurItemID(pType) ], costumes.getColoredItemImage(tItemData));
+					/*_replaceImageWithNewImage(getInfoBarByType(pType), costumes.getColoredItemImage(tItemData));*/
+					getInfoBarByType(pType).ChangeImage(costumes.getColoredItemImage(tItemData));
+					_replaceImageWithNewImage(_paneManager.getPane(COLOR_PANE_ID).infoBar, costumes.getColoredItemImage(tItemData));
 				}
+			}
+			
+			private function _replaceImageWithNewImage(pOldSource:Object, pNew:MovieClip) : void {
+				pNew.x = pOldSource.Image.x;
+				pNew.y = pOldSource.Image.y;
+				pNew.scaleX = pOldSource.Image.scaleX;
+				pNew.scaleY = pOldSource.Image.scaleY;
+				pOldSource.Image.parent.addChild(pNew);
+				pOldSource.Image.parent.removeChild(pOldSource.Image);
+				pOldSource.Image = null;
+				pOldSource.Image = pNew;
 			}
 
 			private function _colorButtonClicked(pType:String) : void {
@@ -407,6 +480,29 @@ package app.world
 				this.currentlyColoringType = pType;
 				_paneManager.getPane(COLOR_PANE_ID).setupSwatches( this.character.getColors(pType) );
 				_paneManager.openPane(COLOR_PANE_ID);
+			}
+
+			private function _onConfigColorPickChanged(pEvent:flash.events.DataEvent):void
+			{
+				var tVal:uint = uint(pEvent.data);
+				_paneManager.getPane(CONFIG_PANE_ID).updateCustomColor(configCurrentlyColoringType, tVal);
+			}
+			
+			// When any color type changes, be it via color picker or just button.
+			private function _onConfigColorChanged(pEvent:FewfEvent) {
+				switch(pEvent.data.type) {
+					case "hair":
+						_paneManager.getPane(ITEM.HAIR).makeDirty();
+						_paneManager.getPane(ITEM.BEARD).makeDirty();
+						break;
+					case "skin":
+						_paneManager.getPane(ITEM.SKIN).makeDirty();
+						_paneManager.getPane(ITEM.POSE).makeDirty();
+						break;
+					case "secondary":
+						_paneManager.getPane(ITEM.SKIN).makeDirty();
+						break;
+				}
 			}
 
 			private function _configColorButtonClicked(pType:String, pColor:int) : void {

@@ -1,3 +1,24 @@
 {
-	"language": "en"
+	"languages": {
+		"default": "en",
+		"list": [
+			{ "code":"en", "name":"English", "flags_swf_linkage":"$EN" }
+		]
+	},
+	"packs": {
+		"outfit": [
+			"Accessoires_visage_01.swf",
+			"Accessoires_01.swf",
+			"Visages_01.swf",
+			"Chapeaux_01.swf",
+			"Chaussures_01.swf",
+			"Coiffures_01.swf",
+			"Hauts_01.swf",
+			"Pantalons_01.swf"
+		],
+		"parts": [
+			"poses.swf",
+			"objects.swf"
+		]
+	}
 }

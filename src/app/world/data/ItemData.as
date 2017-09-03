@@ -13,6 +13,7 @@ package app.world.data
 		public var sex			: String;
 		public var itemClass	: Class;
 		public var classMap		: Object;
+		public var stopFrame	: int;
 
 		// pData = { id:String, type:String(ITEM), itemClass:Class, ?sex:String, ?classMap:String -> Class, ?assetID:String }
 		public function ItemData(pData:Object) {
@@ -23,6 +24,7 @@ package app.world.data
 			sex = pData.sex;
 			itemClass = pData.itemClass;
 			classMap = pData.classMap;
+			stopFrame = 1;
 		}
 		
 		// pOptions = { ?facingForward:Boolean=true, ?sex:SEX }

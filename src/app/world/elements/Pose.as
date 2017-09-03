@@ -103,7 +103,10 @@ package app.world.elements
 			if(pData) {
 				var tClass = pData.getPart(pID, pOptions);
 				if(tClass) {
-					return pSkinPart.addChild( new tClass() );
+					var tItem = new tClass();
+					tItem.gotoAndPlay(pData.stopFrame);
+					tItem.stop();
+					return pSkinPart.addChild( tItem );
 				}
 			}
 			return null;
