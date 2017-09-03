@@ -1,0 +1,39 @@
+{
+	"defaultFont": "Verdana",
+	"defaultScale": 1,
+	"strings": {
+		"loading_progress":		{ "text":"{0}" },
+		"infobar_id":			{ "text":"ID: {0}" },
+		
+		"loading":				{ "text":"Saker kvar att ladda {0}" },
+		"loading_finished":		{ "text":"Laddning avslutad" },
+		"btn_color_defaults":	{ "text":"Uteblivna färger" },
+		"share_header":			{ "text":"Visa ditt mästervärk" },
+		"share_link_copied":	{ "text":"Länk kopierad! den finns nu i din clipboard" },
+		"share_copy":			{ "text":"Kopiera" },
+		"version":				{ "text":"Version {0}" },
+		"translated_by":		{ "text":"Översätt av: Elinormus" },
+		
+		"label_sex":			{ "text":"Kön" },
+		"btn_female":			{ "text":"Kvinna" },
+		"btn_male":				{ "text":"Maskulin" },
+		"label_face_dir":		{ "text":"Ansikte" },
+		"btn_face_front":		{ "text":"Framsidan av ansiktet" },
+		"btn_face_back":		{ "text":"Baksidan av ansiktet" },
+		"label_hair_color":		{ "text":"Hårfärg" },
+		"label_skin_color":		{ "text":"Hudfärg" },
+		"label_other_color":	{ "text":"Andra färger" },
+		"tab_config":			{ "text":"Konfig-\nuration", "scale":0.8 },
+		"tab_skins":			{ "text":"Skin" },
+		"tab_face":				{ "text":"Ansikten" },
+		"tab_hair":				{ "text":"Hår" },
+		"tab_beards":			{ "text":"Skägg" },
+		"tab_head":				{ "text":"Huvuden" },
+		"tab_shirts":			{ "text":"Tröjor" },
+		"tab_pants":			{ "text":"Byxor" },
+		"tab_shoes":			{ "text":"Skor" },
+		"tab_objects":			{ "text":"Föremål" },
+		"tab_poses":			{ "text":"Positioner", "scale":0.9 },
+		"skin_invisible":		{ "text":"Osynligt\nskin" }
+	}
+}

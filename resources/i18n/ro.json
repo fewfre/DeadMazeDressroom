@@ -1,0 +1,39 @@
+{
+	"defaultFont": "Verdana",
+	"defaultScale": 1,
+	"strings": {
+		"loading_progress":		{ "text":"{0}" },
+		"infobar_id":			{ "text":"ID: {0}" },
+		
+		"loading":				{ "text":"Elementele rămase pentru încărcare: {0}" },
+		"loading_finished":		{ "text":"Încărcare completă. Inițializează ..." },
+		"btn_color_defaults":	{ "text":"Valori prestabilite", "scale":0.9 },
+		"share_header":			{ "text":"Împărtășește-ți creația!" },
+		"share_link_copied":	{ "text":"Link copiat in clipboard! Lipiți-l pentru utilizare.", "scale":0.95 },
+		"share_copy":			{ "text":"Copiează" },
+		"version":				{ "text":"Versiune: {0}" },
+		"translated_by":		{ "text":"Translated by: Sky_dreams" },
+		
+		"label_sex":			{ "text":"Sex" },
+		"btn_female":			{ "text":"Femeie" },
+		"btn_male":				{ "text":"Bărbat" },
+		"label_face_dir":		{ "text":"Față" },
+		"btn_face_front":		{ "text":"Față" },
+		"btn_face_back":		{ "text":"Înapoi" },
+		"label_hair_color":		{ "text":"Coafură" },
+		"label_skin_color":		{ "text":"Piele" },
+		"label_other_color":	{ "text":"Altele" },
+		"tab_config":			{ "text":"Config-\nurare", "scale":0.8 },
+		"tab_skins":			{ "text":"Piele" },
+		"tab_face":				{ "text":"Față" },
+		"tab_hair":				{ "text":"Coafură" },
+		"tab_beards":			{ "text":"Barbă" },
+		"tab_head":				{ "text":"Cap" },
+		"tab_shirts":			{ "text":"Tricouri" },
+		"tab_pants":			{ "text":"Pantaloni", "scale":0.95 },
+		"tab_shoes":			{ "text":"Înclță-\nminte", "scale":0.8 },
+		"tab_objects":			{ "text":"Obiecte" },
+		"tab_poses":			{ "text":"Poziție" },
+		"skin_invisible":		{ "text":"Invizibil" }
+	}
+}

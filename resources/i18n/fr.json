@@ -1,0 +1,39 @@
+{
+	"defaultFont": "Verdana",
+	"defaultScale": 1,
+	"strings": {
+		"loading_progress":		{ "text":"{0}" },
+		"infobar_id":			{ "text":"ID: {0}" },
+		
+		"loading":				{ "text":"Items qui restent à charger: {0}" },
+		"loading_finished":		{ "text":"Chargement complet. Initialisation..." },
+		"btn_color_defaults":	{ "text":"Défauts" },
+		"share_header":			{ "text":"Partage ta Création!" },
+		"share_link_copied":	{ "text":"Lien copié au presse-papiers! Coller pour utiliser.", "scale":0.9 },
+		"share_copy":			{ "text":"Copier" },
+		"version":				{ "text":"Version: {0}" },
+		"translated_by":		{ "text":"Traduit par: Virus_code" },
+		
+		"label_sex":			{ "text":"Sexe" },
+		"btn_female":			{ "text":"Femme" },
+		"btn_male":				{ "text":"Homme" },
+		"label_face_dir":		{ "text":"Face" },
+		"btn_face_front":		{ "text":"Devant" },
+		"btn_face_back":		{ "text":"Derrière" },
+		"label_hair_color":		{ "text":"Cheveux" },
+		"label_skin_color":		{ "text":"Peau" },
+		"label_other_color":	{ "text":"Autres" },
+		"tab_config":			{ "text":"Config-\nuration", "scale":0.8 },
+		"tab_skins":			{ "text":"Peau" },
+		"tab_face":				{ "text":"Face" },
+		"tab_hair":				{ "text":"Cheveux" },
+		"tab_beards":			{ "text":"Barbes" },
+		"tab_head":				{ "text":"Tête" },
+		"tab_shirts":			{ "text":"Shirts" },
+		"tab_pants":			{ "text":"Pantalons", "scale":0.95 },
+		"tab_shoes":			{ "text":"Chaussures", "scale":0.75 },
+		"tab_objects":			{ "text":"Objets" },
+		"tab_poses":			{ "text":"Pose" },
+		"skin_invisible":		{ "text":"Invisible" }
+	}
+}

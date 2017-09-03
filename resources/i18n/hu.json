@@ -1,0 +1,39 @@
+{
+	"defaultFont": "Verdana",
+	"defaultScale": 1,
+	"strings": {
+		"loading_progress":		{ "text":"{0}" },
+		"infobar_id":			{ "text":"ID: {0}" },
+		
+		"loading":				{ "text":"Betöltendő tételek száma: {0}" },
+		"loading_finished":		{ "text":"Betöltés sikeres. Indítás..." },
+		"btn_color_defaults":	{ "text":"Alapértelmezett" },
+		"share_header":			{ "text":"Oszd meg a kinézeted!" },
+		"share_link_copied":	{ "text":"Link a vágólapra másolva! Illeszd be a használathoz.", "scale":0.9 },
+		"share_copy":			{ "text":"másolás" },
+		"version":				{ "text":"Verzió: {0}" },
+		"translated_by":		{ "text":"Fordította: Fire_tiger" },
+		
+		"label_sex":			{ "text":"Nem" },
+		"btn_female":			{ "text":"Nő" },
+		"btn_male":				{ "text":"Férfi" },
+		"label_face_dir":		{ "text":"Arc" },
+		"btn_face_front":		{ "text":"Előlről" },
+		"btn_face_back":		{ "text":"Hátulról" },
+		"label_hair_color":		{ "text":"Haj" },
+		"label_skin_color":		{ "text":"Bőr" },
+		"label_other_color":	{ "text":"Egyéb" },
+		"tab_config":			{ "text":"Konfig" },
+		"tab_skins":			{ "text":"Bőr" },
+		"tab_face":				{ "text":"Arc" },
+		"tab_hair":				{ "text":"Haj" },
+		"tab_beards":			{ "text":"Szakáll" },
+		"tab_head":				{ "text":"Fej" },
+		"tab_shirts":			{ "text":"Póló" },
+		"tab_pants":			{ "text":"Nadrág" },
+		"tab_shoes":			{ "text":"Cipő" },
+		"tab_objects":			{ "text":"Tárgyak" },
+		"tab_poses":			{ "text":"Póz" },
+		"skin_invisible":		{ "text":"Láthatatlan" }
+	}
+}

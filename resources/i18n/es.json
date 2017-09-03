@@ -1,0 +1,39 @@
+{
+	"defaultFont": "Verdana",
+	"defaultScale": 1,
+	"strings": {
+		"loading_progress":		{ "text":"{0}" },
+		"infobar_id":			{ "text":"ID: {0}" },
+		
+		"loading":				{ "text":"Elementos a cargar : {0}" },
+		"loading_finished":		{ "text":"Carga completa. Iniciando..." },
+		"btn_color_defaults":	{ "text":"Por defecto" },
+		"share_header":			{ "text":"¡Comparte tu creación!" },
+		"share_link_copied":	{ "text":"¡Enlace copiado al portapapeles! Pega para usar.", "scale":0.9 },
+		"share_copy":			{ "text":"copiar" },
+		"version":				{ "text":"Versión: {0}" },
+		"translated_by":		{ "text":"Traducido por: Chamelinct" },
+		
+		"label_sex":			{ "text":"Sexo" },
+		"btn_female":			{ "text":"Femenino", "scale":0.95 },
+		"btn_male":				{ "text":"Masculino", "scale":0.95 },
+		"label_face_dir":		{ "text":"Cara" },
+		"btn_face_front":		{ "text":"Frente" },
+		"btn_face_back":		{ "text":"Atrás" },
+		"label_hair_color":		{ "text":"Pelo" },
+		"label_skin_color":		{ "text":"Piel" },
+		"label_other_color":	{ "text":"Otro" },
+		"tab_config":			{ "text":"Config" },
+		"tab_skins":			{ "text":"Piel" },
+		"tab_face":				{ "text":"Cara" },
+		"tab_hair":				{ "text":"Pelo" },
+		"tab_beards":			{ "text":"Barbas" },
+		"tab_head":				{ "text":"Cabeza" },
+		"tab_shirts":			{ "text":"Camisa" },
+		"tab_pants":			{ "text":"Pants" },
+		"tab_shoes":			{ "text":"Zapatos" },
+		"tab_objects":			{ "text":"Objetos" },
+		"tab_poses":			{ "text":"Pose" },
+		"skin_invisible":		{ "text":"Invisible" }
+	}
+}

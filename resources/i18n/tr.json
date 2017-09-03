@@ -1,0 +1,39 @@
+{
+	"defaultFont": "Verdana",
+	"defaultScale": 1,
+	"strings": {
+		"loading_progress":		{ "text":"{0}" },
+		"infobar_id":			{ "text":"Kimlik: {0}" },
+		
+		"loading":				{ "text":"Yüklenmesi için geriye kalan ögeler: {0}" },
+		"loading_finished":		{ "text":"Yükleme tamamlandı. Başlatılıyor..." },
+		"btn_color_defaults":	{ "text":"Varsayılanlar" },
+		"share_header":			{ "text":"Eserini paylaş!" },
+		"share_link_copied":	{ "text":"Bağlantı panoya kopyalandı! Kullanmak için yapıştırın.", "scale":0.9 },
+		"share_copy":			{ "text":"kopyala" },
+		"version":				{ "text":"Sürüm: {0}" },
+		"translated_by":		{ "text":"Çeviri: Honorabilis" },
+		
+		"label_sex":			{ "text":"Cinsiyet", "scale":0.9 },
+		"btn_female":			{ "text":"Kız" },
+		"btn_male":				{ "text":"Erkek" },
+		"label_face_dir":		{ "text":"Yüz" },
+		"btn_face_front":		{ "text":"Ön" },
+		"btn_face_back":		{ "text":"Arka" },
+		"label_hair_color":		{ "text":"Saç Şekli" },
+		"label_skin_color":		{ "text":"Kostüm" },
+		"label_other_color":	{ "text":"Diğer" },
+		"tab_config":			{ "text":"Yapılan\n-dırma", "scale":0.8 },
+		"tab_skins":			{ "text":"Kostüm" },
+		"tab_face":				{ "text":"Yüz" },
+		"tab_hair":				{ "text":"Saç Şekli" },
+		"tab_beards":			{ "text":"Sakallar" },
+		"tab_head":				{ "text":"Baş" },
+		"tab_shirts":			{ "text":"Shirtler" },
+		"tab_pants":			{ "text":"Panto-\nlonlar", "scale":0.8 },
+		"tab_shoes":			{ "text":"Ayakk-\nabılar", "scale":0.8 },
+		"tab_objects":			{ "text":"Ögeler" },
+		"tab_poses":			{ "text":"Duruş" },
+		"skin_invisible":		{ "text":"Görünmez" }
+	}
+}

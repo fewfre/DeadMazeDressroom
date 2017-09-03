@@ -1,0 +1,39 @@
+{
+	"defaultFont": "Verdana",
+	"defaultScale": 1,
+	"strings": {
+		"loading_progress":		{ "text":"{0}" },
+		"infobar_id":			{ "text":"ID: {0}" },
+		
+		"loading":				{ "text":"Предметов осталось для загрузки: {0}" },
+		"loading_finished":		{ "text":"Загрузка завершена. Инициализация..." },
+		"btn_color_defaults":	{ "text":"По умолчанию" },
+		"share_header":			{ "text":"По делиться своей работой!" },
+		"share_link_copied":	{ "text":"Ссылка скопирована в буфер обмена! Вставьте для использования.", "scale":0.6 },
+		"share_copy":			{ "text":"Копия" },
+		"version":				{ "text":"Версия: {0}" },
+		"translated_by":		{ "text":"Переведено: Cakeslices" },
+		
+		"label_sex":			{ "text":"Пол" },
+		"btn_female":			{ "text":"Женский", "scale":0.95 },
+		"btn_male":				{ "text":"Мужской", "scale":0.95 },
+		"label_face_dir":		{ "text":"Лицо" },
+		"btn_face_front":		{ "text":"Перед" },
+		"btn_face_back":		{ "text":"Сзади" },
+		"label_hair_color":		{ "text":"Волосы" },
+		"label_skin_color":		{ "text":"Kожа" },
+		"label_other_color":	{ "text":"Другой" },
+		"tab_config":			{ "text":"Kонфигу\n-рации", "scale":0.8 },
+		"tab_skins":			{ "text":"Kожа" },
+		"tab_face":				{ "text":"Лицо" },
+		"tab_hair":				{ "text":"Волосы" },
+		"tab_beards":			{ "text":"Бороды" },
+		"tab_head":				{ "text":"Голова" },
+		"tab_shirts":			{ "text":"Рубашки" },
+		"tab_pants":			{ "text":"Штаны" },
+		"tab_shoes":			{ "text":"Oбувь" },
+		"tab_objects":			{ "text":"Oбъекты", "scale":0.95 },
+		"tab_poses":			{ "text":"Поза" },
+		"skin_invisible":		{ "text":"Невидимая" }
+	}
+}

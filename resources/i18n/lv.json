@@ -1,0 +1,39 @@
+{
+	"defaultFont": "Verdana",
+	"defaultScale": 1,
+	"strings": {
+		"loading_progress":		{ "text":"{0}" },
+		"infobar_id":			{ "text":"ID: {0}" },
+		
+		"loading":				{ "text":"Atlikuši {0} apģērbi" },
+		"loading_finished":		{ "text":"Ielāde pabeigta. Inicializē..." },
+		"btn_color_defaults":	{ "text":"Atiestaīt uz noklusējumu", "scale":0.7 },
+		"share_header":			{ "text":"Dalies ar savu meistardarbu!" },
+		"share_link_copied":	{ "text":"Saite kopēta uz starpliktuvi! Iekopē, lai lietotu.", "scale":0.95 },
+		"share_copy":			{ "text":"Kopēt" },
+		"version":				{ "text":"Versija: {0}" },
+		"translated_by":		{ "text":"Tulkoja: Marciskris" },
+		
+		"label_sex":			{ "text":"Dzimums", "scale":0.8 },
+		"btn_female":			{ "text":"Sieviete" },
+		"btn_male":				{ "text":"Vīrietis" },
+		"label_face_dir":		{ "text":"Seja" },
+		"btn_face_front":		{ "text":"Priekšpuse" },
+		"btn_face_back":		{ "text":"Aizmugure" },
+		"label_hair_color":		{ "text":"Mati" },
+		"label_skin_color":		{ "text":"Āda" },
+		"label_other_color":	{ "text":"Cits" },
+		"tab_config":			{ "text":"Konfigurēt", "scale":0.8 },
+		"tab_skins":			{ "text":"Āda" },
+		"tab_face":				{ "text":"Seja" },
+		"tab_hair":				{ "text":"Mati" },
+		"tab_beards":			{ "text":"Bārda" },
+		"tab_head":				{ "text":"Galva" },
+		"tab_shirts":			{ "text":"Krekli" },
+		"tab_pants":			{ "text":"Bikses" },
+		"tab_shoes":			{ "text":"Kurpes" },
+		"tab_objects":			{ "text":"Objekti" },
+		"tab_poses":			{ "text":"Poza" },
+		"skin_invisible":		{ "text":"Neredzams" }
+	}
+}

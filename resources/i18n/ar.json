@@ -1,0 +1,39 @@
+{
+	"defaultFont": "Verdana",
+	"defaultScale": 1,
+	"strings": {
+		"loading_progress":		{ "text":"{0}" },
+		"infobar_id":			{ "text":"هوية: {0}" },
+		
+		"loading":				{ "text":"العناصر المتبقية للتحميل: {0}" },
+		"loading_finished":		{ "text":"اكتمل التحميل. جار التهيئة..." },
+		"btn_color_defaults":	{ "text":"العادية" },
+		"share_header":			{ "text":"شارك معنا ابداعك !" },
+		"share_link_copied":	{ "text":"تم نسخ الرابط إلى الحافظة! الصق للاستخدام." },
+		"share_copy":			{ "text":"نسخ" },
+		"version":				{ "text":"الإصدار: {0}" },
+		"translated_by":		{ "text":"الترجمة من طرف: Hmiida" },
+		
+		"label_sex":			{ "text":"الجنس" },
+		"btn_female":			{ "text":"أنثى" },
+		"btn_male":				{ "text":"ذكر" },
+		"label_face_dir":		{ "text":"الوجه" },
+		"btn_face_front":		{ "text":"المقدمة" },
+		"btn_face_back":		{ "text":"الخلف" },
+		"label_hair_color":		{ "text":"الشعر" },
+		"label_skin_color":		{ "text":"لون الجلد" },
+		"label_other_color":	{ "text":"آخر" },
+		"tab_config":			{ "text":"ترتيب" },
+		"tab_skins":			{ "text":"الجلد" },
+		"tab_face":				{ "text":"الوجه" },
+		"tab_hair":				{ "text":"الشعر" },
+		"tab_beards":			{ "text":"اللحية" },
+		"tab_head":				{ "text":"الرأس" },
+		"tab_shirts":			{ "text":"قمصان" },
+		"tab_pants":			{ "text":"السراويل" },
+		"tab_shoes":			{ "text":"الأحذية" },
+		"tab_objects":			{ "text":"الاجسام" },
+		"tab_poses":			{ "text":"الوضعية" },
+		"skin_invisible":		{ "text":"غير مرئي" }
+	}
+}

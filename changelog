@@ -3,6 +3,7 @@
 - When hair / skin / secondary color is updated, these changes are now reflected on hair/beard/skin/pose tabs.
 - [Bug] Once you selected a custom color on config, you couldn't select new custom color without clicking a default color first.
 - Guitar no longer animates state options; now a play button appears on the pane button that lets you step through the states.
+- Adding various languages
 - Moved over TFM Dressroom rework:
 	- V.5
 		- Added app info on bottom left
