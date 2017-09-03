@@ -4,6 +4,7 @@
 - [Bug] Once you selected a custom color on config, you couldn't select new custom color without clicking a default color first.
 - Guitar no longer animates state options; now a play button appears on the pane button that lets you step through the states.
 - Adding various languages
+- [Bug] Fixed having dupiccate outfits show when there was a female-specific version but no male version.
 - Moved over TFM Dressroom rework:
 	- V.5
 		- Added app info on bottom left

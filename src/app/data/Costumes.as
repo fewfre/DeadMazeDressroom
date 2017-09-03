@@ -127,11 +127,27 @@ package app.data
 				"$Camp4",
 				
 				"ZombieStatique",
+				"ZombieStatique2",
+				"ZombieStatique3",
+				"ZombieStatique4",
+				"ZombieStatique5",
 				"ZombieMort",
+				"ZombieMort2",
 				"ZombieCourse",
+				"ZombieCourse2",
+				"ZombieCourse3",
+				"ZombieCourse4",
+				"ZombieCourse5",
 				"ZombieStun",
+				"ZombieStun2",
 				"ZombieTouche",
+				"ZombieTouche2",
+				"ZombieTouche3",
 				"ZombieAttaque",
+				"ZombieAttaque2",
+				"ZombieAttaque3",
+				"ZombieAttaque4",
+				"ZombieAttaque5",
 				
 				"Statique_PNJblesse",
 				"Statique_chloeblessee",
@@ -144,10 +160,12 @@ package app.data
 				"$posture_wallace_1",
 				"$posture_pistolet_1",
 				"$posture_murphy_1",
+				"$posture_molotov",
 				"$posture_manuel_1",
 				"$posture_manuel_2",
+				"$posture_manuel_2bis",
 				"$posture_lynn_1",
-				"$posture_karen_1",
+				/*"$posture_karen_1",*/
 				"$posture_jared_1",
 				"$posture_jardin_1",
 				"$posture_gary_1",
@@ -160,8 +178,17 @@ package app.data
 				"$posture_croise_1",
 				"$posture_chloe_1",
 				"$posture_chloe_2",
+				"$posture_chloe_genou1",
+				"$posture_chloe_genou2",
+				"$posture_chloe_genou3",
+				"$posture_cendre",
 				"$posture_carte_1",
 				"$posture_carte_2",
+				"$posture_blesse1",
+				"$posture_blesse2",
+				"$posture_blesse3",
+				"$posture_blesse4",
+				"$posture_blesse5",
 				"$posture_arc_1",
 				"$posture_arc_2",
 				"$posture_arc_3",
@@ -202,6 +229,7 @@ package app.data
 			var tLength:int = pData.numToCheck ? pData.numToCheck : _MAX_COSTUMES_TO_CHECK_TO;
 			for(var i = 0; i <= tLength; i++) {
 				if(pData.map) {
+					var tSexSpecificArray = new Array();
 					for(var g:int = 0; g < (pData.sex ? 2 : 1); g++) {
 						var tClassMap = {  }, tClassSuccess = null;
 						tSexSpecificParts = 0;
@@ -215,12 +243,22 @@ package app.data
 						}
 						if(tClassSuccess) {
 							var tIsSexSpecific = pData.sex && tSexSpecificParts > 0;
-							tArray.push( new ItemData({ id:i+(tIsSexSpecific ? (g==1 ? "M" : "F") : ""), assetID:pData.base+(pData.pad ? zeroPad(i, pData.pad) : i), type:pData.type, classMap:tClassMap, itemClass:tClassSuccess, sex:(tIsSexSpecific ? (g==1?SEX.MALE:SEX.FEMALE) : null) }) );
+							tSexSpecificArray.push( new ItemData({ id:i+(tIsSexSpecific ? (g==1 ? "M" : "F") : ""), assetID:pData.base+(pData.pad ? zeroPad(i, pData.pad) : i), type:pData.type, classMap:tClassMap, itemClass:tClassSuccess, sex:(tIsSexSpecific ? (g==1?SEX.MALE:SEX.FEMALE) : null) }) );
 						}
 						if(tSexSpecificParts == 0 && tClassSuccess) {
 							break;
 						}
 					}
+					// TODO: This is a hacky way to removed the items after they've been created. Rework?
+					// Check if more than 1 entry
+					if(tSexSpecificArray.length > 1) {
+						// If there are two entries then at least one must be sex-specific.
+						// If one of these is gender neutral, it should be removed.
+						for(var n:int = 0; n < tSexSpecificArray.length; n++) {
+							if(tSexSpecificArray[n].sex == null) { tSexSpecificArray.splice(n, 1); break; }
+						}
+					}
+					tArray = tArray.concat(tSexSpecificArray);
 				} else {
 					tClass = Fewf.assets.getLoadedClass( pData.base+(pData.pad ? zeroPad(i, pData.pad) : i)+(pData.after ? pData.after : "") );
 					if(tClass != null) {
