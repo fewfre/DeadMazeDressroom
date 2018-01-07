@@ -17,6 +17,8 @@
 		"label_sex":			{ "text":"Kön" },
 		"btn_female":			{ "text":"Kvinna" },
 		"btn_male":				{ "text":"Maskulin" },
+		"label_advanced":		{ "text":"Advanced" },
+		"btn_extras":			{ "text":"Extras" },
 		"label_face_dir":		{ "text":"Ansikte" },
 		"btn_face_front":		{ "text":"Framsidan av ansiktet" },
 		"btn_face_back":		{ "text":"Baksidan av ansiktet" },
@@ -32,6 +34,9 @@
 		"tab_shirts":			{ "text":"Tröjor" },
 		"tab_pants":			{ "text":"Byxor" },
 		"tab_shoes":			{ "text":"Skor" },
+		"tab_mask":				{ "text":"Masks" },
+		"tab_gloves":			{ "text":"Gloves" },
+		"tab_bag":				{ "text":"Bags" },
 		"tab_objects":			{ "text":"Föremål" },
 		"tab_poses":			{ "text":"Positioner", "scale":0.9 },
 		"skin_invisible":		{ "text":"Osynligt\nskin" }

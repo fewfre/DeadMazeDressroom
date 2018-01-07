@@ -17,6 +17,8 @@
 		"label_sex":			{ "text":"Nem" },
 		"btn_female":			{ "text":"Nő" },
 		"btn_male":				{ "text":"Férfi" },
+		"label_advanced":		{ "text":"Advanced" },
+		"btn_extras":			{ "text":"Extras" },
 		"label_face_dir":		{ "text":"Arc" },
 		"btn_face_front":		{ "text":"Előlről" },
 		"btn_face_back":		{ "text":"Hátulról" },
@@ -32,6 +34,9 @@
 		"tab_shirts":			{ "text":"Póló" },
 		"tab_pants":			{ "text":"Nadrág" },
 		"tab_shoes":			{ "text":"Cipő" },
+		"tab_mask":				{ "text":"Masks" },
+		"tab_gloves":			{ "text":"Gloves" },
+		"tab_bag":				{ "text":"Bags" },
 		"tab_objects":			{ "text":"Tárgyak" },
 		"tab_poses":			{ "text":"Póz" },
 		"skin_invisible":		{ "text":"Láthatatlan" }

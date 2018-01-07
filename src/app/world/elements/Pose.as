@@ -56,10 +56,10 @@ package app.world.elements
 				}
 			}
 			
-			pData.skinColor = pData.skinColor != null ? pData.skinColor : Costumes.instance.skinColors[0];
-			pData.hairColor = pData.hairColor != null ? pData.hairColor : Costumes.instance.hairColors[0];
-			pData.secondaryColor = pData.secondaryColor != null ? pData.secondaryColor : Costumes.instance.secondaryColors[0];
-			pData.sex = pData.sex != null ? pData.sex : Costumes.instance.sex;
+			pData.skinColor = pData.skinColor != null ? pData.skinColor : GameAssets.skinColors[0];
+			pData.hairColor = pData.hairColor != null ? pData.hairColor : GameAssets.hairColors[0];
+			pData.secondaryColor = pData.secondaryColor != null ? pData.secondaryColor : GameAssets.secondaryColors[0];
+			pData.sex = pData.sex != null ? pData.sex : GameAssets.sex;
 			
 			_createPoseFromData(pData);
 			
@@ -70,7 +70,8 @@ package app.world.elements
 			
 			// This works because poses, skins, and items have a group of letters/numbers that let each other know they should be grouped together.
 			// For example; the "head" of a pose is T, as is the skin's head, hats, and hair. Thus they all go onto same area of the skin.
-			for(var i:int = 0; i < _pose.numChildren; i++) {
+			// Loop in reverse so unused parts can be removed if required
+			for(var i:int = _pose.numChildren-1; i >= 0; i--) {
 				tChild = _pose.getChildAt(i);
 				tItemsOnChild = 0;
 				
@@ -79,24 +80,13 @@ package app.world.elements
 					_colorPart(part, tShopData[j], tChild.name, pData);
 					if(part) { tItemsOnChild++; }
 				}
-				if(tItemsOnChild == 0) {
-					tChild.visible = false; // Hacky way to mark the child as "unused" for use in _removeUnusedParts().
+				if(pData.removeBlanks && tItemsOnChild == 0) {
+					_pose.removeChildAt(i);
 				}
 				part = null;
 			}
-			if(pData.removeBlanks) {
-				_removeUnusedParts();
-			}
 			
 			return this;
-		}
-		
-		private function _removeUnusedParts() {
-			i = _pose.numChildren;
-			while(i > 0) { i--;
-				tChild = _pose.getChildAt(i);
-				if(!tChild.visible) { _pose.removeChildAt(i); }// else { var ttt = new $ColorWheel(); ttt.scaleX = ttt.scaleY = 0.1; tChild.addChild(ttt); }
-			}
 		}
 		
 		private function _addToPoseIfCan(pSkinPart:DisplayObject, pData:ItemData, pID:String, pOptions:Object=null) : MovieClip {
@@ -116,15 +106,15 @@ package app.world.elements
 			if(!part) { return; }
 			if(part is MovieClip) {
 				/*if(pData.colors != null && !pData.isSkin()) {
-					Costumes.instance.colorItem({ obj:part, colors:pData.colors });
+					GameAssets.colorItem({ obj:part, colors:pData.colors });
 				}
-				else { Costumes.instance.colorDefault(part); }*/
+				else { GameAssets.colorDefault(part); }*/
 				
 				if((pData.type == ITEM.HAIR || pData.type == ITEM.BEARD) && pOptions.hairColor != null) {
-					Costumes.instance.applyColorToObject(part,  pOptions.hairColor);
+					GameAssets.applyColorToObject(part,  pOptions.hairColor);
 				}
-				Costumes.instance.colorItem({ obj:part, color: pOptions.skinColor, name:"$0" });
-				Costumes.instance.colorItem({ obj:part, color: pOptions.secondaryColor, name:"$2" });
+				GameAssets.colorItem({ obj:part, color: pOptions.skinColor, name:"$0" });
+				GameAssets.colorItem({ obj:part, color: pOptions.secondaryColor, name:"$2" });
 			}
 		}
 		

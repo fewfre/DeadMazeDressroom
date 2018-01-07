@@ -38,7 +38,7 @@ package app.ui.panes
 			
 			var i:int, xx:Number, yy:Number, spacing:Number, sizex:Number, sizey:Number, clr:int, tIndex:int;
 
-			i = 0; xx = 70; yy = 50; spacing = 75; sizex = 60; sizey = 35;
+			i = 0; xx = 70; yy = 40; spacing = 75; sizex = 60; sizey = 35;
 			addChild(new TextBase({ text:"label_sex", x:35, y:yy+3, size:17, originY:0 }));
 			sexButtons = [
 				addChild( new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"btn_female", allowToggleOff:false, data:{ id:SEX.FEMALE } }) ),
@@ -46,7 +46,7 @@ package app.ui.panes
 				//addChild( new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"All", allowToggleOff:false }) )
 			];
 			_registerClickHandler(sexButtons, _onSexButtonClicked);
-			sexButtons[ Costumes.instance.sex == SEX.MALE ? 1 : 0].toggleOn();
+			sexButtons[ GameAssets.sex == SEX.MALE ? 1 : 0].toggleOn();
 			
 			/*i = 0; xx = 285;
 			addChild(new TextBase({ text:"label_face_dir", x:250, y:yy+3, size:17, originY:0 }));
@@ -56,49 +56,59 @@ package app.ui.panes
 				//addChild( new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"All", allowToggleOff:false }) )
 			];
 			_registerClickHandler(facingButtons, _onFacingButtonClicked);
-			facingButtons[ Costumes.instance.facingForward == false ? 1 : 0].toggleOn();*/
+			facingButtons[ GameAssets.facingForward == false ? 1 : 0].toggleOn();*/
 
-			i = 0; spacing = 34; xx = ConstantsApp.PANE_WIDTH*0.5 - spacing*(Costumes.instance.hairColors.length+0.5)*0.5; yy = yy+90; sizex = 30; sizey = 30;
+			i = 0; spacing = 34; xx = ConstantsApp.PANE_WIDTH*0.5 - spacing*(GameAssets.hairColors.length+0.5)*0.5; yy = yy+90; sizex = 30; sizey = 30;
 			addChild(new TextBase({ text:"label_hair_color", x:ConstantsApp.PANE_WIDTH*0.5, y:yy-40, size:17, originY:0 }));
 			hairColorButtons = [];
-			for(i = 0; i < Costumes.instance.hairColors.length; i++) {
-				clr = Costumes.instance.hairColors[i];
+			for(i = 0; i < GameAssets.hairColors.length; i++) {
+				clr = GameAssets.hairColors[i];
 				hairColorButtons.push( addChild( new PushButton({ x:xx + (spacing*i), y:yy, width:sizex, height:sizey, obj:_colorSpriteBox({ color:clr }), id:clr, allowToggleOff:false }) ) );
 			}
-			hairColorButtons.push( addChild( hairColorPickerButton = new PushButton({ x:xx + (spacing*i), y:yy, width:sizex, height:sizey, obj:new $ColorWheel(), obj_scale:0.7, id:Costumes.instance.hairColor }) ) );
+			hairColorButtons.push( addChild( hairColorPickerButton = new PushButton({ x:xx + (spacing*i), y:yy, width:sizex, height:sizey, obj:new $ColorWheel(), obj_scale:0.7, id:GameAssets.hairColor }) ) );
 			hairColorPickerButtonBox = hairColorPickerButton.addChild(_colorSpriteBox({ color:hairColorPickerButton.id, size:MINI_BOX_SIZE, x:(sizex-MINI_BOX_SIZE)*0.5, y:(sizey-MINI_BOX_SIZE)*0.5 }));
 			_registerClickHandler(hairColorButtons, _onHairColorButtonClicked);
 			hairColorPickerButtonBox.addEventListener(PushButton.STATE_CHANGED_BEFORE, _onColorPickerButtonClicked);
-			tIndex = Costumes.instance.hairColors.indexOf(Costumes.instance.hairColor);
+			tIndex = GameAssets.hairColors.indexOf(GameAssets.hairColor);
 			hairColorButtons[tIndex > -1 ? tIndex : (hairColorButtons.length-1)].toggleOn();
 
-			i = 0; spacing = 34; xx = ConstantsApp.PANE_WIDTH*0.5 - spacing*(Costumes.instance.skinColors.length+0.5)*0.5; yy = yy+90; sizex = 30; sizey = 30;
+			i = 0; spacing = 34; xx = ConstantsApp.PANE_WIDTH*0.5 - spacing*(GameAssets.skinColors.length+0.5)*0.5; yy = yy+90; sizex = 30; sizey = 30;
 			addChild(new TextBase({ text:"label_skin_color", x:ConstantsApp.PANE_WIDTH*0.5, y:yy-40, size:17, originY:0 }));
 			skinColorButtons = [];
-			for(i = 0; i < Costumes.instance.skinColors.length; i++) {
-				clr = Costumes.instance.skinColors[i];
+			for(i = 0; i < GameAssets.skinColors.length; i++) {
+				clr = GameAssets.skinColors[i];
 				skinColorButtons.push( addChild( new PushButton({ x:xx + (spacing*i), y:yy, width:sizex, height:sizey, obj:_colorSpriteBox({ color:clr }), id:clr, allowToggleOff:false }) ) );
 			}
-			skinColorButtons.push( addChild( skinColorPickerButton = new PushButton({ x:xx + (spacing*i), y:yy, width:sizex, height:sizey, obj:new $ColorWheel(), obj_scale:0.7, id:Costumes.instance.skinColor }) ) );
+			skinColorButtons.push( addChild( skinColorPickerButton = new PushButton({ x:xx + (spacing*i), y:yy, width:sizex, height:sizey, obj:new $ColorWheel(), obj_scale:0.7, id:GameAssets.skinColor }) ) );
 			skinColorPickerButtonBox = skinColorPickerButton.addChild(_colorSpriteBox({ color:skinColorPickerButton.id, size:MINI_BOX_SIZE, x:(sizex-MINI_BOX_SIZE)*0.5, y:(sizey-MINI_BOX_SIZE)*0.5 }));
 			_registerClickHandler(skinColorButtons, _onSkinColorButtonClicked);
 			skinColorPickerButton.addEventListener(PushButton.STATE_CHANGED_BEFORE, _onColorPickerButtonClicked);
-			tIndex = Costumes.instance.skinColors.indexOf(Costumes.instance.skinColor);
+			tIndex = GameAssets.skinColors.indexOf(GameAssets.skinColor);
 			skinColorButtons[tIndex > -1 ? tIndex : (skinColorButtons.length-1)].toggleOn();
 
-			i = 0; spacing = 34; xx = ConstantsApp.PANE_WIDTH*0.5 - spacing*(Costumes.instance.secondaryColors.length+0.5)*0.5; yy = yy+90; sizex = 30; sizey = 30;
+			i = 0; spacing = 34; xx = ConstantsApp.PANE_WIDTH*0.5 - spacing*(GameAssets.secondaryColors.length+0.5)*0.5; yy = yy+90; sizex = 30; sizey = 30;
 			addChild(new TextBase({ text:"label_other_color", x:ConstantsApp.PANE_WIDTH*0.5, y:yy-40, size:17, originY:0 }));
 			secondaryColorButtons = [];
-			for(i = 0; i < Costumes.instance.secondaryColors.length; i++) {
-				clr = Costumes.instance.secondaryColors[i];
+			for(i = 0; i < GameAssets.secondaryColors.length; i++) {
+				clr = GameAssets.secondaryColors[i];
 				secondaryColorButtons.push( addChild( new PushButton({ x:xx + (spacing*i), y:yy, width:sizex, height:sizey, obj:_colorSpriteBox({ color:clr }), id:clr, allowToggleOff:false }) ) );
 			}
-			secondaryColorButtons.push( addChild( secondaryColorPickerButton = new PushButton({ x:xx + (spacing*i), y:yy, width:sizex, height:sizey, obj:new $ColorWheel(), obj_scale:0.7, id:Costumes.instance.secondaryColor }) ) );
+			secondaryColorButtons.push( addChild( secondaryColorPickerButton = new PushButton({ x:xx + (spacing*i), y:yy, width:sizex, height:sizey, obj:new $ColorWheel(), obj_scale:0.7, id:GameAssets.secondaryColor }) ) );
 			secondaryColorPickerButtonBox = secondaryColorPickerButton.addChild(_colorSpriteBox({ color:secondaryColorPickerButton.id, size:MINI_BOX_SIZE, x:(sizex-MINI_BOX_SIZE)*0.5, y:(sizey-MINI_BOX_SIZE)*0.5 }));
 			_registerClickHandler(secondaryColorButtons, _onSecondaryColorButtonClicked);
 			secondaryColorPickerButton.addEventListener(PushButton.STATE_CHANGED_BEFORE, _onColorPickerButtonClicked);
-			tIndex = Costumes.instance.secondaryColors.indexOf(Costumes.instance.secondaryColor);
+			tIndex = GameAssets.secondaryColors.indexOf(GameAssets.secondaryColor);
 			secondaryColorButtons[tIndex > -1 ? tIndex : (secondaryColorButtons.length-1)].toggleOn();
+			
+			// Advanced
+			i = 0; spacing = 34; xx = 90; yy = yy+50; sizex = 45; sizey = 25;
+			addChild(new TextBase({ text:"label_advanced", x:45, y:yy+3, size:12, originY:0 }));
+			var tButton = addChild( new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"btn_extras" }) );
+			tButton.Text.size = 11;
+			tButton.toggle(GameAssets.showAll);
+			tButton.addEventListener(PushButton.STATE_CHANGED_BEFORE, function(pEvent:Event){
+				dispatchEvent(new Event("show_extra"));
+			});
 		}
 
 		// pData = { color:int, box:Sprite[optional], size:Number=20, x:Number[optional], y:Number[optional] }
@@ -121,35 +131,35 @@ package app.ui.panes
 
 		private function _onSexButtonClicked(pEvent:FewfEvent) {
 			_untoggle(sexButtons, pEvent.target);
-			Costumes.instance.sex = pEvent.data.id;
+			GameAssets.sex = pEvent.data.id;
 			character.updatePose();
 			dispatchEvent(new Event("sex_change"));
 		}
 
 		private function _onFacingButtonClicked(pEvent:FewfEvent) {
 			_untoggle(facingButtons, pEvent.target);
-			Costumes.instance.facingForward = pEvent.data.id;
+			GameAssets.facingForward = pEvent.data.id;
 			character.updatePose();
 			dispatchEvent(new Event("facing_change"));
 		}
 
 		private function _onHairColorButtonClicked(pEvent:Event) {
 			_untoggle(hairColorButtons, pEvent.target);
-			Costumes.instance.hairColor = pEvent.target.id;
+			GameAssets.hairColor = pEvent.target.id;
 			character.updatePose();
 			dispatchEvent(new FewfEvent("color_changed", { type:"hair" }));
 		}
 
 		private function _onSkinColorButtonClicked(pEvent:Event) {
 			_untoggle(skinColorButtons, pEvent.target);
-			Costumes.instance.skinColor = pEvent.target.id;
+			GameAssets.skinColor = pEvent.target.id;
 			character.updatePose();
 			dispatchEvent(new FewfEvent("color_changed", { type:"skin" }));
 		}
 
 		private function _onSecondaryColorButtonClicked(pEvent:Event) {
 			_untoggle(secondaryColorButtons, pEvent.target);
-			Costumes.instance.secondaryColor = pEvent.target.id;
+			GameAssets.secondaryColor = pEvent.target.id;
 			character.updatePose();
 			dispatchEvent(new FewfEvent("color_changed", { type:"secondary" }));
 		}
@@ -174,21 +184,21 @@ package app.ui.panes
 		public function updateCustomColor(pType:String, tColor:int) {
 			switch(pType) {
 				case "hair": {
-					Costumes.instance.hairColor = tColor;
+					GameAssets.hairColor = tColor;
 					hairColorPickerButton.id = tColor;
 					_colorSpriteBox({ color:tColor, box:hairColorPickerButtonBox, size:MINI_BOX_SIZE });
 					character.updatePose();
 					break;
 				}
 				case "skin": {
-					Costumes.instance.skinColor = tColor;
+					GameAssets.skinColor = tColor;
 					skinColorPickerButton.id = tColor;
 					_colorSpriteBox({ color:tColor, box:skinColorPickerButtonBox, size:MINI_BOX_SIZE });
 					character.updatePose();
 					break;
 				}
 				case "secondary": {
-					Costumes.instance.secondaryColor = tColor;
+					GameAssets.secondaryColor = tColor;
 					secondaryColorPickerButton.id = tColor;
 					_colorSpriteBox({ color:tColor, box:secondaryColorPickerButtonBox, size:MINI_BOX_SIZE });
 					character.updatePose();

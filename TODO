@@ -1,4 +1,3 @@
-- Allow genders to be switched without resetting outfit
-	- need both male and female data in one data object.
-	- if there's an item with no male/female counterpart, default to unequip option.
 - Figure out what to do with the 60###_AC items (ranged weapons?)
+- Add a way to toggel on "poor" quality
+- Add a way to show yellow/red durability weapons (other than just guitar)

@@ -1,12 +1,23 @@
+== V1.5 - 6 January 2018 ==
+- Renamed "Costumes" to "GameAssets" and changed it from a singleton to a static class.
+- Fixed bugs that made objects that are parts of poses not show up.
+- Updated animations (many renamed)
+- Female character will no longer show "beards" tab
+- Various items are now hidden by default. This simplifies the layout, makes things faster, and focuses on actual in-game modifications. The new "Extras" button config will show everything as before.
+	- Skin / Face tabs are removed by default since can't change normally.
+	- Other tabs only have some items that need to be hidden; the items that are removed depend on the new "extras" field in the config.
+- When sex is switched, items will now change to their male/female counterpart; if there is none, it will be removed.
+
+
 == V1.4 - 3 September 2017 ==
 - Found clothes resource links and updated assets to use them (as well as created an update script)
 - When hair / skin / secondary color is updated, these changes are now reflected on hair/beard/skin/pose tabs.
 - [Bug] Once you selected a custom color on config, you couldn't select new custom color without clicking a default color first.
 - Guitar no longer animates state options; now a play button appears on the pane button that lets you step through the states.
 - Adding various languages
-- [Bug] Fixed having dupiccate outfits show when there was a female-specific version but no male version.
+- [Bug] Fixed having duplicate outfits show when there was a female-specific version but no male version.
 - Moved over TFM Dressroom rework:
-	- V.5
+	- V1.5
 		- Added app info on bottom left
 			- Moved github button from Toolbox
 			- Now display app's version (using a new "version" i18n string)
@@ -25,7 +36,6 @@
 		- I18n & TextBase updated to allow for changing language during runtime.
 		- You can now change language during run-time
 	- V1.6
-		- Share link feature added / finished.
 		- Color finder feature added for items.
 		- [bug] If you selected an item + colored it, selected something else, and then selected it again, the infobar image showed the default image.
 		- [bug] Downloading a colored image (vs whole mouse) didn't save it colored.

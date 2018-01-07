@@ -22,9 +22,21 @@ package app.ui
 			super(pData);
 
 			this.drawSimpleGradient(ConstantsApp.COLOR_TRAY_GRADIENT, 15, ConstantsApp.COLOR_TRAY_B_1, ConstantsApp.COLOR_TRAY_B_2, ConstantsApp.COLOR_TRAY_B_3);
-
-			var tTabInfo = pData.tabs;
-
+			
+			tabs = new Array();
+			if(pData.tabs) populate(pData.tabs);
+		}
+		
+		// Array<{ text:String, event:String }
+		public function populate(pTabs:Array) : void {
+			var i:int, tTabInfo = pTabs;
+			
+			// Clear old tabs (if any)
+			for(i = 0; i < tabs.length; i++) {
+				removeChild(tabs[i]);
+			}
+			tabs = null;
+			
 			var tXMargin:Number = 5;
 			var tYMargin:Number = 5;
 			var tHeight:Number = Math.min(65, (this.Height - tYMargin) / tTabInfo.length - tYMargin);
@@ -34,7 +46,7 @@ package app.ui
 			var tY:Number = tYMargin - tYSpacing; // Go back one space for when for loop adds one space.
 
 			tabs = new Array();
-			for(var i:int = 0; i < tTabInfo.length; i++) {
+			for(i = 0; i < tTabInfo.length; i++) {
 				_createTab(tTabInfo[i].text, tX, tY += tYSpacing, tWidth, tHeight, tTabInfo[i].event);
 			}
 		}

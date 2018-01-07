@@ -14,6 +14,8 @@ package app.world.data
 		public var itemClass	: Class;
 		public var classMap		: Object;
 		public var stopFrame	: int;
+		
+		public var tags			: Array; // Array<String>
 
 		// pData = { id:String, type:String(ITEM), itemClass:Class, ?sex:String, ?classMap:String -> Class, ?assetID:String }
 		public function ItemData(pData:Object) {
@@ -25,13 +27,14 @@ package app.world.data
 			itemClass = pData.itemClass;
 			classMap = pData.classMap;
 			stopFrame = 1;
+			tags = [];
 		}
 		
 		// pOptions = { ?facingForward:Boolean=true, ?sex:SEX }
 		public function getPart(pID:String, pOptions:Object=null) : Class {
 			if(type != ITEM.OBJECT) {
-				var facingForward = Costumes.instance.facingForward;
-				var sex = Costumes.instance.sex;
+				var facingForward = GameAssets.facingForward;
+				var sex = GameAssets.sex;
 				if(pOptions != null) {
 					if(pOptions.facingForward) { facingForward = pOptions.facingForward; }
 					if(pOptions.sex) { sex = pOptions.sex; }

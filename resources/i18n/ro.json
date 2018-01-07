@@ -17,6 +17,8 @@
 		"label_sex":			{ "text":"Sex" },
 		"btn_female":			{ "text":"Femeie" },
 		"btn_male":				{ "text":"Bărbat" },
+		"label_advanced":		{ "text":"Advanced" },
+		"btn_extras":			{ "text":"Extras" },
 		"label_face_dir":		{ "text":"Față" },
 		"btn_face_front":		{ "text":"Față" },
 		"btn_face_back":		{ "text":"Înapoi" },
@@ -32,6 +34,9 @@
 		"tab_shirts":			{ "text":"Tricouri" },
 		"tab_pants":			{ "text":"Pantaloni", "scale":0.95 },
 		"tab_shoes":			{ "text":"Înclță-\nminte", "scale":0.8 },
+		"tab_mask":				{ "text":"Masks" },
+		"tab_gloves":			{ "text":"Gloves" },
+		"tab_bag":				{ "text":"Bags" },
 		"tab_objects":			{ "text":"Obiecte" },
 		"tab_poses":			{ "text":"Poziție" },
 		"skin_invisible":		{ "text":"Invizibil" }

@@ -17,6 +17,8 @@
 		"label_sex":			{ "text":"Dzimums", "scale":0.8 },
 		"btn_female":			{ "text":"Sieviete" },
 		"btn_male":				{ "text":"Vīrietis" },
+		"label_advanced":		{ "text":"Advanced" },
+		"btn_extras":			{ "text":"Extras" },
 		"label_face_dir":		{ "text":"Seja" },
 		"btn_face_front":		{ "text":"Priekšpuse" },
 		"btn_face_back":		{ "text":"Aizmugure" },
@@ -32,6 +34,9 @@
 		"tab_shirts":			{ "text":"Krekli" },
 		"tab_pants":			{ "text":"Bikses" },
 		"tab_shoes":			{ "text":"Kurpes" },
+		"tab_mask":				{ "text":"Masks" },
+		"tab_gloves":			{ "text":"Gloves" },
+		"tab_bag":				{ "text":"Bags" },
 		"tab_objects":			{ "text":"Objekti" },
 		"tab_poses":			{ "text":"Poza" },
 		"skin_invisible":		{ "text":"Neredzams" }

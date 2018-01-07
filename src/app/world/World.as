@@ -27,8 +27,6 @@ package app.world
 	public class World extends MovieClip
 	{
 		// Storage
-		private var costumes		: Costumes;
-
 		internal var character		: Character;
 		internal var _paneManager	: PaneManager;
 
@@ -54,7 +52,7 @@ package app.world
 		}
 		
 		private function _buildWorld(pStage:Stage) {
-			costumes = Costumes.instance;
+			GameAssets.init();
 
 			/****************************
 			* Create Character
@@ -70,9 +68,9 @@ package app.world
 			} catch (error:Error) { };
 
 			this.character = addChild(new Character({ x:180, y:375,
-				skin:costumes.skins[costumes.defaultSkinIndex],
-				pose:costumes.poses[costumes.defaultPoseIndex],
-				face:costumes.faces[costumes.defaultFaceIndex],
+				skin:GameAssets.skins[GameAssets.defaultSkinIndex],
+				pose:GameAssets.poses[GameAssets.defaultPoseIndex],
+				face:GameAssets.faces[GameAssets.defaultFaceIndex],
 				params:parms,
 				scale:2.5
 			}));
@@ -84,21 +82,8 @@ package app.world
 			tShop.drawSimpleGradient(ConstantsApp.COLOR_TRAY_GRADIENT, 15, ConstantsApp.COLOR_TRAY_B_1, ConstantsApp.COLOR_TRAY_B_2, ConstantsApp.COLOR_TRAY_B_3);
 			_paneManager = tShop.addChild(new PaneManager());
 			
-			this.shopTabs = addChild(new ShopTabContainer({ x:375, y:10, width:70, height:ConstantsApp.APP_HEIGHT,
-				tabs:[
-					{ text:"tab_config", event:CONFIG_PANE_ID },
-					{ text:"tab_skins", event:ITEM.SKIN },
-					{ text:"tab_face", event:ITEM.FACE },
-					{ text:"tab_hair", event:ITEM.HAIR },
-					{ text:"tab_beards", event:ITEM.BEARD },
-					{ text:"tab_head", event:ITEM.HEAD },
-					{ text:"tab_shirts", event:ITEM.SHIRT },
-					{ text:"tab_pants", event:ITEM.PANTS },
-					{ text:"tab_shoes", event:ITEM.SHOES },
-					{ text:"tab_objects", event:ITEM.OBJECT },
-					{ text:"tab_poses", event:ITEM.POSE }
-				]
-			}));
+			this.shopTabs = addChild(new ShopTabContainer({ x:375, y:10, width:70, height:ConstantsApp.APP_HEIGHT }));
+			_populateShopTabs();
 			this.shopTabs.addEventListener(ShopTabContainer.EVENT_SHOP_TAB_CLICKED, _onTabClicked);
 
 			// Toolbox
@@ -140,6 +125,7 @@ package app.world
 			tPane.addEventListener("sex_change", _onSexChanged);
 			tPane.addEventListener("facing_change", _onFacingChanged);
 			tPane.addEventListener("color_changed", _onConfigColorChanged);
+			tPane.addEventListener("show_extra", _onShowExtraToggled);
 
 			tPane = _paneManager.addPane(CONFIG_COLOR_PANE_ID, new ColorPickerTabPane({ hide_default:true }));
 			tPane.addEventListener(ColorPickerTabPane.EVENT_COLOR_PICKED, _onConfigColorPickChanged);
@@ -150,7 +136,7 @@ package app.world
 
 
 			// Create the panes
-			var tTypes = [ ITEM.OBJECT, ITEM.SKIN, ITEM.FACE, ITEM.BEARD, ITEM.HAIR, ITEM.HEAD, ITEM.SHIRT, ITEM.PANTS, ITEM.SHOES, ITEM.POSE ], tData:ItemData, tType:String;
+			var tTypes = [ ITEM.OBJECT, ITEM.SKIN, ITEM.FACE, ITEM.BEARD, ITEM.HAIR, ITEM.HEAD, ITEM.SHIRT, ITEM.PANTS, ITEM.SHOES, ITEM.MASK, ITEM.GLOVES, ITEM.BAG, ITEM.POSE ], tData:ItemData, tType:String;
 			for(var i:int = 0; i < tTypes.length; i++) { tType = tTypes[i];
 				tPane = _paneManager.addPane(tType, _setupPane(tType));
 				// Based on what the character is wearing at start, toggle on the appropriate buttons.
@@ -162,7 +148,7 @@ package app.world
 							break;
 						}
 					}
-					//var tIndex:int = FewfUtils.getIndexFromArrayWithKeyVal(costumes.getArrayByType(tType), "id", tData.id);
+					//var tIndex:int = FewfUtils.getIndexFromArrayWithKeyVal(GameAssets.getArrayByType(tType), "id", tData.id);
 					//tPane.buttons[ tIndex ].toggleOn();
 				}
 				_setupDirtyPanePopulation(tType);
@@ -178,7 +164,7 @@ package app.world
 		
 		private function _setupDirtyPanePopulation(tType:String) : void {
 			_paneManager.getPane(tType).populateFunction = function(){
-				_setupPaneButtons(_paneManager.getPane(tType), costumes.getArrayByType(tType));
+				_setupPaneButtons(_paneManager.getPane(tType), GameAssets.getArrayByType(tType));
 				//_removeItem(tType);
 				
 				var tPane = _paneManager.getPane(tType);
@@ -199,7 +185,7 @@ package app.world
 		private function _setupPane(pType:String) : TabPane {
 			var tPane:TabPane = new TabPane();
 			tPane.addInfoBar( new ShopInfoBar({ showEyeDropButton:pType!=ITEM.POSE }) );
-			_setupPaneButtons(tPane, costumes.getArrayByType(pType));
+			_setupPaneButtons(tPane, GameAssets.getArrayByType(pType));
 			tPane.infoBar.colorWheel.addEventListener(ButtonBase.CLICK, function(){ _colorButtonClicked(pType); });
 			tPane.infoBar.imageCont.addEventListener(MouseEvent.CLICK, function(){ _removeItem(pType); });
 			tPane.infoBar.refreshButton.addEventListener(ButtonBase.CLICK, function(){ _randomItemOfType(pType); });
@@ -219,7 +205,7 @@ package app.world
 					buttonPerRow = 4;
 					scale = 0.8;
 			} else if(tType == ITEM.HAIR) {
-				/*scale = costumes.sex == SEX.MALE ? 0.8 : 0.7;*/
+				/*scale = GameAssets.sex == SEX.MALE ? 0.8 : 0.7;*/
 			}
 
 			var grid:Grid = pPane.grid;
@@ -231,11 +217,12 @@ package app.world
 			var i = -1;
 			pPane.buttons = [];
 			while (i < pItemArray.length-1) { i++;
-				if(pItemArray[i].sex != costumes.sex && pItemArray[i].sex != null) { continue; }
+				if(pItemArray[i].sex != GameAssets.sex && pItemArray[i].sex != null) { continue; }
+				if(!GameAssets.showAll && pItemArray[i].tags.indexOf("extra") != -1) { continue; }
 				if(tType == ITEM.SKIN && i == pItemArray.length-1) {
 					shopItem = new TextBase({ size:15, color:0xC2C2DA, text:"skin_invisible" });
 				} else {
-					shopItem = costumes.getItemImage(pItemArray[i]);
+					shopItem = GameAssets.getItemImage(pItemArray[i]);
 					shopItem.scaleX = shopItem.scaleY = scale;
 				}
 
@@ -259,6 +246,35 @@ package app.world
 				});
 			}
 			pPane.UpdatePane();
+		}
+		
+		private function _populateShopTabs() : void {
+			var tTabs = [
+				{ text:"tab_config", event:CONFIG_PANE_ID },
+				{ text:"tab_skins", event:ITEM.SKIN },
+				{ text:"tab_face", event:ITEM.FACE },
+				{ text:"tab_hair", event:ITEM.HAIR },
+				{ text:"tab_beards", event:ITEM.BEARD },
+				{ text:"tab_head", event:ITEM.HEAD },
+				{ text:"tab_mask", event:ITEM.MASK },
+				{ text:"tab_shirts", event:ITEM.SHIRT },
+				{ text:"tab_pants", event:ITEM.PANTS },
+				{ text:"tab_gloves", event:ITEM.GLOVES },
+				{ text:"tab_shoes", event:ITEM.SHOES },
+				{ text:"tab_bag", event:ITEM.BAG },
+				{ text:"tab_objects", event:ITEM.OBJECT },
+				{ text:"tab_poses", event:ITEM.POSE }
+			];
+			// Remove extra tabs
+			for(var i:int=tTabs.length-1; i >= 0; i--) {
+				if(!GameAssets.showAll && (tTabs[i].event == ITEM.SKIN || tTabs[i].event == ITEM.FACE)) {
+					tTabs.splice(i, 1);
+				}
+				else if(GameAssets.sex == SEX.FEMALE && tTabs[i].event == ITEM.BEARD) {
+					tTabs.splice(i, 1);
+				}
+			}
+			this.shopTabs.populate(tTabs);
 		}
 
 		private function _onMouseWheel(pEvent:MouseEvent) : void {
@@ -288,7 +304,7 @@ package app.world
 
 		private function _onItemToggled(pEvent:FewfEvent) : void {
 			var tType = pEvent.data.type;
-			var tItemArray:Array = costumes.getArrayByType(tType);
+			var tItemArray:Array = GameAssets.getArrayByType(tType);
 			var tInfoBar:ShopInfoBar = getInfoBarByType(tType);
 
 			// De-select all buttons that aren't the clicked one.
@@ -308,8 +324,8 @@ package app.world
 				setCurItemID(tType, pEvent.data.index);
 				this.character.setItemData(tData);
 
-				tInfoBar.addInfo( tData, costumes.getColoredItemImage(tData) );
-				tInfoBar.showColorWheel(costumes.getNumOfCustomColors(tButton.Image) > 0);
+				tInfoBar.addInfo( tData, GameAssets.getColoredItemImage(tData) );
+				tInfoBar.showColorWheel(GameAssets.getNumOfCustomColors(tButton.Image) > 0);
 			} else {
 				_removeItem(tType);
 			}
@@ -321,12 +337,12 @@ package app.world
 
 			// If item has a default value, toggle it on. otherwise remove item.
 			if(pType == ITEM.SKIN || pType == ITEM.POSE || pType == ITEM.FACE) {
-				var tDefaultIndex = 0;//(pType == ITEM.POSE ? costumes.defaultPoseIndex : costumes.defaultSkinIndex);
-				tTabPane.buttons[tDefaultIndex].toggleOn();
+				var tDefaultIndex = 0;//(pType == ITEM.POSE ? GameAssets.defaultPoseIndex : GameAssets.defaultSkinIndex);
+				if(tTabPane.buttons[tDefaultIndex]) tTabPane.buttons[tDefaultIndex].toggleOn();
 			} else {
 				this.character.removeItem(pType);
 				tTabPane.infoBar.removeInfo();
-				tTabPane.buttons[ tTabPane.selectedButtonIndex ].toggleOff();
+				if(tTabPane.buttons[tDefaultIndex]) tTabPane.buttons[ tTabPane.selectedButtonIndex ].toggleOff();
 			}
 		}
 		
@@ -376,19 +392,46 @@ package app.world
 		}
 
 		private function _onSexChanged(pEvent:Event) : void {
-			var tTypes = [ ITEM.OBJECT, ITEM.SKIN, ITEM.FACE, ITEM.BEARD, ITEM.HAIR, ITEM.HEAD, ITEM.SHIRT, ITEM.PANTS, ITEM.SHOES, ITEM.POSE ];
+			var tTypes = [ ITEM.OBJECT, ITEM.SKIN, ITEM.FACE, ITEM.BEARD, ITEM.HAIR, ITEM.HEAD, ITEM.SHIRT, ITEM.PANTS, ITEM.SHOES, ITEM.POSE, ITEM.MASK, ITEM.GLOVES, ITEM.BAG ];
+			var tData, tNewSexIsMale;
 			for(var i in tTypes) { tType = tTypes[i];
 				if(_paneManager.getPane(tType)) {
-					_setupPaneButtons(_paneManager.getPane(tType), costumes.getArrayByType(tType));
-					if(!character.getItemData(tType) || character.getItemData(tType).sex != null) _removeItem(tType);
+					tData = character.getItemData(tType);
+					if(!tData || tData.sex != null) {
+						_removeItem(tType);
+						if(!tData) { continue; }
+						tNewSexIsMale = tData.sex == SEX.FEMALE;
+						tData = GameAssets.getItemFromTypeID(tType, tData.id.slice(0, -1)+(tNewSexIsMale ? "M" : "F"));
+						if(tData) { character.setItemData(tData); }
+					}
+					/* _setupPaneButtons(_paneManager.getPane(tType), GameAssets.getArrayByType(tType)); */
 				}
 			}
 			_paneManager.dirtyAllPanes();
 			character.updatePose();
+			_populateShopTabs();
 		}
 
 		private function _onFacingChanged(pEvent:Event) : void {
 			character.updatePose();
+		}
+
+		private function _onShowExtraToggled(pEvent:Event) : void {
+			GameAssets.showAll = !GameAssets.showAll;
+			
+			var tTypes = ITEM.LAYERING; tTypes.push(ITEM.POSE);
+			if(!GameAssets.showAll) {
+				for(var i in tTypes) { tType = tTypes[i];
+					if(_paneManager.getPane(tType)) {
+						if(!character.getItemData(tType) || character.getItemData(tType).tags.indexOf("extra") != -1) _removeItem(tType);
+						/* _setupPaneButtons(_paneManager.getPane(tType), GameAssets.getArrayByType(tType)); */
+					}
+				}
+			}
+			
+			_paneManager.dirtyAllPanes();
+			character.updatePose();
+			_populateShopTabs();
 		}
 
 		//{REGION Get TabPane data
@@ -418,8 +461,8 @@ package app.world
 				if(this.character.getItemData(pType) == null) { return; }
 
 				var tData:ItemData = getInfoBarByType(pType).data;
-				var tItem:MovieClip = costumes.getColoredItemImage(tData);
-				var tItem2:MovieClip = costumes.getColoredItemImage(tData);
+				var tItem:MovieClip = GameAssets.getColoredItemImage(tData);
+				var tItem2:MovieClip = GameAssets.getColoredItemImage(tData);
 				_paneManager.getPane(COLOR_FINDER_PANE_ID).infoBar.addInfo( tData, tItem );
 				this.currentlyColoringType = pType;
 				_paneManager.getPane(COLOR_FINDER_PANE_ID).setItem(tItem2);
@@ -449,15 +492,15 @@ package app.world
 				
 				var tItemData = this.character.getItemData(pType);
 				if(pType != ITEM.SKIN && !pForceReplace) {
-					var tItem:MovieClip = costumes.getColoredItemImage(tItemData);
-					costumes.copyColor(tItem, getButtonArrayByType(pType)[ getCurItemID(pType) ].Image );
-					costumes.copyColor(tItem, getInfoBarByType(pType).Image );
-					costumes.copyColor(tItem, _paneManager.getPane(COLOR_PANE_ID).infoBar.Image);
+					var tItem:MovieClip = GameAssets.getColoredItemImage(tItemData);
+					GameAssets.copyColor(tItem, getButtonArrayByType(pType)[ getCurItemID(pType) ].Image );
+					GameAssets.copyColor(tItem, getInfoBarByType(pType).Image );
+					GameAssets.copyColor(tItem, _paneManager.getPane(COLOR_PANE_ID).infoBar.Image);
 				} else {
-					_replaceImageWithNewImage(getButtonArrayByType(pType)[ getCurItemID(pType) ], costumes.getColoredItemImage(tItemData));
-					/*_replaceImageWithNewImage(getInfoBarByType(pType), costumes.getColoredItemImage(tItemData));*/
-					getInfoBarByType(pType).ChangeImage(costumes.getColoredItemImage(tItemData));
-					_replaceImageWithNewImage(_paneManager.getPane(COLOR_PANE_ID).infoBar, costumes.getColoredItemImage(tItemData));
+					_replaceImageWithNewImage(getButtonArrayByType(pType)[ getCurItemID(pType) ], GameAssets.getColoredItemImage(tItemData));
+					/*_replaceImageWithNewImage(getInfoBarByType(pType), GameAssets.getColoredItemImage(tItemData));*/
+					getInfoBarByType(pType).ChangeImage(GameAssets.getColoredItemImage(tItemData));
+					_replaceImageWithNewImage(_paneManager.getPane(COLOR_PANE_ID).infoBar, GameAssets.getColoredItemImage(tItemData));
 				}
 			}
 			
@@ -476,7 +519,7 @@ package app.world
 				if(this.character.getItemFromIndex(pType) == null) { return; }
 
 				var tData:ItemData = getInfoBarByType(pType).data;
-				_paneManager.getPane(COLOR_PANE_ID).infoBar.addInfo( tData, costumes.getItemImage(tData) );
+				_paneManager.getPane(COLOR_PANE_ID).infoBar.addInfo( tData, GameAssets.getItemImage(tData) );
 				this.currentlyColoringType = pType;
 				_paneManager.getPane(COLOR_PANE_ID).setupSwatches( this.character.getColors(pType) );
 				_paneManager.openPane(COLOR_PANE_ID);

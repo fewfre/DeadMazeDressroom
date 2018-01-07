@@ -42,9 +42,12 @@ package app.world.elements
 			_itemDataMap[ITEM.HAIR] = pData.hair;
 			_itemDataMap[ITEM.BEARD] = pData.beard;
 			_itemDataMap[ITEM.HEAD] = pData.head;
+			_itemDataMap[ITEM.MASK] = pData.mask;
 			_itemDataMap[ITEM.SHIRT] = pData.shirt;
 			_itemDataMap[ITEM.PANTS] = pData.pants;
+			_itemDataMap[ITEM.GLOVES] = pData.gloves;
 			_itemDataMap[ITEM.SHOES] = pData.shoes;
+			_itemDataMap[ITEM.BAG] = pData.bag;
 			_itemDataMap[ITEM.OBJECT] = pData.object;
 			_itemDataMap[ITEM.POSE] = pData.pose;
 
@@ -60,18 +63,21 @@ package app.world.elements
 			outfit.scaleX = outfit.scaleY = tScale;
 
 			outfit.apply({
-				skinColor:Costumes.instance.skinColor,
-				hairColor:Costumes.instance.hairColor,
-				secondaryColor:Costumes.instance.secondaryColor,
+				skinColor:GameAssets.skinColor,
+				hairColor:GameAssets.hairColor,
+				secondaryColor:GameAssets.secondaryColor,
 				items:[
 					getItemData(ITEM.SKIN),
 					getItemData(ITEM.FACE),
 					getItemData(ITEM.HAIR),
 					getItemData(ITEM.BEARD),
 					getItemData(ITEM.HEAD),
+					getItemData(ITEM.MASK),
 					getItemData(ITEM.SHIRT),
 					getItemData(ITEM.PANTS),
+					getItemData(ITEM.GLOVES),
 					getItemData(ITEM.SHOES),
+					getItemData(ITEM.BAG),
 					getItemData(ITEM.OBJECT)
 				]
 			});
@@ -80,23 +86,28 @@ package app.world.elements
 
 		private function _parseParams(pParams:URLVariables) : void {
 			trace(pParams.toString());
-			if(pParams.hc) { Costumes.instance.hairColor = uint("0x"+pParams.hc); }
-			if(pParams.sk) { Costumes.instance.skinColor = uint("0x"+pParams.sk); }
-			if(pParams.oc) { Costumes.instance.secondaryColor = uint("0x"+pParams.oc); }
+			GameAssets.showAll = pParams.xtr == "1";
+			
+			if(pParams.hc) { GameAssets.hairColor = uint("0x"+pParams.hc); }
+			if(pParams.sk) { GameAssets.skinColor = uint("0x"+pParams.sk); }
+			if(pParams.oc) { GameAssets.secondaryColor = uint("0x"+pParams.oc); }
 
 			_setParamToType(pParams, ITEM.SKIN, "s", false);
 			_setParamToType(pParams, ITEM.HAIR, "d");
 			_setParamToType(pParams, ITEM.BEARD, "fh");
 			_setParamToType(pParams, ITEM.FACE, "fc");
 			_setParamToType(pParams, ITEM.HEAD, "h");
+			_setParamToType(pParams, ITEM.MASK, "m");
 			_setParamToType(pParams, ITEM.SHIRT, "t");
 			_setParamToType(pParams, ITEM.PANTS, "b");
+			_setParamToType(pParams, ITEM.GLOVES, "g");
 			_setParamToType(pParams, ITEM.SHOES, "f");
+			_setParamToType(pParams, ITEM.BAG, "bg");
 			_setParamToType(pParams, ITEM.OBJECT, "o");
 			_setParamToType(pParams, ITEM.POSE, "p", false);
 			
-			if(pParams.sex) { Costumes.instance.sex = pParams.sex == SEX.MALE ? SEX.MALE : SEX.FEMALE; }
-			/*if(pParams.ff) { Costumes.instance.facingForward = pParams.ff != "0"; }*/
+			if(pParams.sex) { GameAssets.sex = pParams.sex == SEX.MALE ? SEX.MALE : SEX.FEMALE; }
+			/*if(pParams.ff) { GameAssets.facingForward = pParams.ff != "0"; }*/
 		}
 		private function _setParamToType(pParams:URLVariables, pType:String, pParam:String, pAllowNull:Boolean=true) {
 			var tData:ItemData = null;
@@ -104,7 +115,7 @@ package app.world.elements
 				if(pParams[pParam] == '') {
 					tData = null;
 				} else {
-					tData = Costumes.instance.getItemFromTypeID(pType, pParams[pParam]);
+					tData = GameAssets.getItemFromTypeID(pType, pParams[pParam]);
 				}
 			}
 			_itemDataMap[pType] = pAllowNull ? tData : ( tData == null ? _itemDataMap[pType] : tData );
@@ -113,24 +124,29 @@ package app.world.elements
 		public function getParams() : URLVariables {
 			var tParms = new URLVariables();
 
-			tParms.hc = Costumes.instance.hairColor.toString(16);
-			tParms.sk = Costumes.instance.skinColor.toString(16);
-			tParms.oc = Costumes.instance.secondaryColor.toString(16);
+			tParms.xtr = GameAssets.showAll ? "1" : "0";
+			
+			tParms.hc = GameAssets.hairColor.toString(16);
+			tParms.sk = GameAssets.skinColor.toString(16);
+			tParms.oc = GameAssets.secondaryColor.toString(16);
 
 			var tData:ItemData;
 			tParms.s = (tData = getItemData(ITEM.SKIN)) ? tData.id : '';
 			tParms.d = (tData = getItemData(ITEM.HAIR)) ? tData.id : '';
 			tParms.fh = (tData = getItemData(ITEM.BEARD)) ? tData.id : '';
 			tParms.h = (tData = getItemData(ITEM.HEAD)) ? tData.id : '';
+			tParms.m = (tData = getItemData(ITEM.MASK)) ? tData.id : '';
 			tParms.t = (tData = getItemData(ITEM.SHIRT)) ? tData.id : '';
 			tParms.b = (tData = getItemData(ITEM.PANTS)) ? tData.id : '';
+			tParms.g = (tData = getItemData(ITEM.GLOVES)) ? tData.id : '';
 			tParms.f = (tData = getItemData(ITEM.SHOES)) ? tData.id : '';
+			tParms.bg = (tData = getItemData(ITEM.BAG)) ? tData.id : '';
 			tParms.o = (tData = getItemData(ITEM.OBJECT)) ? tData.id : '';
 			tParms.p = (tData = getItemData(ITEM.POSE)) ? tData.id : '';
 			tParms.fc = (tData = getItemData(ITEM.FACE)) ? tData.id : '';
 			
-			tParms.sex = Costumes.instance.sex;
-			/*tParms.ff = Costumes.instance.facingForward ? "1" : "0";*/
+			tParms.sex = GameAssets.sex;
+			/*tParms.ff = GameAssets.facingForward ? "1" : "0";*/
 
 			return tParms;
 		}

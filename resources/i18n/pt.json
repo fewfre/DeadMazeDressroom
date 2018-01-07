@@ -17,6 +17,8 @@
 		"label_sex":			{ "text":"Sexo" },
 		"btn_female":			{ "text":"Feminino", "scale":0.95 },
 		"btn_male":				{ "text":"Masculino", "scale":0.95 },
+		"label_advanced":		{ "text":"Advanced" },
+		"btn_extras":			{ "text":"Extras" },
 		"label_face_dir":		{ "text":"Rosto" },
 		"btn_face_front":		{ "text":"Frente" },
 		"btn_face_back":		{ "text":"Atrás" },
@@ -32,6 +34,9 @@
 		"tab_shirts":			{ "text":"Camisas" },
 		"tab_pants":			{ "text":"Calças" },
 		"tab_shoes":			{ "text":"Sapatos" },
+		"tab_mask":				{ "text":"Masks" },
+		"tab_gloves":			{ "text":"Gloves" },
+		"tab_bag":				{ "text":"Bags" },
 		"tab_objects":			{ "text":"Objetos" },
 		"tab_poses":			{ "text":"Pose" },
 		"skin_invisible":		{ "text":"Invisível" }

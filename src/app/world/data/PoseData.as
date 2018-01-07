@@ -13,8 +13,8 @@ package app.world.data
 		
 		// pOptions = { ?facingForward:Boolean=true, ?sex:SEX }
 		public function getClass(pOptions:Object=null) : Class {
-			var facingForward = Costumes.instance.facingForward;
-			var sex = Costumes.instance.sex;
+			var facingForward = GameAssets.facingForward;
+			var sex = GameAssets.sex;
 			if(pOptions != null) {
 				if(pOptions.facingForward) { facingForward = pOptions.facingForward; }
 				if(pOptions.sex) { sex = pOptions.sex; }

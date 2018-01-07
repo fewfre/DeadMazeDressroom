@@ -17,6 +17,8 @@
 		"label_sex":			{ "text":"الجنس" },
 		"btn_female":			{ "text":"أنثى" },
 		"btn_male":				{ "text":"ذكر" },
+		"label_advanced":		{ "text":"Advanced" },
+		"btn_extras":			{ "text":"Extras" },
 		"label_face_dir":		{ "text":"الوجه" },
 		"btn_face_front":		{ "text":"المقدمة" },
 		"btn_face_back":		{ "text":"الخلف" },
@@ -32,6 +34,9 @@
 		"tab_shirts":			{ "text":"قمصان" },
 		"tab_pants":			{ "text":"السراويل" },
 		"tab_shoes":			{ "text":"الأحذية" },
+		"tab_mask":				{ "text":"Masks" },
+		"tab_gloves":			{ "text":"Gloves" },
+		"tab_bag":				{ "text":"Bags" },
 		"tab_objects":			{ "text":"الاجسام" },
 		"tab_poses":			{ "text":"الوضعية" },
 		"skin_invisible":		{ "text":"غير مرئي" }

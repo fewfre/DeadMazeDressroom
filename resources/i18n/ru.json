@@ -17,6 +17,8 @@
 		"label_sex":			{ "text":"Пол" },
 		"btn_female":			{ "text":"Женский", "scale":0.95 },
 		"btn_male":				{ "text":"Мужской", "scale":0.95 },
+		"label_advanced":		{ "text":"Advanced" },
+		"btn_extras":			{ "text":"Extras" },
 		"label_face_dir":		{ "text":"Лицо" },
 		"btn_face_front":		{ "text":"Перед" },
 		"btn_face_back":		{ "text":"Сзади" },
@@ -32,6 +34,9 @@
 		"tab_shirts":			{ "text":"Рубашки" },
 		"tab_pants":			{ "text":"Штаны" },
 		"tab_shoes":			{ "text":"Oбувь" },
+		"tab_mask":				{ "text":"Masks" },
+		"tab_gloves":			{ "text":"Gloves" },
+		"tab_bag":				{ "text":"Bags" },
 		"tab_objects":			{ "text":"Oбъекты", "scale":0.95 },
 		"tab_poses":			{ "text":"Поза" },
 		"skin_invisible":		{ "text":"Невидимая" }

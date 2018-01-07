@@ -70,7 +70,7 @@ package app
 				"resources/flags.swf"
 			];
 			
-			var tPack = _config.packs.outfit.concat(_config.packs.parts);
+			var tPack = _config.packs.parts.concat(_config.packs.outfit);
 			for(var i:int = 0; i < tPack.length; i++) { tPacks.push("resources/"+tPack[i]); }
 			
 			Fewf.assets.load(tPacks);
