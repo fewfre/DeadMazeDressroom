@@ -28,6 +28,7 @@ package app.ui
 		public var refreshButton	: SpriteButton;
 		public var refreshLockButton: PushButton;
 		public var eyeDropButton	: SpriteButton;
+		public var qualityButton	: PushButton;
 		
 		// Properties
 		public function get hasData() : Boolean { return data != null; }
@@ -70,8 +71,14 @@ package app.ui
 			downloadButton.disable().alpha = 0;
 			
 			if(pData.showEyeDropButton) {
-				eyeDropButton = addChild(new SpriteButton({ x:tX - 25, y:26, width:25, height:25, obj_scale:0.45, obj:new $EyeDropper() }));
+				eyeDropButton = addChild(new SpriteButton({ x:tX - 25, y:26, width:24, height:24, obj_scale:0.45, obj:new $EyeDropper() }));
 				eyeDropButton.disable().alpha = 0;
+			}
+			
+			tX -= downloadButton.Width + 2;
+			if(pData.showQualityButton) {
+				qualityButton = addChild(new PushButton({ x:tX - 40, y:(50-37)*0.5, width:37, height:37, obj_scale:1, obj:new $PoorQualityIcon() }));
+				qualityButton.disable().alpha = 0;
 			}
 			
 			// Line seperating infobar and contents below it.
@@ -135,6 +142,7 @@ package app.ui
 			Text.alpha = 1;
 			downloadButton.enable().alpha = 1;
 			if(eyeDropButton) eyeDropButton.enable().alpha = 1;
+			if(qualityButton) qualityButton.enable().alpha = 1;
 		}
 		
 		public function removeInfo() : void {
@@ -145,6 +153,7 @@ package app.ui
 			showColorWheel(false);
 			downloadButton.disable().alpha = 0;
 			if(eyeDropButton) eyeDropButton.disable().alpha = 0;
+			if(qualityButton) qualityButton.disable().alpha = 0;
 		}
 		
 		internal function saveSprite(pEvent:Event) : void

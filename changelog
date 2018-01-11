@@ -1,3 +1,7 @@
+== V1.6 - 10 January 2018 ==
+- Shirts and pants now have a "quality" toggle to show torn states.
+
+
 == V1.5 - 6 January 2018 ==
 - Renamed "Costumes" to "GameAssets" and changed it from a singleton to a static class.
 - Fixed bugs that made objects that are parts of poses not show up.

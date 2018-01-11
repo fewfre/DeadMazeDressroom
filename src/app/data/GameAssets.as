@@ -45,6 +45,7 @@ package app.data
 		public static var skinColor:int;
 		public static var secondaryColor:int;
 		public static var facingForward:Boolean;
+		public static var tornStates:Object; // ITEM Ossoc array that contains a boolean about clothing's torn state. False by default
 		
 		public static var showAll:Boolean = false;
 
@@ -60,7 +61,8 @@ package app.data
 			hairColors = [ 0x211e24, 0xdcb33a, 0xe98537, 0xe0ae5b, 0xf9d28a, 0xc16333, 0xe98537, 0xab6e37, 0x89541c, 0xf5d3ae ];
 			skinColors = [ 0xf5d3ae, 0xf3d9c1, 0xf9d28a, 0xf9d28a, 0xe0b484, 0xd3b18e, 0xd19a5e, 0x8a5a38, 0x4b3a2b, 0x563312 ];
 			secondaryColors = [ 0xf5ece5, 0x2a312a, 0x076586, 0x87475a, 0x8a5a38, 0xd63343, 0xe98537, 0xf6c549, 0x50a341, 0x7841a2, 0x13a4b7 ];
-
+			tornStates = {}; tornStates[ITEM.PANTS] = false; tornStates[ITEM.SHIRT] = false;
+			
 			sex = SEX.FEMALE;
 			skinColor = skinColors[0];
 			hairColor = hairColors[0];

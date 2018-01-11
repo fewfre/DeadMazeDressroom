@@ -184,13 +184,17 @@ package app.world
 
 		private function _setupPane(pType:String) : TabPane {
 			var tPane:TabPane = new TabPane();
-			tPane.addInfoBar( new ShopInfoBar({ showEyeDropButton:pType!=ITEM.POSE }) );
+			tPane.addInfoBar( new ShopInfoBar({ showEyeDropButton:pType!=ITEM.POSE, showQualityButton:pType==ITEM.SHIRT||pType==ITEM.PANTS }) );
 			_setupPaneButtons(tPane, GameAssets.getArrayByType(pType));
 			tPane.infoBar.colorWheel.addEventListener(ButtonBase.CLICK, function(){ _colorButtonClicked(pType); });
 			tPane.infoBar.imageCont.addEventListener(MouseEvent.CLICK, function(){ _removeItem(pType); });
 			tPane.infoBar.refreshButton.addEventListener(ButtonBase.CLICK, function(){ _randomItemOfType(pType); });
 			if(tPane.infoBar.eyeDropButton) {
 				tPane.infoBar.eyeDropButton.addEventListener(ButtonBase.CLICK, function(){ _eyeDropButtonClicked(pType); });
+			}
+			if(tPane.infoBar.qualityButton) {
+				tPane.infoBar.qualityButton.toggle(!!GameAssets.tornStates[pType], false);
+				tPane.infoBar.qualityButton.addEventListener(ButtonBase.CLICK, function(){ _qualityButtonClicked(pType); });
 			}
 			return tPane;
 		}
@@ -369,7 +373,7 @@ package app.world
 			var tURL = "";
 			try {
 				tURL = ExternalInterface.call("eval", "window.location.origin+window.location.pathname");
-				tURL += "?"+this.character.getParams();
+				tURL += "?"+this.character.getParams().toString().replace(/%5f/gi, "_");
 			} catch (error:Error) {
 				tURL = "<error creating link>";
 			};
@@ -432,6 +436,11 @@ package app.world
 			_paneManager.dirtyAllPanes();
 			character.updatePose();
 			_populateShopTabs();
+		}
+		
+		private function _qualityButtonClicked(pType:String) : void {
+			GameAssets.tornStates[pType] = getInfoBarByType(pType).qualityButton.pushed;
+			character.updatePose();
 		}
 
 		//{REGION Get TabPane data

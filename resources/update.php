@@ -6,7 +6,7 @@ $resources_base = array(
 );
 $resources = array();
 foreach ($resources_base as $filebase) {
-	for ($i = 1; $i <= 10; $i++) {
+	for ($i = 1; $i <= 4; $i++) {
 		$filename = "{$filebase}_0{$i}.swf";
 		$url = "http://www.transformice.com/images/x_deadmeat/bibliotheques/$filename";
 		$code = checkExternalFile($url);

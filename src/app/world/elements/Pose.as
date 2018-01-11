@@ -43,7 +43,7 @@ package app.world.elements
 			stop();
 		}
 		
-		// pData = { ?items:Array, ?removeBlanks:Boolean=false, ?skinColor:int, ?hairColor:int, ?secondaryColor:int, ?facingForward:Boolean=true, ?sex:SEX }
+		// pData = { ?items:Array, ?removeBlanks:Boolean=false, ?skinColor:int, ?hairColor:int, ?secondaryColor:int, ?facingForward:Boolean=true, ?sex:SEX, ?tornStates:Object<ITEM, Boolean> }
 		public function apply(pData:Object) : MovieClip {
 			if(!pData.items) pData.items = [];
 			
@@ -77,6 +77,7 @@ package app.world.elements
 				
 				for(var j:int = 0; j < tShopData.length; j++) {
 					part = _addToPoseIfCan(tChild, tShopData[j], tChild.name, pData);
+					if(pData.tornStates && pData.tornStates[tShopData[j].type]) _applyTornMask(tChild.name, part);
 					_colorPart(part, tShopData[j], tChild.name, pData);
 					if(part) { tItemsOnChild++; }
 				}
@@ -100,6 +101,14 @@ package app.world.elements
 				}
 			}
 			return null;
+		}
+		
+		private function _applyTornMask(pID:String, pItem:MovieClip) : void {
+			if(!pItem) { return; }
+			var tClass = Fewf.assets.getLoadedClass( "$Dechirure_"+pID );
+			if(tClass != null) {
+				pItem.mask = pItem.addChild(new tClass());
+			}
 		}
 		
 		private function _colorPart(part:DisplayObject, pData:ItemData, pSlotName:String, pOptions:Object=null) : void {

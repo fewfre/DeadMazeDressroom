@@ -66,6 +66,7 @@ package app.world.elements
 				skinColor:GameAssets.skinColor,
 				hairColor:GameAssets.hairColor,
 				secondaryColor:GameAssets.secondaryColor,
+				tornStates:GameAssets.tornStates,
 				items:[
 					getItemData(ITEM.SKIN),
 					getItemData(ITEM.FACE),
@@ -91,6 +92,9 @@ package app.world.elements
 			if(pParams.hc) { GameAssets.hairColor = uint("0x"+pParams.hc); }
 			if(pParams.sk) { GameAssets.skinColor = uint("0x"+pParams.sk); }
 			if(pParams.oc) { GameAssets.secondaryColor = uint("0x"+pParams.oc); }
+			
+			GameAssets.tornStates[ITEM.SHIRT] = pParams.t_t == "1";
+			GameAssets.tornStates[ITEM.PANTS] = pParams.b_t == "1";
 
 			_setParamToType(pParams, ITEM.SKIN, "s", false);
 			_setParamToType(pParams, ITEM.HAIR, "d");
@@ -129,7 +133,10 @@ package app.world.elements
 			tParms.hc = GameAssets.hairColor.toString(16);
 			tParms.sk = GameAssets.skinColor.toString(16);
 			tParms.oc = GameAssets.secondaryColor.toString(16);
-
+			
+			tParms.t_t = GameAssets.tornStates[ITEM.SHIRT] ? "1" : "0";
+			tParms.b_t = GameAssets.tornStates[ITEM.PANTS] ? "1" : "0";
+			
 			var tData:ItemData;
 			tParms.s = (tData = getItemData(ITEM.SKIN)) ? tData.id : '';
 			tParms.d = (tData = getItemData(ITEM.HAIR)) ? tData.id : '';
