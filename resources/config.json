@@ -18,6 +18,7 @@
 			{ "code":"lv", "name":"latviešu valoda", "flags_swf_linkage":"$LV" }
 		]
 	},
+	"cachebreaker": null,
 	"packs": {
 		"outfit": [
 			"Accessoires_visage_01.swf",

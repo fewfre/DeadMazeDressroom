@@ -19,6 +19,7 @@ foreach ($resources_base as $filebase) {
 
 $json = json_decode(file_get_contents("config.json"), true);
 $json["packs"]["outfit"] = $resources;
+$json["cachebreaker"] = time();//md5(time(), true);
 file_put_contents("config.json", json_encode($json));//, JSON_PRETTY_PRINT
 
 echo "Update Successful! Redirecting...";

@@ -260,11 +260,11 @@ package app.world
 				{ text:"tab_hair", event:ITEM.HAIR },
 				{ text:"tab_beards", event:ITEM.BEARD },
 				{ text:"tab_head", event:ITEM.HEAD },
-				{ text:"tab_mask", event:ITEM.MASK },
 				{ text:"tab_shirts", event:ITEM.SHIRT },
 				{ text:"tab_pants", event:ITEM.PANTS },
-				{ text:"tab_gloves", event:ITEM.GLOVES },
 				{ text:"tab_shoes", event:ITEM.SHOES },
+				{ text:"tab_mask", event:ITEM.MASK },
+				{ text:"tab_gloves", event:ITEM.GLOVES },
 				{ text:"tab_bag", event:ITEM.BAG },
 				{ text:"tab_objects", event:ITEM.OBJECT },
 				{ text:"tab_poses", event:ITEM.POSE }

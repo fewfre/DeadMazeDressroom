@@ -72,11 +72,11 @@ package app.data
 			var i:int;
 			var tSkinParts = [ "B", "JI1", "JI2", "JS1", "JS2", "P1", "P2", "M1", "M2", "BI1", "BI2", "BS1", "BS2", "TS", "T", "CH", "SAC1", "SAC2", "MZ1", "MZ2" ];
 
-			hair = _setupCostumeArray({ base:"M_1", type:ITEM.HAIR, pad:4, after:"_", map:tSkinParts });
+			hair = _setupCostumeArray({ base:"M_1", type:ITEM.HAIR, pad:4, after:"_", map:tSkinParts, sex:true });
 			head = _setupCostumeArray({ base:"M_2", type:ITEM.HEAD, pad:4, after:"_", map:tSkinParts, sex:true });
 			shirts = _setupCostumeArray({ base:"M_3", type:ITEM.SHIRT, pad:4, after:"_", map:tSkinParts, sex:true });
 			pants = _setupCostumeArray({ base:"M_4", type:ITEM.PANTS, pad:4, after:"_", map:tSkinParts, sex:true });
-			shoes = _setupCostumeArray({ base:"M_5", type:ITEM.SHOES, pad:4, after:"_", map:tSkinParts });
+			shoes = _setupCostumeArray({ base:"M_5", type:ITEM.SHOES, pad:4, after:"_", map:tSkinParts, sex:true });
 			faces = _setupCostumeArray({ base:"M_5", type:ITEM.FACE, pad:3, after:"_", map:tSkinParts, sex:true });
 			beards = _setupCostumeArray({ base:"M_7", type:ITEM.BEARD, pad:3, after:"_", map:tSkinParts, sex:true });
 			masks = _setupCostumeArray({ base:"M_17", type:ITEM.MASK, pad:3, after:"_", map:tSkinParts });
