@@ -33,7 +33,8 @@
 			"Pantalons_01.swf",
 			"Sacs_01.swf",
 			"Masques_01.swf",
-			"Gants_01.swf"
+			"Gants_01.swf",
+			"Ceintures_01.swf"
 		],
 		"parts": [
 			"poses.swf",
@@ -46,6 +47,7 @@
 		"pants": [ "6M", "10", "11F", "12", "13", "14F", "15F", "16F", "17", "18", "25" ],
 		"shoes": [ "9", "10" ],
 		"pose": [
+			"Emote3transition",
 			"Cendre",
 			
 			"ZombieStatique",

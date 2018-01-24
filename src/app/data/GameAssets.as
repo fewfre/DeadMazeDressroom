@@ -12,7 +12,7 @@ package app.data
 	public class GameAssets
 	{
 		private static const _MAX_COSTUMES_TO_CHECK_TO:Number = 100;
-		private static const _MAX_OBJECTS_TO_CHECK_TO:Number = 650;
+		private static const _MAX_OBJECTS_TO_CHECK_TO:Number = 999;
 		
 		public static var faces:Array;
 		public static var hair:Array;
@@ -21,6 +21,7 @@ package app.data
 		public static var masks:Array;
 		public static var shirts:Array;
 		public static var pants:Array;
+		public static var belts:Array;
 		public static var gloves:Array;
 		public static var shoes:Array;
 		public static var bags:Array;
@@ -70,7 +71,7 @@ package app.data
 			facingForward = true;
 			
 			var i:int;
-			var tSkinParts = [ "B", "JI1", "JI2", "JS1", "JS2", "P1", "P2", "M1", "M2", "BI1", "BI2", "BS1", "BS2", "TS", "T", "CH", "SAC1", "SAC2", "MZ1", "MZ2" ];
+			var tSkinParts = [ "B", "JI1", "JI2", "JS1", "JS2", "P1", "P2", "M1", "M2", "BI1", "BI2", "BS1", "BS2", "TS", "T", "C", "CH", "SAC1", "SAC2", "MZ1", "MZ2" ];
 
 			hair = _setupCostumeArray({ base:"M_1", type:ITEM.HAIR, pad:4, after:"_", map:tSkinParts, sex:true });
 			head = _setupCostumeArray({ base:"M_2", type:ITEM.HEAD, pad:4, after:"_", map:tSkinParts, sex:true });
@@ -82,10 +83,12 @@ package app.data
 			masks = _setupCostumeArray({ base:"M_17", type:ITEM.MASK, pad:3, after:"_", map:tSkinParts });
 			bags = _setupCostumeArray({ base:"M_35", type:ITEM.BAG, pad:3, after:"_", map:tSkinParts });
 			gloves = _setupCostumeArray({ base:"M_37", type:ITEM.GLOVES, pad:3, after:"_", map:tSkinParts });
+			belts = _setupCostumeArray({ base:"M_45", type:ITEM.BELT, pad:3, after:"_", map:tSkinParts });
 			objects = _setupCostumeArray({ base:"dmo_", type:ITEM.OBJECT, itemClassToClassMap:"_Arme", numToCheck:_MAX_OBJECTS_TO_CHECK_TO });
-
+			
+			faces.push( new ItemData({ type:ITEM.FACE, classMap:{} }) );
+			
 			skins = new Array();
-
 			for(i = 0; i < _MAX_COSTUMES_TO_CHECK_TO; i++) {
 				/*if(Fewf.assets.getLoadedClass( "M_"+i+"_BS1_1" ) != null) {
 					skins.push( new SkinData( i, SEX.FEMALE ) );
@@ -117,11 +120,29 @@ package app.data
 				"ManipComp",
 				"Sort_1", "Sort_2",
 				
+				"Emote1",
+				"Emote2",
+				"Emote3",
+				"Emote3transition",
+				"Emote4",
+				"Emote5",
+				"Emote6",
+				"Emote7",
+				"Emote8",
+				"Emote9",
+				"Emote10",
+				"Emote11",
+				"Emote12",
+				
 				"AttaqueComp",
 				"AttaqueNormal_1", "AttaqueNormal_2",
 				"AttaqueMN_1", "AttaqueMN_2", "AttaqueMN_3",
 				"AttaqueLente_1",
 				"AttaquePique_1", "AttaquePique_2",
+				"Parade1_1", "Parade1_2",
+				"Parade2_1", "Parade2_2",
+				"Parade3_1", "Parade3_2",
+				"Parade4_1", "Parade4_2",
 				"Arc",
 				"Pistolet",
 				"Lancer",
@@ -412,6 +433,7 @@ package app.data
 				case ITEM.MASK:		return masks;
 				case ITEM.SHIRT:	return shirts;
 				case ITEM.PANTS:	return pants;
+				case ITEM.BELT:		return belts;
 				case ITEM.GLOVES:	return gloves;
 				case ITEM.SHOES:	return shoes;
 				case ITEM.BAG:		return bags;

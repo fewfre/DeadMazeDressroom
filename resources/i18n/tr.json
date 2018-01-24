@@ -35,6 +35,7 @@
 		"tab_pants":			{ "text":"Panto-\nlonlar", "scale":0.8 },
 		"tab_shoes":			{ "text":"Ayakk-\nabılar", "scale":0.8 },
 		"tab_mask":				{ "text":"Masks" },
+		"tab_belt":				{ "text":"Belts" },
 		"tab_gloves":			{ "text":"Gloves" },
 		"tab_bag":				{ "text":"Bags" },
 		"tab_objects":			{ "text":"Ögeler" },

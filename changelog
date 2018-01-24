@@ -1,7 +1,15 @@
+== V1.7 - 23 January 2018 ==
+- Added new "Belts" type
+- Added "invisible" option for face (for use in mannequin pose)
+- New poses added
+- A few new objects added
+
+
 == V1.6b - 15 January 2018 ==
 - Adding male/female hair support
 - Grouping survivor items tabs together below normal clothing.
 - Added some cache breaking
+
 
 == V1.6 - 10 January 2018 ==
 - Shirts and pants now have a "quality" toggle to show torn states.

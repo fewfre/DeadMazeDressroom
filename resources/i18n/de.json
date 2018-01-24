@@ -35,6 +35,7 @@
 		"tab_pants":			{ "text":"Hose" },
 		"tab_shoes":			{ "text":"Schuhe" },
 		"tab_mask":				{ "text":"Masks" },
+		"tab_belt":				{ "text":"Belts" },
 		"tab_gloves":			{ "text":"Gloves" },
 		"tab_bag":				{ "text":"Bags" },
 		"tab_objects":			{ "text":"Gegenst\n-ände", "scale":0.8 },

@@ -2,7 +2,7 @@
 $resources_base = array(
 	"Hauts", "Pantalons", "Chapeaux",
 	"Chaussures", "Visages", "Accessoires_visage",
-	"Coiffures", "Accessoires", "Sacs", "Masques", "Gants"
+	"Coiffures", "Accessoires", "Sacs", "Masques", "Gants", "Ceintures"
 );
 $resources = array();
 foreach ($resources_base as $filebase) {

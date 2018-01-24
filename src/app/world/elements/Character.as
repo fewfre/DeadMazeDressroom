@@ -45,6 +45,7 @@ package app.world.elements
 			_itemDataMap[ITEM.MASK] = pData.mask;
 			_itemDataMap[ITEM.SHIRT] = pData.shirt;
 			_itemDataMap[ITEM.PANTS] = pData.pants;
+			_itemDataMap[ITEM.BELT] = pData.belt;
 			_itemDataMap[ITEM.GLOVES] = pData.gloves;
 			_itemDataMap[ITEM.SHOES] = pData.shoes;
 			_itemDataMap[ITEM.BAG] = pData.bag;
@@ -76,6 +77,7 @@ package app.world.elements
 					getItemData(ITEM.MASK),
 					getItemData(ITEM.SHIRT),
 					getItemData(ITEM.PANTS),
+					getItemData(ITEM.BELT),
 					getItemData(ITEM.GLOVES),
 					getItemData(ITEM.SHOES),
 					getItemData(ITEM.BAG),
@@ -104,6 +106,7 @@ package app.world.elements
 			_setParamToType(pParams, ITEM.MASK, "m");
 			_setParamToType(pParams, ITEM.SHIRT, "t");
 			_setParamToType(pParams, ITEM.PANTS, "b");
+			_setParamToType(pParams, ITEM.BELT, "bt");
 			_setParamToType(pParams, ITEM.GLOVES, "g");
 			_setParamToType(pParams, ITEM.SHOES, "f");
 			_setParamToType(pParams, ITEM.BAG, "bg");
@@ -145,6 +148,7 @@ package app.world.elements
 			tParms.m = (tData = getItemData(ITEM.MASK)) ? tData.id : '';
 			tParms.t = (tData = getItemData(ITEM.SHIRT)) ? tData.id : '';
 			tParms.b = (tData = getItemData(ITEM.PANTS)) ? tData.id : '';
+			tParms.bt = (tData = getItemData(ITEM.BELT)) ? tData.id : '';
 			tParms.g = (tData = getItemData(ITEM.GLOVES)) ? tData.id : '';
 			tParms.f = (tData = getItemData(ITEM.SHOES)) ? tData.id : '';
 			tParms.bg = (tData = getItemData(ITEM.BAG)) ? tData.id : '';

@@ -136,7 +136,7 @@ package app.world
 
 
 			// Create the panes
-			var tTypes = [ ITEM.OBJECT, ITEM.SKIN, ITEM.FACE, ITEM.BEARD, ITEM.HAIR, ITEM.HEAD, ITEM.SHIRT, ITEM.PANTS, ITEM.SHOES, ITEM.MASK, ITEM.GLOVES, ITEM.BAG, ITEM.POSE ], tData:ItemData, tType:String;
+			var tTypes = [ ITEM.OBJECT, ITEM.SKIN, ITEM.FACE, ITEM.BEARD, ITEM.HAIR, ITEM.HEAD, ITEM.SHIRT, ITEM.PANTS, ITEM.SHOES, ITEM.MASK, ITEM.BELT, ITEM.GLOVES, ITEM.BAG, ITEM.POSE ], tData:ItemData, tType:String;
 			for(var i:int = 0; i < tTypes.length; i++) { tType = tTypes[i];
 				tPane = _paneManager.addPane(tType, _setupPane(tType));
 				// Based on what the character is wearing at start, toggle on the appropriate buttons.
@@ -223,7 +223,7 @@ package app.world
 			while (i < pItemArray.length-1) { i++;
 				if(pItemArray[i].sex != GameAssets.sex && pItemArray[i].sex != null) { continue; }
 				if(!GameAssets.showAll && pItemArray[i].tags.indexOf("extra") != -1) { continue; }
-				if(tType == ITEM.SKIN && i == pItemArray.length-1) {
+				if((tType == ITEM.SKIN || tType == ITEM.FACE) && i == pItemArray.length-1) {
 					shopItem = new TextBase({ size:15, color:0xC2C2DA, text:"skin_invisible" });
 				} else {
 					shopItem = GameAssets.getItemImage(pItemArray[i]);
@@ -264,6 +264,7 @@ package app.world
 				{ text:"tab_pants", event:ITEM.PANTS },
 				{ text:"tab_shoes", event:ITEM.SHOES },
 				{ text:"tab_mask", event:ITEM.MASK },
+				{ text:"tab_belt", event:ITEM.BELT },
 				{ text:"tab_gloves", event:ITEM.GLOVES },
 				{ text:"tab_bag", event:ITEM.BAG },
 				{ text:"tab_objects", event:ITEM.OBJECT },
@@ -396,7 +397,7 @@ package app.world
 		}
 
 		private function _onSexChanged(pEvent:Event) : void {
-			var tTypes = [ ITEM.OBJECT, ITEM.SKIN, ITEM.FACE, ITEM.BEARD, ITEM.HAIR, ITEM.HEAD, ITEM.SHIRT, ITEM.PANTS, ITEM.SHOES, ITEM.POSE, ITEM.MASK, ITEM.GLOVES, ITEM.BAG ];
+			var tTypes = [ ITEM.OBJECT, ITEM.SKIN, ITEM.FACE, ITEM.BEARD, ITEM.HAIR, ITEM.HEAD, ITEM.SHIRT, ITEM.PANTS, ITEM.SHOES, ITEM.POSE, ITEM.MASK, ITEM.BELT, ITEM.GLOVES, ITEM.BAG ];
 			var tData, tNewSexIsMale;
 			for(var i in tTypes) { tType = tTypes[i];
 				if(_paneManager.getPane(tType)) {
