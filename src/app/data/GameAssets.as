@@ -81,7 +81,7 @@ package app.data
 			faces = _setupCostumeArray({ base:"M_5", type:ITEM.FACE, pad:3, after:"_", map:tSkinParts, sex:true });
 			beards = _setupCostumeArray({ base:"M_7", type:ITEM.BEARD, pad:3, after:"_", map:tSkinParts, sex:true });
 			masks = _setupCostumeArray({ base:"M_17", type:ITEM.MASK, pad:3, after:"_", map:tSkinParts, sex:true });
-			masks = masks.concat(_setupCostumeArray({ base:"M_34", type:ITEM.MASK, pad:3, after:"_", map:tSkinParts, sex:true }));
+			masks = masks.concat(_setupCostumeArray({ base:"M_34", type:ITEM.MASK, pad:3, after:"_", map:tSkinParts, sex:true, idPrefix:"nk" }));
 			bags = _setupCostumeArray({ base:"M_35", type:ITEM.BAG, pad:3, after:"_", map:tSkinParts, sex:true });
 			gloves = _setupCostumeArray({ base:"M_37", type:ITEM.GLOVES, pad:3, after:"_", map:tSkinParts, sex:true });
 			belts = _setupCostumeArray({ base:"M_45", type:ITEM.BELT, pad:3, after:"_", map:tSkinParts, sex:true });
@@ -359,13 +359,14 @@ package app.data
 			return str.split(search).join(replace);
 		}
 
-		// pData = { base:String, type:String, after:String, pad:int, map:Array, sex:Boolean, itemClassToClassMap:String OR Array, numToCheck:int=null }
+		// pData = { base:String, type:String, after:String, pad:int, map:Array, sex:Boolean, itemClassToClassMap:String OR Array, numToCheck:int=null, ?idPrefix:String }
 		private static function _setupCostumeArray(pData:Object) : Array {
 			var tArray:Array = new Array();
 			var tClassName:String;
 			var tClass:Class;
 			var tSexSpecificParts:int;
 			var tLength:int = pData.numToCheck ? pData.numToCheck : _MAX_COSTUMES_TO_CHECK_TO;
+			var tIdPrefix = pData.idPrefix ? pData.idPrefix : "";
 			for(var i = 0; i <= tLength; i++) {
 				if(pData.map) {
 					var tSexSpecificArray = new Array();
@@ -382,7 +383,7 @@ package app.data
 						}
 						if(tClassSuccess) {
 							var tIsSexSpecific = pData.sex && tSexSpecificParts > 0;
-							tSexSpecificArray.push( new ItemData({ id:i+(tIsSexSpecific ? (g==1 ? "M" : "F") : ""), assetID:pData.base+(pData.pad ? zeroPad(i, pData.pad) : i), type:pData.type, classMap:tClassMap, itemClass:tClassSuccess, sex:(tIsSexSpecific ? (g==1?SEX.MALE:SEX.FEMALE) : null) }) );
+							tSexSpecificArray.push( new ItemData({ id:tIdPrefix+i+(tIsSexSpecific ? (g==1 ? "M" : "F") : ""), assetID:pData.base+(pData.pad ? zeroPad(i, pData.pad) : i), type:pData.type, classMap:tClassMap, itemClass:tClassSuccess, sex:(tIsSexSpecific ? (g==1?SEX.MALE:SEX.FEMALE) : null) }) );
 						}
 						if(tSexSpecificParts == 0 && tClassSuccess) {
 							break;
@@ -401,7 +402,7 @@ package app.data
 				} else {
 					tClass = Fewf.assets.getLoadedClass( pData.base+(pData.pad ? zeroPad(i, pData.pad) : i)+(pData.after ? pData.after : "") );
 					if(tClass != null) {
-						tArray.push( new ItemData({ id:i, type:pData.type, itemClass:tClass}) );
+						tArray.push( new ItemData({ id:tIdPrefix+i, type:pData.type, itemClass:tClass}) );
 						if(pData.itemClassToClassMap) {
 							tArray[tArray.length-1].classMap = {};
 							if(pData.itemClassToClassMap is Array) {
