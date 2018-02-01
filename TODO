@@ -1,5 +1,5 @@
-- Figure out what to do with the 60###_AC items (ranged weapons?)
+- Figure out what to do with the 60###_AC items (ranged weapons?) - NPC weapons? attach to "AC" bones
 - Add a way to show yellow/red durability weapons (other than just guitar)
-- Add items asyn to dirty panes prevent freezing?
+- Add items async to dirty panes to prevent freezing?
 - Store what parts exist in a seperate file to allow skipping past item exist detection.
 	- Would require it to be done on update, which would need to update script to be run through the swf?

@@ -80,10 +80,11 @@ package app.data
 			shoes = _setupCostumeArray({ base:"M_5", type:ITEM.SHOES, pad:4, after:"_", map:tSkinParts, sex:true });
 			faces = _setupCostumeArray({ base:"M_5", type:ITEM.FACE, pad:3, after:"_", map:tSkinParts, sex:true });
 			beards = _setupCostumeArray({ base:"M_7", type:ITEM.BEARD, pad:3, after:"_", map:tSkinParts, sex:true });
-			masks = _setupCostumeArray({ base:"M_17", type:ITEM.MASK, pad:3, after:"_", map:tSkinParts });
-			bags = _setupCostumeArray({ base:"M_35", type:ITEM.BAG, pad:3, after:"_", map:tSkinParts });
-			gloves = _setupCostumeArray({ base:"M_37", type:ITEM.GLOVES, pad:3, after:"_", map:tSkinParts });
-			belts = _setupCostumeArray({ base:"M_45", type:ITEM.BELT, pad:3, after:"_", map:tSkinParts });
+			masks = _setupCostumeArray({ base:"M_17", type:ITEM.MASK, pad:3, after:"_", map:tSkinParts, sex:true });
+			masks = masks.concat(_setupCostumeArray({ base:"M_34", type:ITEM.MASK, pad:3, after:"_", map:tSkinParts, sex:true }));
+			bags = _setupCostumeArray({ base:"M_35", type:ITEM.BAG, pad:3, after:"_", map:tSkinParts, sex:true });
+			gloves = _setupCostumeArray({ base:"M_37", type:ITEM.GLOVES, pad:3, after:"_", map:tSkinParts, sex:true });
+			belts = _setupCostumeArray({ base:"M_45", type:ITEM.BELT, pad:3, after:"_", map:tSkinParts, sex:true });
 			objects = _setupCostumeArray({ base:"dmo_", type:ITEM.OBJECT, itemClassToClassMap:"_Arme", numToCheck:_MAX_OBJECTS_TO_CHECK_TO });
 			
 			faces.push( new ItemData({ type:ITEM.FACE, classMap:{} }) );
@@ -143,6 +144,8 @@ package app.data
 				"Parade2_1", "Parade2_2",
 				"Parade3_1", "Parade3_2",
 				"Parade4_1", "Parade4_2",
+				"Statique/Combat",
+				"Statique/Defensif",
 				"Arc",
 				"Pistolet",
 				"Lancer",
@@ -238,8 +241,6 @@ package app.data
 				"Statique/ChloeCroise",
 				"Statique/ChloeCrossee",
 				"Statique/ChloePousse",
-				"Statique/Combat",
-				"Statique/Defensif",
 				"Statique/EnJouePistolet",
 				"Statique/Fusil",
 				"Statique/Fusil2",

@@ -1,3 +1,8 @@
+== V1.7b - 31 January 2018 ==
+- Fixed bug preventing sex-specific masks showing up.
+- Fixed it so scarves show up as masks.
+
+
 == V1.7 - 23 January 2018 ==
 - Added new "Belts" type
 - Added "invisible" option for face (for use in mannequin pose)
