@@ -1,7 +1,7 @@
 package app
 {
 	import app.data.*;
-	import app.ui.LoaderDisplay;
+	import app.ui.screens.LoaderDisplay;
 	import app.world.World;
 	
 	import com.fewfre.utils.*;
@@ -35,14 +35,12 @@ package app
 		}
 		
 		private function _startPreload() : void {
-			Fewf.assets.load([
+			_load([
 				"resources/config.json",
-			], new Date().getTime() );
-			Fewf.assets.addEventListener(AssetManager.LOADING_FINISHED, _onPreloadComplete);
+			], new Date().getTime(), _onPreloadComplete);
 		}
 		
-		private function _onPreloadComplete(event:Event) : void {
-			Fewf.assets.removeEventListener(AssetManager.LOADING_FINISHED, _onPreloadComplete);
+		private function _onPreloadComplete() : void {
 			_config = Fewf.assets.getData("config");
 			_defaultLang = _getDefaultLang(_config.languages.default);
 			
@@ -50,14 +48,12 @@ package app
 		}
 		
 		private function _startInitialLoad() : void {
-			Fewf.assets.load([
+			_load([
 				"resources/i18n/"+_defaultLang+".json",
-			], Fewf.assets.getData("config").cachebreaker);
-			Fewf.assets.addEventListener(AssetManager.LOADING_FINISHED, _onInitialLoadComplete);
+			], Fewf.assets.getData("config").cachebreaker, _onInitialLoadComplete);
 		}
 		
-		private function _onInitialLoadComplete(event:Event) : void {
-			Fewf.assets.removeEventListener(AssetManager.LOADING_FINISHED, _onInitialLoadComplete);
+		private function _onInitialLoadComplete() : void {
 			Fewf.i18n.parseFile(_defaultLang, Fewf.assets.getData(_defaultLang));
 			
 			_startLoad();
@@ -73,17 +69,32 @@ package app
 			var tPack = _config.packs.parts.concat(_config.packs.outfit);
 			for(var i:int = 0; i < tPack.length; i++) { tPacks.push("resources/"+tPack[i]); }
 			
-			Fewf.assets.load(tPacks, Fewf.assets.getData("config").cachebreaker);
-			Fewf.assets.addEventListener(AssetManager.LOADING_FINISHED, _onLoadComplete);
+			_load(tPacks, Fewf.assets.getData("config").cachebreaker, _onLoadComplete);
 		}
 
-		private function _onLoadComplete(event:Event) : void {
-			Fewf.assets.removeEventListener(AssetManager.LOADING_FINISHED, _onLoadComplete);
+		private function _onLoadComplete() : void {
+			GameAssets.init(_onGameAssetsInitComplete);
+		}
+		
+		private function _onGameAssetsInitComplete() : void {
 			_loaderDisplay.destroy();
 			removeChild( _loaderDisplay );
 			_loaderDisplay = null;
 			
 			_world = addChild(new World(stage));
+		}
+		
+		/***************************
+		* Helper Methods
+		****************************/
+		private function _load(pPacks:Array, pCacheBreaker:String, pCallback:Function) : void {
+			Fewf.assets.load(pPacks, pCacheBreaker);
+			var tFunc = function(event:Event){
+				Fewf.assets.removeEventListener(AssetManager.LOADING_FINISHED, tFunc);
+				pCallback();
+				tFunc = null; pList = null; pCallback = null;
+			};
+			Fewf.assets.addEventListener(AssetManager.LOADING_FINISHED, tFunc);
 		}
 		
 		private function _getDefaultLang(pConfigLang:String) : String {

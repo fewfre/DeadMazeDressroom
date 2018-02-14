@@ -8,11 +8,16 @@ package app.data
 	import flash.display.*;
 	import flash.geom.*;
 	import flash.net.*;
+	import flash.utils.setTimeout;
 
 	public class GameAssets
 	{
-		private static const _MAX_COSTUMES_TO_CHECK_TO:Number = 100;
-		private static const _MAX_OBJECTS_TO_CHECK_TO:Number = 999;
+		private static const _CHECK_DEFAULT:Number = 125;
+		private static const _CHECK_HAIR:Number = 100;
+		private static const _CHECK_MISC:Number = 50;
+		private static const _CHECK_SURVIVOR:Number = 20;
+		private static const _CHECK_SKINS:Number = 5;
+		private static const _CHECK_OBJECTS:Number = 999;
 		
 		public static var faces:Array;
 		public static var hair:Array;
@@ -58,7 +63,7 @@ package app.data
 			return sex == SEX.MALE ? "H" : "F"; // Default to female
 		}*/
 
-		public static function init() : void {
+		public static function init(pCallback:Function) : void {
 			hairColors = [ 0x211e24, 0xdcb33a, 0xe98537, 0xe0ae5b, 0xf9d28a, 0xc16333, 0xe98537, 0xab6e37, 0x89541c, 0xf5d3ae ];
 			skinColors = [ 0xf5d3ae, 0xf3d9c1, 0xf9d28a, 0xf9d28a, 0xe0b484, 0xd3b18e, 0xd19a5e, 0x8a5a38, 0x4b3a2b, 0x563312 ];
 			secondaryColors = [ 0xf5ece5, 0x2a312a, 0x076586, 0x87475a, 0x8a5a38, 0xd63343, 0xe98537, 0xf6c549, 0x50a341, 0x7841a2, 0x13a4b7 ];
@@ -72,288 +77,324 @@ package app.data
 			
 			var i:int;
 			var tSkinParts = [ "B", "JI1", "JI2", "JS1", "JS2", "P1", "P2", "M1", "M2", "BI1", "BI2", "BS1", "BS2", "TS", "T", "C", "CH", "SAC1", "SAC2", "MZ1", "MZ2" ];
-
-			hair = _setupCostumeArray({ base:"M_1", type:ITEM.HAIR, pad:4, after:"_", map:tSkinParts, sex:true });
-			head = _setupCostumeArray({ base:"M_2", type:ITEM.HEAD, pad:4, after:"_", map:tSkinParts, sex:true });
-			shirts = _setupCostumeArray({ base:"M_3", type:ITEM.SHIRT, pad:4, after:"_", map:tSkinParts, sex:true });
-			pants = _setupCostumeArray({ base:"M_4", type:ITEM.PANTS, pad:4, after:"_", map:tSkinParts, sex:true });
-			shoes = _setupCostumeArray({ base:"M_5", type:ITEM.SHOES, pad:4, after:"_", map:tSkinParts, sex:true });
-			faces = _setupCostumeArray({ base:"M_5", type:ITEM.FACE, pad:3, after:"_", map:tSkinParts, sex:true });
-			beards = _setupCostumeArray({ base:"M_7", type:ITEM.BEARD, pad:3, after:"_", map:tSkinParts, sex:true });
-			masks = _setupCostumeArray({ base:"M_17", type:ITEM.MASK, pad:3, after:"_", map:tSkinParts, sex:true });
-			masks = masks.concat(_setupCostumeArray({ base:"M_34", type:ITEM.MASK, pad:3, after:"_", map:tSkinParts, sex:true, idPrefix:"nk" }));
-			bags = _setupCostumeArray({ base:"M_35", type:ITEM.BAG, pad:3, after:"_", map:tSkinParts, sex:true });
-			gloves = _setupCostumeArray({ base:"M_37", type:ITEM.GLOVES, pad:3, after:"_", map:tSkinParts, sex:true });
-			belts = _setupCostumeArray({ base:"M_45", type:ITEM.BELT, pad:3, after:"_", map:tSkinParts, sex:true });
-			objects = _setupCostumeArray({ base:"dmo_", type:ITEM.OBJECT, itemClassToClassMap:"_Arme", numToCheck:_MAX_OBJECTS_TO_CHECK_TO });
 			
-			faces.push( new ItemData({ type:ITEM.FACE, classMap:{} }) );
-			
-			skins = new Array();
-			for(i = 0; i < _MAX_COSTUMES_TO_CHECK_TO; i++) {
-				/*if(Fewf.assets.getLoadedClass( "M_"+i+"_BS1_1" ) != null) {
-					skins.push( new SkinData( i, SEX.FEMALE ) );
-				}
-				if(Fewf.assets.getLoadedClass( "M_"+i+"_BS1_2" ) != null) {
-					skins.push( new SkinData( i, SEX.MALE ) );
-				}*/
-				/*if(Fewf.assets.getLoadedClass( "M_"+i+"_BS1_1" ) != null) {*/
-				if(Fewf.assets.getLoadedClass( "M_"+i+"_BS1" ) != null) {
-					skins.push( new SkinData( i, null ) );
-				}
-			}
-			skins.push( new SkinData( "inv", null ) );
-			skins[skins.length-1].classMap = {};
-			skins[skins.length-1].hair = new ItemData({ type:ITEM.HAIR, classMap:{} });
-			/*defaultSkinIndex = 0;//FewfUtils.getIndexFromArrayWithKeyVal(skins, "id", ConstantsApp.DEFAULT_SKIN_ID);*/
-			//defaultSkinIndexMale = 1;//FewfUtils.getIndexFromArrayWithKeyVal(skins, "id", ConstantsApp.DEFAULT_SKIN_ID);
-
-			poses = [];
-			var tPoseClasses = [
-				"Statique",
-				"Course",
-				"Stun",
-				"Esquive",
-				"Feinte",
-				"Mort",
-				"Mort_retraite",
-				"Manip",
-				"ManipComp",
-				"Sort_1", "Sort_2",
-				
-				"Emote1",
-				"Emote2",
-				"Emote3",
-				"Emote3transition",
-				"Emote4",
-				"Emote5",
-				"Emote6",
-				"Emote7",
-				"Emote8",
-				"Emote9",
-				"Emote10",
-				"Emote11",
-				"Emote12",
-				
-				"AttaqueComp",
-				"AttaqueNormal_1", "AttaqueNormal_2",
-				"AttaqueMN_1", "AttaqueMN_2", "AttaqueMN_3",
-				"AttaqueLente_1",
-				"AttaquePique_1", "AttaquePique_2",
-				"Parade1_1", "Parade1_2",
-				"Parade2_1", "Parade2_2",
-				"Parade3_1", "Parade3_2",
-				"Parade4_1", "Parade4_2",
-				"Statique/Combat",
-				"Statique/Defensif",
-				"Arc",
-				"Pistolet",
-				"Lancer",
-				"$Molotov",
-				
-				"$EnJoue",
-				"$EnJoue2",
-				"$EnJouePistolet",
-				"$EnJouePistolet2",
-				
-				/* "$Camp1",
-				"$Camp2",
-				"$Camp3",
-				"$Camp4", */
-				
-				"Statique/Camp1",
-				"Statique/Camp2",
-				"Statique/Camp3",
-				"Statique/Camp4",
-				
-				"$Cendre",
-				
-				//####### Zombies #######
-				"ZombieStatique",
-				"ZombieStatique/2",
-				"ZombieStatique/3",
-				"ZombieStatique/4",
-				"ZombieStatique/5",
-				
-				"ZombieCourse",
-				"ZombieCourse/2",
-				"ZombieCourse/3",
-				"ZombieCourse/4",
-				"ZombieCourse/5",
-				
-				"ZombieMort",
-				"ZombieMort/2",
-				"ZombieStun",
-				"ZombieStun/2",
-				"ZombieSort_1",
-				"ZombieEsquive",
-				
-				"ZombieTouche",
-				"ZombieTouche/2",
-				"ZombieTouche/3",
-				
-				"ZombieAttaque",
-				"ZombieAttaque/2",
-				"ZombieAttaque/3",
-				"ZombieAttaque/4",
-				"ZombieAttaque/5",
-				
-				//####### NPCs #######
-				"AttaqueLente_1/Jay",
-				"AttaqueNormal_1/ChloeCombat",
-				"AttaqueNormal_1/Jay",
-				"AttaqueNormal_1/JayBlesse",
-				"AttaqueNormal_1/JayBlesseCombo",
-				"AttaqueNormal_2/ChloeCombat",
-				"AttaqueNormal_2/Jay",
-				
-				"Course/Blesse",
-				"Course/BrasCroiseMarche",
-				"Course/Chloe",
-				"Course/ChloeBlessee",
-				"Course/ChloeCombat",
-				"Course/ChloePieton",
-				"Course/FusilMarche",
-				"Course/Jay",
-				"Course/JayBlesse",
-				"Course/JayMarche",
-				"Course/Karen",
-				"Course/Murphy",
-				"Course/Pieton",
-				
-				"Esquive/JayBlesse",
-				
-				"Manip/Chloe",
-				
-				"Mort/Chloe",
-				"Mort/Jay",
-				
-				"Statique/Bequilles",
-				"Statique/Blesse",
-				"Statique/BlesseAssis",
-				"Statique/Carte1",
-				"Statique/Carte2",
-				"Statique/ChefScientifique",
-				"Statique/Chloe",
-				"Statique/ChloeBlessee",
-				"Statique/ChloeBlesseeAssise",
-				"Statique/ChloeCombat",
-				"Statique/ChloeCroise",
-				"Statique/ChloeCrossee",
-				"Statique/ChloePousse",
-				"Statique/EnJouePistolet",
-				"Statique/Fusil",
-				"Statique/Fusil2",
-				"Statique/Fusil3",
-				"Statique/Fusil4",
-				"Statique/Fusil5",
-				"Statique/Gary",
-				"Statique/Hache",
-				"Statique/Jared",
-				"Statique/Jay",
-				"Statique/JayBlesse",
-				"Statique/JayCroise",
-				"Statique/JayMort",
-				"Statique/Karen",
-				"Statique/Lynn",
-				"Statique/Manip",
-				"Statique/ManipGenou",
-				"Statique/Mannequin",
-				"Statique/Manuel",
-				"Statique/ManuelHache",
-				"Statique/Marchand",
-				"Statique/Marchand2",
-				"Statique/Murphy",
-				"Statique/MurphyAccoudee",
-				"Statique/MurphyDebout",
-				"Statique/MurphyDebout2",
-				"Statique/Peur",
-				"Statique/Pistolet",
-				"Statique/Planque",
-				"Statique/PrepCombat",
-				"Statique/PrepCombatHache",
-				"Statique/Quete",
-				"Statique/Statique2",
-				"Statique/Statique3",
-				"Statique/Statique4",
-				"Statique/Statique5",
-				"Statique/Statique6",
-				"Statique/Statique7",
-				"Statique/Statique8",
-				"Statique/TodMoss",
-				"Statique/Wallace",
-				
-				"Stun/Chloe",
-				"Stun/ChloeCombat",
-				"Stun/Jay",
-				
-				"$Chloe_BlesseeReleve",
-				"$ChloeAttaqueBlessee",
-				"$ChloeEgon1",
-				"$ChloeEgon2",
-				"$ChloeEgon3",
-				"$ChloeProtection",
-				"$Crosse",
-				"$Crossee",
-				"$CrosseeReleve",
-				
-				"$JayManipGenou",
-				"$JayMort1",
-				"$JayMort2",
-				"$JayMort3",
-				"$JayMort4",
-				"$JayPropulseSol",
-				"$JaySol",
-				
-				"$posture_blesse1",
-				"$posture_blesse2",
-				"$posture_blesse3",
-				"$posture_blesse4",
-				"$posture_blesse5",
-				
-				"MurphyAccoudeeTransition1",
-				"MurphyAccoudeeTransition2",
-				"MurphyAccoudeeTransition3",
-			];
-			var tClass:Class, tClassName:String, tClassNameSimple:String;
-			for(i = 0; i < tPoseClasses.length; i++) {
-				/*if((tClass = Fewf.assets.getLoadedClass( "$Anim"+(tClassName=strReplace(tPoseClasses[i], "{0}", "F")) )) != null) {
-					poses.push(new PoseData({ id:tClassName, type:ITEM.POSE, itemClass:tClass, sex:SEX.FEMALE }));
-				}
-				if((tClass = Fewf.assets.getLoadedClass( "$Anim"+(tClassName=strReplace(tPoseClasses[i], "{0}", "H")) )) != null) {
-					poses.push(new PoseData({ id:tClassName, type:ITEM.POSE, itemClass:tClass, sex:SEX.MALE }));
-				}*/
-				/*if((tClass = Fewf.assets.getLoadedClass( "$Anim"+strReplace(tPoseClasses[i], "{0}", "F") )) != null) {*/
-				tClassName = tClassNameSimple = tPoseClasses[i];
-				if(tClassName.indexOf("$") == 0) {
-					tClassNameSimple = tClassNameSimple.slice(1);
-				}
-				else if(tClassName.indexOf("MurphyAccoudee") == 0) {
-					// Nothing, perfect as is
-				} else {
-					tClassName = "$Anim"+tClassName;
-				}
-				if((tClass = Fewf.assets.getLoadedClass( tClassName )) != null) {
-					poses.push(new PoseData({ id:tClassNameSimple, assetID:tClassNameSimple, type:ITEM.POSE, itemClass:tClass, sex:null }));
-				}
-			}
-			/*defaultPoseIndex = 0;//FewfUtils.getIndexFromArrayWithKeyVal(poses, "id", ConstantsApp.DEFAULT_POSE_ID);*/
-			//defaultPoseIndexMale = 1;//FewfUtils.getIndexFromArrayWithKeyVal(poses, "id", ConstantsApp.DEFAULT_POSE_ID);
-			
-			// Loop through config and mark required assets as "extra" so they can be toggled on/off.
-			var tExtras = Fewf.assets.getData("config").extras, tDataArray, tData;
-			for(var key:String in tExtras) {
-				if((tDataArray = getArrayByType(key)) != null) {
-					for each(var tID in tExtras[key]) {
-						tData = FewfUtils.getFromArrayWithKeyVal(tDataArray, "id", tID);
-						if(tData) { tData.tags.push("extra"); }
+			var tFlowFunctions = [
+				function(){
+					hair = _setupCostumeArray({ base:"M_1", type:ITEM.HAIR, pad:4, after:"_", map:tSkinParts, sex:true, numToCheck:_CHECK_HAIR });
+				},
+				function(){
+					head = _setupCostumeArray({ base:"M_2", type:ITEM.HEAD, pad:4, after:"_", map:tSkinParts, sex:true });
+				},
+				function(){
+					shirts = _setupCostumeArray({ base:"M_3", type:ITEM.SHIRT, pad:4, after:"_", map:tSkinParts, sex:true });
+				},
+				function(){
+					pants = _setupCostumeArray({ base:"M_4", type:ITEM.PANTS, pad:4, after:"_", map:tSkinParts, sex:true });
+				},
+				function(){
+					shoes = _setupCostumeArray({ base:"M_5", type:ITEM.SHOES, pad:4, after:"_", map:tSkinParts, sex:true });
+				},
+				function(){
+					faces = _setupCostumeArray({ base:"M_5", type:ITEM.FACE, pad:3, after:"_", map:tSkinParts, sex:true, numToCheck:_CHECK_MISC });
+					faces.push( new ItemData({ type:ITEM.FACE, classMap:{} }) );
+				},
+				function(){
+					beards = _setupCostumeArray({ base:"M_7", type:ITEM.BEARD, pad:3, after:"_", map:tSkinParts, sex:true, numToCheck:_CHECK_MISC });
+				},
+				function(){
+					masks = _setupCostumeArray({ base:"M_17", type:ITEM.MASK, pad:3, after:"_", map:tSkinParts, sex:true, numToCheck:_CHECK_SURVIVOR });
+					masks = masks.concat(_setupCostumeArray({ base:"M_34", type:ITEM.MASK, pad:3, after:"_", map:tSkinParts, sex:true, idPrefix:"nk", numToCheck:_CHECK_SURVIVOR }));
+				},
+				function(){
+					bags = _setupCostumeArray({ base:"M_35", type:ITEM.BAG, pad:3, after:"_", map:tSkinParts, sex:true, numToCheck:_CHECK_SURVIVOR });
+				},
+				function(){
+					gloves = _setupCostumeArray({ base:"M_37", type:ITEM.GLOVES, pad:3, after:"_", map:tSkinParts, sex:true, numToCheck:_CHECK_SURVIVOR });
+				},
+				function(){
+					belts = _setupCostumeArray({ base:"M_45", type:ITEM.BELT, pad:3, after:"_", map:tSkinParts, sex:true, numToCheck:_CHECK_SURVIVOR });
+				},
+				function(){
+					objects = _setupCostumeArray({ base:"dmo_", type:ITEM.OBJECT, itemClassToClassMap:"_Arme", numToCheck:_CHECK_OBJECTS });
+				},
+				function(){
+					skins = new Array();
+					for(i = 0; i < _CHECK_SKINS; i++) {
+						/*if(Fewf.assets.getLoadedClass( "M_"+i+"_BS1_1" ) != null) {
+							skins.push( new SkinData( i, SEX.FEMALE ) );
+						}
+						if(Fewf.assets.getLoadedClass( "M_"+i+"_BS1_2" ) != null) {
+							skins.push( new SkinData( i, SEX.MALE ) );
+						}*/
+						/*if(Fewf.assets.getLoadedClass( "M_"+i+"_BS1_1" ) != null) {*/
+						if(Fewf.assets.getLoadedClass( "M_"+i+"_BS1" ) != null) {
+							skins.push( new SkinData( i, null ) );
+						}
 					}
-				}
+					skins.push( new SkinData( "inv", null ) );
+					skins[skins.length-1].classMap = {};
+					skins[skins.length-1].hair = new ItemData({ type:ITEM.HAIR, classMap:{} });
+					/*defaultSkinIndex = 0;//FewfUtils.getIndexFromArrayWithKeyVal(skins, "id", ConstantsApp.DEFAULT_SKIN_ID);*/
+					//defaultSkinIndexMale = 1;//FewfUtils.getIndexFromArrayWithKeyVal(skins, "id", ConstantsApp.DEFAULT_SKIN_ID);
+				},
+				function(){
+					poses = [];
+					var tPoseClasses = [
+						"Statique",
+						"Course",
+						"Stun",
+						"Esquive",
+						"Feinte",
+						"Mort",
+						"Mort_retraite",
+						"Manip",
+						"ManipComp",
+						"Sort_1", "Sort_2",
+						
+						"Emote1",
+						"Emote2",
+						"Emote3",
+						"Emote3transition",
+						"Emote4",
+						"Emote5",
+						"Emote6",
+						"Emote7",
+						"Emote8",
+						"Emote9",
+						"Emote10",
+						"Emote11",
+						"Emote12",
+						
+						"AttaqueComp",
+						"AttaqueNormal_1", "AttaqueNormal_2",
+						"AttaqueMN_1", "AttaqueMN_2", "AttaqueMN_3",
+						"AttaqueLente_1",
+						"AttaquePique_1", "AttaquePique_2",
+						"Parade1_1", "Parade1_2",
+						"Parade2_1", "Parade2_2",
+						"Parade3_1", "Parade3_2",
+						"Parade4_1", "Parade4_2",
+						"Statique/Combat",
+						"Statique/Defensif",
+						"Arc",
+						"Pistolet",
+						"Lancer",
+						"$Molotov",
+						
+						"$EnJoue",
+						"$EnJoue2",
+						"$EnJouePistolet",
+						"$EnJouePistolet2",
+						
+						/* "$Camp1",
+						"$Camp2",
+						"$Camp3",
+						"$Camp4", */
+						
+						"Statique/Camp1",
+						"Statique/Camp2",
+						"Statique/Camp3",
+						"Statique/Camp4",
+						
+						"$Cendre",
+						
+						//####### Zombies #######
+						"ZombieStatique",
+						"ZombieStatique/2",
+						"ZombieStatique/3",
+						"ZombieStatique/4",
+						"ZombieStatique/5",
+						
+						"ZombieCourse",
+						"ZombieCourse/2",
+						"ZombieCourse/3",
+						"ZombieCourse/4",
+						"ZombieCourse/5",
+						
+						"ZombieMort",
+						"ZombieMort/2",
+						"ZombieStun",
+						"ZombieStun/2",
+						"ZombieSort_1",
+						"ZombieEsquive",
+						
+						"ZombieTouche",
+						"ZombieTouche/2",
+						"ZombieTouche/3",
+						
+						"ZombieAttaque",
+						"ZombieAttaque/2",
+						"ZombieAttaque/3",
+						"ZombieAttaque/4",
+						"ZombieAttaque/5",
+						
+						//####### NPCs #######
+						"AttaqueLente_1/Jay",
+						"AttaqueNormal_1/ChloeCombat",
+						"AttaqueNormal_1/Jay",
+						"AttaqueNormal_1/JayBlesse",
+						"AttaqueNormal_1/JayBlesseCombo",
+						"AttaqueNormal_2/ChloeCombat",
+						"AttaqueNormal_2/Jay",
+						
+						"Course/Blesse",
+						"Course/BrasCroiseMarche",
+						"Course/Chloe",
+						"Course/ChloeBlessee",
+						"Course/ChloeCombat",
+						"Course/ChloePieton",
+						"Course/FusilMarche",
+						"Course/Jay",
+						"Course/JayBlesse",
+						"Course/JayMarche",
+						"Course/Karen",
+						"Course/Murphy",
+						"Course/Pieton",
+						
+						"Esquive/JayBlesse",
+						
+						"Manip/Chloe",
+						
+						"Mort/Chloe",
+						"Mort/Jay",
+						
+						"Statique/Bequilles",
+						"Statique/Blesse",
+						"Statique/BlesseAssis",
+						"Statique/Carte1",
+						"Statique/Carte2",
+						"Statique/ChefScientifique",
+						"Statique/Chloe",
+						"Statique/ChloeBlessee",
+						"Statique/ChloeBlesseeAssise",
+						"Statique/ChloeCombat",
+						"Statique/ChloeCroise",
+						"Statique/ChloeCrossee",
+						"Statique/ChloePousse",
+						"Statique/EnJouePistolet",
+						"Statique/Fusil",
+						"Statique/Fusil2",
+						"Statique/Fusil3",
+						"Statique/Fusil4",
+						"Statique/Fusil5",
+						"Statique/Gary",
+						"Statique/Hache",
+						"Statique/Jared",
+						"Statique/Jay",
+						"Statique/JayBlesse",
+						"Statique/JayCroise",
+						"Statique/JayMort",
+						"Statique/Karen",
+						"Statique/Lynn",
+						"Statique/Manip",
+						"Statique/ManipGenou",
+						"Statique/Mannequin",
+						"Statique/Manuel",
+						"Statique/ManuelHache",
+						"Statique/Marchand",
+						"Statique/Marchand2",
+						"Statique/Murphy",
+						"Statique/MurphyAccoudee",
+						"Statique/MurphyDebout",
+						"Statique/MurphyDebout2",
+						"Statique/Peur",
+						"Statique/Pistolet",
+						"Statique/Planque",
+						"Statique/PrepCombat",
+						"Statique/PrepCombatHache",
+						"Statique/Quete",
+						"Statique/Statique2",
+						"Statique/Statique3",
+						"Statique/Statique4",
+						"Statique/Statique5",
+						"Statique/Statique6",
+						"Statique/Statique7",
+						"Statique/Statique8",
+						"Statique/TodMoss",
+						"Statique/Wallace",
+						
+						"Stun/Chloe",
+						"Stun/ChloeCombat",
+						"Stun/Jay",
+						
+						"$Chloe_BlesseeReleve",
+						"$ChloeAttaqueBlessee",
+						"$ChloeEgon1",
+						"$ChloeEgon2",
+						"$ChloeEgon3",
+						"$ChloeProtection",
+						"$Crosse",
+						"$Crossee",
+						"$CrosseeReleve",
+						
+						"$JayManipGenou",
+						"$JayMort1",
+						"$JayMort2",
+						"$JayMort3",
+						"$JayMort4",
+						"$JayPropulseSol",
+						"$JaySol",
+						
+						"$posture_blesse1",
+						"$posture_blesse2",
+						"$posture_blesse3",
+						"$posture_blesse4",
+						"$posture_blesse5",
+						
+						"MurphyAccoudeeTransition1",
+						"MurphyAccoudeeTransition2",
+						"MurphyAccoudeeTransition3",
+					];
+					var tClass:Class, tClassName:String, tClassNameSimple:String;
+					for(i = 0; i < tPoseClasses.length; i++) {
+						/*if((tClass = Fewf.assets.getLoadedClass( "$Anim"+(tClassName=strReplace(tPoseClasses[i], "{0}", "F")) )) != null) {
+							poses.push(new PoseData({ id:tClassName, type:ITEM.POSE, itemClass:tClass, sex:SEX.FEMALE }));
+						}
+						if((tClass = Fewf.assets.getLoadedClass( "$Anim"+(tClassName=strReplace(tPoseClasses[i], "{0}", "H")) )) != null) {
+							poses.push(new PoseData({ id:tClassName, type:ITEM.POSE, itemClass:tClass, sex:SEX.MALE }));
+						}*/
+						/*if((tClass = Fewf.assets.getLoadedClass( "$Anim"+strReplace(tPoseClasses[i], "{0}", "F") )) != null) {*/
+						tClassName = tClassNameSimple = tPoseClasses[i];
+						if(tClassName.indexOf("$") == 0) {
+							tClassNameSimple = tClassNameSimple.slice(1);
+						}
+						else if(tClassName.indexOf("MurphyAccoudee") == 0) {
+							// Nothing, perfect as is
+						} else {
+							tClassName = "$Anim"+tClassName;
+						}
+						if((tClass = Fewf.assets.getLoadedClass( tClassName )) != null) {
+							poses.push(new PoseData({ id:tClassNameSimple, assetID:tClassNameSimple, type:ITEM.POSE, itemClass:tClass, sex:null }));
+						}
+					}
+					/*defaultPoseIndex = 0;//FewfUtils.getIndexFromArrayWithKeyVal(poses, "id", ConstantsApp.DEFAULT_POSE_ID);*/
+					//defaultPoseIndexMale = 1;//FewfUtils.getIndexFromArrayWithKeyVal(poses, "id", ConstantsApp.DEFAULT_POSE_ID);
+				},
+				function(){
+					// Loop through config and mark required assets as "extra" so they can be toggled on/off.
+					var tExtras = Fewf.assets.getData("config").extras, tDataArray, tData;
+					for(var key:String in tExtras) {
+						if((tDataArray = getArrayByType(key)) != null) {
+							for each(var tID in tExtras[key]) {
+								tData = FewfUtils.getFromArrayWithKeyVal(tDataArray, "id", tID);
+								if(tData) { tData.tags.push("extra"); }
+							}
+						}
+					}
+					
+					// All skins and faces are "extras" by default. Need to add extra type so toggling removes stuff.
+					for each(var tFace in faces) { tFace.tags.push("extra"); }
+					for each(var tSkin in skins) { tSkin.tags.push("extra"); }
+				},
+				pCallback,
+			];
+			var tContinueFlow = function(){
+				setTimeout(function(){
+					(tFlowFunctions.shift())();
+					if(tFlowFunctions.length > 0) { tContinueFlow(); }
+				}, 1);
 			}
-			
-			// All skins and faces are "extras" by default. Need to add extra type so toggling removes stuff.
-			for each(var tFace in faces) { tFace.tags.push("extra"); }
-			for each(var tSkin in skins) { tSkin.tags.push("extra"); }
+			tContinueFlow();
 		}
 		function strReplace(str:String, search:String, replace:String):String {
 			return str.split(search).join(replace);
@@ -365,8 +406,11 @@ package app.data
 			var tClassName:String;
 			var tClass:Class;
 			var tSexSpecificParts:int;
-			var tLength:int = pData.numToCheck ? pData.numToCheck : _MAX_COSTUMES_TO_CHECK_TO;
+			var tLength:int = pData.numToCheck ? pData.numToCheck : _CHECK_DEFAULT;
 			var tIdPrefix = pData.idPrefix ? pData.idPrefix : "";
+			// Default
+			if(!pData.after) { pData.after = ""; }
+			// Loop
 			for(var i = 0; i <= tLength; i++) {
 				if(pData.map) {
 					var tSexSpecificArray = new Array();
@@ -374,7 +418,7 @@ package app.data
 						var tClassMap = {  }, tClassSuccess = null;
 						tSexSpecificParts = 0;
 						for(var j = 0; j < pData.map.length; j++) {
-							tClass = Fewf.assets.getLoadedClass( tClassName = pData.base+(pData.pad ? zeroPad(i, pData.pad) : i)+(pData.after ? pData.after : "")+pData.map[j] );
+							tClass = Fewf.assets.getLoadedClass( tClassName = pData.base+zeroPad(i, pData.pad)+pData.after+pData.map[j] );
 							if(tClass) { tClassMap[pData.map[j]] = tClass; tClassSuccess = tClass; }
 							else if(pData.sex){
 								tClass = Fewf.assets.getLoadedClass( tClassName+"_"+(g==0?1:2) );
@@ -420,6 +464,7 @@ package app.data
 		}
 
 		public static function zeroPad(number:int, width:int):String {
+			if(!width) { return number; }
 			var ret:String = ""+number;
 			while( ret.length < width )
 				ret="0" + ret;

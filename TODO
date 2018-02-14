@@ -3,3 +3,4 @@
 - Add items async to dirty panes to prevent freezing?
 - Store what parts exist in a seperate file to allow skipping past item exist detection.
 	- Would require it to be done on update, which would need to update script to be run through the swf?
+	- https://stackoverflow.com/questions/4992140/flash-actionscript-save-a-text-file-on-server#4992186

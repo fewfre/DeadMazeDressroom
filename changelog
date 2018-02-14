@@ -1,3 +1,9 @@
+== V1.8 - 10 February 2018 ==
+- Added a "trash" button to reset look back to default
+- Randomized look button now has a chance to not use an item for each category (fairly high: 35%; pose: 50%; shirt/pants/shoes/weapon: 0%)
+- Make init swf parsing slightly async
+
+
 == V1.7b - 31 January 2018 ==
 - Fixed bug preventing sex-specific masks showing up.
 - Fixed it so scarves show up as masks. Due to these being a different type behind the scenes, their id is marked as "nk" for "neck".
