@@ -6,7 +6,6 @@ package app.ui
 	import app.ui.*;
 	import app.ui.buttons.*;
 	import flash.display.*;
-	import flash.net.*;
 	
 	public class Toolbox extends MovieClip
 	{

@@ -95,7 +95,11 @@ package app.world.elements
 				var tClass = pData.getPart(pID, pOptions);
 				if(tClass) {
 					var tItem = new tClass();
-					tItem.gotoAndPlay(pData.stopFrame);
+					if(pData.color >= 0) {
+						tItem.gotoAndPlay(tItem.totalFrames);
+					} else {
+						tItem.gotoAndPlay(pData.stopFrame);
+					}
 					tItem.stop();
 					return pSkinPart.addChild( tItem );
 				}
@@ -123,7 +127,7 @@ package app.world.elements
 					GameAssets.applyColorToObject(part,  pOptions.hairColor);
 				}
 				GameAssets.colorItem({ obj:part, color: pOptions.skinColor, name:"$0" });
-				GameAssets.colorItem({ obj:part, color: pOptions.secondaryColor, name:"$2" });
+				GameAssets.colorItem({ obj:part, color: pData.color < 0 ? pOptions.secondaryColor : pData.color, name:"$2" });
 			}
 		}
 		

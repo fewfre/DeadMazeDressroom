@@ -19,6 +19,6 @@ package app.data
 		public static const OBJECT				: String = "object";
 		
 		// Order of item layering when occupying the same spot.
-		public static const LAYERING			: Array = [ SKIN, FACE, BEARD, HAIR, MASK, HEAD, SHIRT, PANTS, BELT, GLOVES, BAG, SHOES, OBJECT ];
+		public static const LAYERING			: Array = [ SKIN, FACE, BEARD, HAIR, SHIRT, MASK, HEAD, PANTS, BELT, GLOVES, BAG, SHOES, OBJECT ];
 	}
 }

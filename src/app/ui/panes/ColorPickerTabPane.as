@@ -54,7 +54,10 @@ package app.ui.panes
 				trace("!!! more than 9 colors !!!");
 			}
 			
-			_selectSwatch(0, false)
+			_selectSwatch(0, false);
+			// Have to reset incase the color is -1 (for no color)
+			_colorSwatches[0].value = pSwatches[0];
+			_psColorPick.setCursor(uint(pSwatches[0]).toString(16));
 		}
 		
 		/****************************

@@ -18,13 +18,14 @@ package app.ui
 		
 		// Properties
 		public function get textValue():String { return _text.text; }
-		public function set value(pColor:uint) : void
+		public function set value(pColor:int) : void
 		{
+			// pColor == -1 is "no color"
 			_swatch.graphics.clear();
-			_swatch.graphics.beginFill(pColor);
+			if(pColor >= 0) _swatch.graphics.beginFill(pColor);
 			_swatch.graphics.drawRoundRect(1, 1, 18, 18, 5);
 			_swatch.graphics.endFill();
-			_text.text = pColor.toString(16);
+			_text.text = pColor >= 0 ? pColor.toString(16) : "";
 		}
 		
 		// Constructor

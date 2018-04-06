@@ -335,7 +335,7 @@ package app.world
 				this.character.setItemData(tData);
 
 				tInfoBar.addInfo( tData, GameAssets.getColoredItemImage(tData) );
-				tInfoBar.showColorWheel(GameAssets.getNumOfCustomColors(tButton.Image) > 0);
+				tInfoBar.showColorWheel(tData.colorable);
 			} else {
 				_removeItem(tType);
 			}
@@ -519,15 +519,17 @@ package app.world
 			private function _onColorPickChanged(pEvent:flash.events.DataEvent):void
 			{
 				var tVal:uint = uint(pEvent.data);
-				this.character.getItemData(this.currentlyColoringType).colors[_paneManager.getPane(COLOR_PANE_ID).selectedSwatch] = tVal;
+				this.character.getItemData(this.currentlyColoringType).color = tVal;//s[_paneManager.getPane(COLOR_PANE_ID).selectedSwatch] = tVal;
 				_refreshSelectedItemColor(this.currentlyColoringType);
 			}
 
 			private function _onDefaultsButtonClicked(pEvent:Event) : void
 			{
-				this.character.getItemData(this.currentlyColoringType).setColorsToDefault();
+				/* this.character.getItemData(this.currentlyColoringType).setColorsToDefault(); */
+				this.character.getItemData(this.currentlyColoringType).color = -1;
 				_refreshSelectedItemColor(this.currentlyColoringType);
-				_paneManager.getPane(COLOR_PANE_ID).setupSwatches( this.character.getColors(this.currentlyColoringType) );
+				/* _paneManager.getPane(COLOR_PANE_ID).setupSwatches( this.character.getColors(this.currentlyColoringType) ); */
+				_paneManager.openPane(_paneManager.getPane(COLOR_PANE_ID).infoBar.data.type);
 			}
 			
 			private function _refreshSelectedItemColor(pType:String, pForceReplace:Boolean=false) : void {
@@ -559,12 +561,12 @@ package app.world
 			}
 
 			private function _colorButtonClicked(pType:String) : void {
-				if(this.character.getItemFromIndex(pType) == null) { return; }
+				if(this.character.getItemData(pType) == null) { return; }
 
 				var tData:ItemData = getInfoBarByType(pType).data;
 				_paneManager.getPane(COLOR_PANE_ID).infoBar.addInfo( tData, GameAssets.getItemImage(tData) );
 				this.currentlyColoringType = pType;
-				_paneManager.getPane(COLOR_PANE_ID).setupSwatches( this.character.getColors(pType) );
+				_paneManager.getPane(COLOR_PANE_ID).setupSwatches( [tData.color] );
 				_paneManager.openPane(COLOR_PANE_ID);
 			}
 

@@ -16,6 +16,8 @@ package app.world.data
 		public var stopFrame	: int;
 		
 		public var tags			: Array; // Array<String>
+		public var colorable	: Boolean;
+		public var color		: int;
 
 		// pData = { id:String, type:String(ITEM), itemClass:Class, ?sex:String, ?classMap:String -> Class, ?assetID:String }
 		public function ItemData(pData:Object) {
@@ -27,7 +29,30 @@ package app.world.data
 			itemClass = pData.itemClass;
 			classMap = pData.classMap;
 			stopFrame = 1;
+			color = -1;
+			colorable = _isColorable();
 			tags = [];
+		}
+		
+		private function _isColorable() : Boolean {
+			if(type == ITEM.HEAD || type == ITEM.SHIRT || type == ITEM.PANTS || type == ITEM.SHOES
+			|| type == ITEM.MASK || type == ITEM.BELT || type == ITEM.GLOVES || type == ITEM.BAG) {
+				if(classMap != null) {
+					for(var i:String in classMap) {
+						if(_partProvesItemIsColorable( new classMap[i]() )) { return true; }
+					}
+				} else {
+					return _partProvesItemIsColorable( new itemClass() );
+				}
+			}
+			return false;
+		}
+		private function _partProvesItemIsColorable(part:DisplayObject) : Boolean {
+			if(part.totalFrames > 1) {
+				part.gotoAndPlay(part.totalFrames);
+				return part.$2 != null;
+			}
+			return false;
 		}
 		
 		// pOptions = { ?facingForward:Boolean=true, ?sex:SEX }

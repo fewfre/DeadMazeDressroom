@@ -117,15 +117,17 @@ package app.world.elements
 			/*if(pParams.ff) { GameAssets.facingForward = pParams.ff != "0"; }*/
 		}
 		private function _setParamToType(pParams:URLVariables, pType:String, pParam:String, pAllowNull:Boolean=true) {
-			var tData:ItemData = null;
-			if(pParams[pParam] != null) {
-				if(pParams[pParam] == '') {
-					tData = null;
-				} else {
-					tData = GameAssets.getItemFromTypeID(pType, pParams[pParam]);
-				}
+			var tData:ItemData = null, tID = pParams[pParam];
+			if(tID != null && tID != "") {
+				var tColors = tID.split(","); // Get a list of all the colors (ID is first); ex: 5,ffffff,abcdef,169742
+				tID = tColors.splice(0, 1)[0]; // Remove first item and store it as the ID.
+				tData = GameAssets.getItemFromTypeID(pType, tID);
+				if(tColors.length > 0) { tData.color = _hexToInt(tColors[0]); }
 			}
 			_itemDataMap[pType] = pAllowNull ? tData : ( tData == null ? _itemDataMap[pType] : tData );
+		}
+		private function _hexToInt(pVal:String) : int {
+			return parseInt(pVal, 16);
 		}
 
 		public function getParams() : URLVariables {
@@ -141,25 +143,52 @@ package app.world.elements
 			tParms.b_t = GameAssets.tornStates[ITEM.PANTS] ? "1" : "0";
 			
 			var tData:ItemData;
-			tParms.s = (tData = getItemData(ITEM.SKIN)) ? tData.id : '';
-			tParms.d = (tData = getItemData(ITEM.HAIR)) ? tData.id : '';
-			tParms.fh = (tData = getItemData(ITEM.BEARD)) ? tData.id : '';
-			tParms.h = (tData = getItemData(ITEM.HEAD)) ? tData.id : '';
-			tParms.m = (tData = getItemData(ITEM.MASK)) ? tData.id : '';
-			tParms.t = (tData = getItemData(ITEM.SHIRT)) ? tData.id : '';
-			tParms.b = (tData = getItemData(ITEM.PANTS)) ? tData.id : '';
-			tParms.bt = (tData = getItemData(ITEM.BELT)) ? tData.id : '';
-			tParms.g = (tData = getItemData(ITEM.GLOVES)) ? tData.id : '';
-			tParms.f = (tData = getItemData(ITEM.SHOES)) ? tData.id : '';
-			tParms.bg = (tData = getItemData(ITEM.BAG)) ? tData.id : '';
-			tParms.o = (tData = getItemData(ITEM.OBJECT)) ? tData.id : '';
-			tParms.p = (tData = getItemData(ITEM.POSE)) ? tData.id : '';
-			tParms.fc = (tData = getItemData(ITEM.FACE)) ? tData.id : '';
+			_addParamToVariables(tParms, "s", ITEM.SKIN);
+			_addParamToVariables(tParms, "d", ITEM.HAIR);
+			_addParamToVariables(tParms, "fh", ITEM.BEARD);
+			_addParamToVariables(tParms, "h", ITEM.HEAD);
+			_addParamToVariables(tParms, "m", ITEM.MASK);
+			_addParamToVariables(tParms, "t", ITEM.SHIRT);
+			_addParamToVariables(tParms, "b", ITEM.PANTS);
+			_addParamToVariables(tParms, "bt", ITEM.BELT);
+			_addParamToVariables(tParms, "g", ITEM.GLOVES);
+			_addParamToVariables(tParms, "f", ITEM.SHOES);
+			_addParamToVariables(tParms, "bg", ITEM.BAG);
+			_addParamToVariables(tParms, "o", ITEM.OBJECT);
+			_addParamToVariables(tParms, "p", ITEM.POSE);
+			_addParamToVariables(tParms, "fc", ITEM.FACE);
+			/* tParms.s = (tData = getItemData(ITEM.SKIN)) ? tData.id : ''; */
+			/* tParms.d = (tData = getItemData(ITEM.HAIR)) ? tData.id : ''; */
+			/* tParms.fh = (tData = getItemData(ITEM.BEARD)) ? tData.id : ''; */
+			/* tParms.h = (tData = getItemData(ITEM.HEAD)) ? tData.id : ''; */
+			/* tParms.m = (tData = getItemData(ITEM.MASK)) ? tData.id : ''; */
+			/* tParms.t = (tData = getItemData(ITEM.SHIRT)) ? tData.id : ''; */
+			/* tParms.b = (tData = getItemData(ITEM.PANTS)) ? tData.id : ''; */
+			/* tParms.bt = (tData = getItemData(ITEM.BELT)) ? tData.id : ''; */
+			/* tParms.g = (tData = getItemData(ITEM.GLOVES)) ? tData.id : ''; */
+			/* tParms.f = (tData = getItemData(ITEM.SHOES)) ? tData.id : ''; */
+			/* tParms.bg = (tData = getItemData(ITEM.BAG)) ? tData.id : ''; */
+			/* tParms.o = (tData = getItemData(ITEM.OBJECT)) ? tData.id : ''; */
+			/* tParms.p = (tData = getItemData(ITEM.POSE)) ? tData.id : ''; */
+			/* tParms.fc = (tData = getItemData(ITEM.FACE)) ? tData.id : ''; */
 			
 			tParms.sex = GameAssets.sex;
 			/*tParms.ff = GameAssets.facingForward ? "1" : "0";*/
 
 			return tParms;
+		}
+		private function _addParamToVariables(pParams:URLVariables, pParam:String, pType:String) {
+			var tData:ItemData = getItemData(pType);
+			if(tData) {
+				pParams[pParam] = tData.id;
+				if(tData.color > -1) {
+					pParams[pParam] += ","+_intToHex(tData.color);
+				}
+			}
+			/*else { pParams[pParam] = ''; }*/
+		}
+		private function _intToHex(pVal:int) : String {
+			return pVal.toString(16).toUpperCase();
 		}
 
 		/****************************

@@ -3,7 +3,7 @@
 	"defaultScale": 1,
 	"strings": {
 		"loading_progress":		{ "text":"{0}" },
-		"infobar_id":			{ "text":"هوية: {0}" },
+		"infobar_id":			{ "text":"ID: {0}" },
 		
 		"loading":				{ "text":"العناصر المتبقية للتحميل: {0}" },
 		"loading_finished":		{ "text":"اكتمل التحميل. جار التهيئة..." },
@@ -17,8 +17,8 @@
 		"label_sex":			{ "text":"الجنس" },
 		"btn_female":			{ "text":"أنثى" },
 		"btn_male":				{ "text":"ذكر" },
-		"label_advanced":		{ "text":"Advanced" },
-		"btn_extras":			{ "text":"Extras" },
+		"label_advanced":		{ "text":"متقدم" },
+		"btn_extras":			{ "text":"المزيد" },
 		"label_face_dir":		{ "text":"الوجه" },
 		"btn_face_front":		{ "text":"المقدمة" },
 		"btn_face_back":		{ "text":"الخلف" },
@@ -34,11 +34,11 @@
 		"tab_shirts":			{ "text":"قمصان" },
 		"tab_pants":			{ "text":"السراويل" },
 		"tab_shoes":			{ "text":"الأحذية" },
-		"tab_mask":				{ "text":"Masks" },
-		"tab_belt":				{ "text":"Belts" },
-		"tab_gloves":			{ "text":"Gloves" },
-		"tab_bag":				{ "text":"Bags" },
-		"tab_objects":			{ "text":"الاجسام" },
+		"tab_mask":				{ "text":"أقنعة" },
+		"tab_belt":				{ "text":"أحزمة" },
+		"tab_gloves":			{ "text":"قفازات" },
+		"tab_bag":				{ "text":"حقائب" },
+		"tab_objects":			{ "text":"الأغراض" },
 		"tab_poses":			{ "text":"الوضعية" },
 		"skin_invisible":		{ "text":"غير مرئي" }
 	}
