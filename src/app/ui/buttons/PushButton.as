@@ -30,7 +30,7 @@ package app.ui.buttons
 			if(pArgs.id) { id = pArgs.id; }
 			
 			if(pArgs.text) {
-				this.Text = addChild(new TextBase({ text:pArgs.text, x:pArgs.width*(0.5 - _bg.originX), y:pArgs.height*(0.5 - _bg.originY) }));
+				this.Text = addChild(new TextBase({ text:pArgs.text, x:pArgs.width*(0.5 - _bg.originX), y:pArgs.height*(0.5 - _bg.originY) })) as TextBase;
 			}
 			
 			if(pArgs.obj) {
@@ -40,8 +40,8 @@ package app.ui.buttons
 				var tScale:Number = pArgs.obj_scale ? pArgs.obj_scale : 1;
 				this.Image = pArgs.obj;
 				FewfDisplayUtils.fitWithinBounds(this.Image, pArgs.width * 0.9, pArgs.height * 0.9, pArgs.width * 0.5, pArgs.height * 0.5);
-				this.Image.x = pArgs.width / 2 - (tBounds.width / 2 + tOffset.x)*tScale * this.Image.scaleX;
-				this.Image.y = pArgs.height / 2 - (tBounds.height / 2 + tOffset.y)*tScale * this.Image.scaleY;
+				this.Image.x = pArgs.width / 2 - (tBounds.width / 2 + tOffset.x)*tScale * this.Image.scaleX - Width*_bg.originX;
+				this.Image.y = pArgs.height / 2 - (tBounds.height / 2 + tOffset.y)*tScale * this.Image.scaleY - Height*_bg.originY;
 				this.Image.scaleX *= tScale;
 				this.Image.scaleY *= tScale;
 				addChild(this.Image);

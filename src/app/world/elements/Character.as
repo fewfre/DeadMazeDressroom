@@ -7,6 +7,7 @@ package app.world.elements
 	import flash.events.*;
 	import flash.geom.*;
 	import flash.net.*;
+	import app.world.data.PoseData;
 
 	public class Character extends Sprite
 	{
@@ -60,7 +61,7 @@ package app.world.elements
 		public function updatePose(pScale:Number=-1) {
 			var tScale = pScale;
 			if(outfit != null) { tScale = outfit.scaleX; removeChild(outfit); }
-			outfit = addChild(new Pose(getItemData(ITEM.POSE)));
+			outfit = addChild(new Pose(getItemData(ITEM.POSE) as PoseData)) as Pose;
 			outfit.scaleX = outfit.scaleY = tScale;
 
 			outfit.apply({

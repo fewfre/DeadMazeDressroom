@@ -13,6 +13,7 @@ package com.fewfre.utils
 	import flash.system.LoaderContext;
 	import flash.utils.Dictionary;
 	import flash.utils.setTimeout;
+	import flash.net.URLLoader;
 	
 	public class AssetManager extends Sprite
 	{
@@ -78,7 +79,7 @@ package com.fewfre.utils
 					case "json":
 						var tUrlLoader:URLLoader = new URLLoader();
 						tUrlLoader.addEventListener(Event.COMPLETE, function(e:Event){ _onJsonLoaded(e, tName, arguments.callee); });
-						tUrlLoader.addEventListener(IOErrorEvent.IO_ERROR, function(e:Event){ _onURLLoadError(e, pUrl, arguments.callee); });
+						tUrlLoader.addEventListener(IOErrorEvent.IO_ERROR, function(e:Event){ _onURLLoadError(e as IOErrorEvent, pUrl, arguments.callee); });
 						tUrlLoader.addEventListener(ProgressEvent.PROGRESS, _onProgress);
 						var tRequest:URLRequest = new URLRequest(pUrl);
 						tRequest.requestHeaders.push(new URLRequestHeader("pragma", "no-cache"));
@@ -110,7 +111,7 @@ package com.fewfre.utils
 			
 			private function _onJsonLoaded(e:Event, pKey:String, pOnComplete) : void {
 				_loadedData[pKey] = JSON.parse(e.target.data);
-				_destroyURLLoader(e.target, pOnComplete);
+				_destroyURLLoader(e.target as URLLoader, pOnComplete);
 				_checkIfLoadingDone();
 			}
 			
@@ -122,7 +123,7 @@ package com.fewfre.utils
 			
 			private function _onURLLoadError(e:IOErrorEvent, pUrl:String, pOnComplete) : void {
 				trace("[AssetManager](_onLoadError) ERROR("+e.errorID+"): Was not able to load url: "+pUrl);
-				_destroyURLLoader(e.target, pOnComplete);
+				_destroyURLLoader(e.target as URLLoader, pOnComplete);
 				_checkIfLoadingDone();
 			}
 			

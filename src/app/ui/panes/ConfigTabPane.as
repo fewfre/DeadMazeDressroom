@@ -66,7 +66,7 @@ package app.ui.panes
 				hairColorButtons.push( addChild( new PushButton({ x:xx + (spacing*i), y:yy, width:sizex, height:sizey, obj:_colorSpriteBox({ color:clr }), id:clr, allowToggleOff:false }) ) );
 			}
 			hairColorButtons.push( addChild( hairColorPickerButton = new PushButton({ x:xx + (spacing*i), y:yy, width:sizex, height:sizey, obj:new $ColorWheel(), obj_scale:0.7, id:GameAssets.hairColor }) ) );
-			hairColorPickerButtonBox = hairColorPickerButton.addChild(_colorSpriteBox({ color:hairColorPickerButton.id, size:MINI_BOX_SIZE, x:(sizex-MINI_BOX_SIZE)*0.5, y:(sizey-MINI_BOX_SIZE)*0.5 }));
+			hairColorPickerButtonBox = hairColorPickerButton.addChild(_colorSpriteBox({ color:hairColorPickerButton.id, size:MINI_BOX_SIZE, x:(sizex-MINI_BOX_SIZE)*0.5, y:(sizey-MINI_BOX_SIZE)*0.5 })) as Sprite;
 			_registerClickHandler(hairColorButtons, _onHairColorButtonClicked);
 			hairColorPickerButtonBox.addEventListener(PushButton.STATE_CHANGED_BEFORE, _onColorPickerButtonClicked);
 			tIndex = GameAssets.hairColors.indexOf(GameAssets.hairColor);
@@ -80,7 +80,7 @@ package app.ui.panes
 				skinColorButtons.push( addChild( new PushButton({ x:xx + (spacing*i), y:yy, width:sizex, height:sizey, obj:_colorSpriteBox({ color:clr }), id:clr, allowToggleOff:false }) ) );
 			}
 			skinColorButtons.push( addChild( skinColorPickerButton = new PushButton({ x:xx + (spacing*i), y:yy, width:sizex, height:sizey, obj:new $ColorWheel(), obj_scale:0.7, id:GameAssets.skinColor }) ) );
-			skinColorPickerButtonBox = skinColorPickerButton.addChild(_colorSpriteBox({ color:skinColorPickerButton.id, size:MINI_BOX_SIZE, x:(sizex-MINI_BOX_SIZE)*0.5, y:(sizey-MINI_BOX_SIZE)*0.5 }));
+			skinColorPickerButtonBox = skinColorPickerButton.addChild(_colorSpriteBox({ color:skinColorPickerButton.id, size:MINI_BOX_SIZE, x:(sizex-MINI_BOX_SIZE)*0.5, y:(sizey-MINI_BOX_SIZE)*0.5 })) as Sprite;
 			_registerClickHandler(skinColorButtons, _onSkinColorButtonClicked);
 			skinColorPickerButton.addEventListener(PushButton.STATE_CHANGED_BEFORE, _onColorPickerButtonClicked);
 			tIndex = GameAssets.skinColors.indexOf(GameAssets.skinColor);
@@ -94,7 +94,7 @@ package app.ui.panes
 				secondaryColorButtons.push( addChild( new PushButton({ x:xx + (spacing*i), y:yy, width:sizex, height:sizey, obj:_colorSpriteBox({ color:clr }), id:clr, allowToggleOff:false }) ) );
 			}
 			secondaryColorButtons.push( addChild( secondaryColorPickerButton = new PushButton({ x:xx + (spacing*i), y:yy, width:sizex, height:sizey, obj:new $ColorWheel(), obj_scale:0.7, id:GameAssets.secondaryColor }) ) );
-			secondaryColorPickerButtonBox = secondaryColorPickerButton.addChild(_colorSpriteBox({ color:secondaryColorPickerButton.id, size:MINI_BOX_SIZE, x:(sizex-MINI_BOX_SIZE)*0.5, y:(sizey-MINI_BOX_SIZE)*0.5 }));
+			secondaryColorPickerButtonBox = secondaryColorPickerButton.addChild(_colorSpriteBox({ color:secondaryColorPickerButton.id, size:MINI_BOX_SIZE, x:(sizex-MINI_BOX_SIZE)*0.5, y:(sizey-MINI_BOX_SIZE)*0.5 })) as Sprite;
 			_registerClickHandler(secondaryColorButtons, _onSecondaryColorButtonClicked);
 			secondaryColorPickerButton.addEventListener(PushButton.STATE_CHANGED_BEFORE, _onColorPickerButtonClicked);
 			tIndex = GameAssets.secondaryColors.indexOf(GameAssets.secondaryColor);
@@ -130,35 +130,35 @@ package app.ui.panes
 		}
 
 		private function _onSexButtonClicked(pEvent:FewfEvent) {
-			_untoggle(sexButtons, pEvent.target);
+			_untoggle(sexButtons, pEvent.target as PushButton);
 			GameAssets.sex = pEvent.data.id;
 			character.updatePose();
 			dispatchEvent(new Event("sex_change"));
 		}
 
 		private function _onFacingButtonClicked(pEvent:FewfEvent) {
-			_untoggle(facingButtons, pEvent.target);
+			_untoggle(facingButtons, pEvent.target as PushButton);
 			GameAssets.facingForward = pEvent.data.id;
 			character.updatePose();
 			dispatchEvent(new Event("facing_change"));
 		}
 
 		private function _onHairColorButtonClicked(pEvent:Event) {
-			_untoggle(hairColorButtons, pEvent.target);
+			_untoggle(hairColorButtons, pEvent.target as PushButton);
 			GameAssets.hairColor = pEvent.target.id;
 			character.updatePose();
 			dispatchEvent(new FewfEvent("color_changed", { type:"hair" }));
 		}
 
 		private function _onSkinColorButtonClicked(pEvent:Event) {
-			_untoggle(skinColorButtons, pEvent.target);
+			_untoggle(skinColorButtons, pEvent.target as PushButton);
 			GameAssets.skinColor = pEvent.target.id;
 			character.updatePose();
 			dispatchEvent(new FewfEvent("color_changed", { type:"skin" }));
 		}
 
 		private function _onSecondaryColorButtonClicked(pEvent:Event) {
-			_untoggle(secondaryColorButtons, pEvent.target);
+			_untoggle(secondaryColorButtons, pEvent.target as PushButton);
 			GameAssets.secondaryColor = pEvent.target.id;
 			character.updatePose();
 			dispatchEvent(new FewfEvent("color_changed", { type:"secondary" }));

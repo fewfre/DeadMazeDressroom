@@ -5,11 +5,13 @@ package app.world.elements
 	import app.world.data.*;
 	import flash.display.*;
 	import flash.geom.*;
+	import flash.display.MovieClip;
+	import flash.display.DisplayObject;
 
 	public class Pose extends MovieClip
 	{
 		// Storage
-		private var _poseData : ItemData;
+		private var _poseData : PoseData;
 		private var _pose : MovieClip;
 
 		public function get pose():MovieClip { return _pose; }
@@ -24,7 +26,7 @@ package app.world.elements
 		
 		private function _createPoseFromData(pData:Object=null) : void {
 			var tClass:Class = _poseData.getClass(pData);
-			_pose = addChild( tClass ? new tClass() : new _poseData.itemClass() );
+			_pose = addChild( tClass ? new tClass() : new _poseData.itemClass() ) as MovieClip;
 			stop();
 		}
 		
@@ -64,8 +66,8 @@ package app.world.elements
 			_createPoseFromData(pData);
 			
 			var tShopData = _orderType(pData.items);
-			var part:DisplayObject = null;
-			var tChild:* = null;
+			var part:MovieClip = null;
+			var tChild:DisplayObject = null;
 			var tItemsOnChild:int = 0;
 			
 			// This works because poses, skins, and items have a group of letters/numbers that let each other know they should be grouped together.
@@ -76,7 +78,7 @@ package app.world.elements
 				tItemsOnChild = 0;
 				
 				for(var j:int = 0; j < tShopData.length; j++) {
-					part = _addToPoseIfCan(tChild, tShopData[j], tChild.name, pData);
+					part = _addToPoseIfCan(tChild as MovieClip, tShopData[j], tChild.name, pData);
 					if(pData.tornStates && pData.tornStates[tShopData[j].type]) _applyTornMask(tChild.name, part);
 					_colorPart(part, tShopData[j], tChild.name, pData);
 					if(part) { tItemsOnChild++; }
@@ -90,7 +92,7 @@ package app.world.elements
 			return this;
 		}
 		
-		private function _addToPoseIfCan(pSkinPart:DisplayObject, pData:ItemData, pID:String, pOptions:Object=null) : MovieClip {
+		private function _addToPoseIfCan(pSkinPart:MovieClip, pData:ItemData, pID:String, pOptions:Object=null) : MovieClip {
 			if(pData) {
 				var tClass = pData.getPart(pID, pOptions);
 				if(tClass) {
@@ -101,7 +103,7 @@ package app.world.elements
 						tItem.gotoAndPlay(pData.stopFrame);
 					}
 					tItem.stop();
-					return pSkinPart.addChild( tItem );
+					return pSkinPart.addChild( tItem ) as MovieClip;
 				}
 			}
 			return null;

@@ -9,6 +9,7 @@ package app.data
 	import flash.geom.*;
 	import flash.net.*;
 	import flash.utils.setTimeout;
+	import flash.display.MovieClip;
 
 	public class GameAssets
 	{
@@ -128,7 +129,7 @@ package app.data
 						}*/
 						/*if(Fewf.assets.getLoadedClass( "M_"+i+"_BS1_1" ) != null) {*/
 						if(Fewf.assets.getLoadedClass( "M_"+i+"_BS1" ) != null) {
-							skins.push( new SkinData( i, null ) );
+							skins.push( new SkinData( String(i), null ) );
 						}
 					}
 					skins.push( new SkinData( "inv", null ) );
@@ -464,7 +465,7 @@ package app.data
 		}
 
 		public static function zeroPad(number:int, width:int):String {
-			if(!width) { return number; }
+			if(!width) { return String(number); }
 			var ret:String = ""+number;
 			while( ret.length < width )
 				ret="0" + ret;
@@ -501,14 +502,15 @@ package app.data
 		* Color
 		*****************************/
 		public static function copyColor(copyFromMC:MovieClip, copyToMC:MovieClip) : MovieClip {
-			if (copyFromMC == null || copyToMC == null) { return; }
+			if (copyFromMC == null || copyToMC == null) { return null; }
+			copyToMC.gotoAndPlay(copyFromMC.currentFrame);
 			var tChild1:*=null;
 			var tChild2:*=null;
 			var i:int = 0;
 			while (i < copyFromMC.numChildren) {
 				tChild1 = copyFromMC.getChildAt(i);
 				tChild2 = copyToMC.getChildAt(i);
-				if (tChild1.name.indexOf("Couleur") == 0 && tChild1.name.length > 7) {
+				if (tChild1.name == "$2" || (tChild1.name.indexOf("Couleur") == 0 && tChild1.name.length > 7)) {
 					tChild2.transform.colorTransform = tChild1.transform.colorTransform;
 				}
 				i++;
@@ -517,27 +519,28 @@ package app.data
 		}
 
 		public static function colorDefault(pMC:MovieClip) : MovieClip {
-			if (pMC == null) { return; }
+			if (pMC == null) { return null; }
+			pMC.gotoAndPlay(0);
 
-			var tChild:*=null;
-			var tHex:int=0;
-			var loc1:*=0;
-			while (loc1 < pMC.numChildren)
-			{
-				tChild = pMC.getChildAt(loc1);
-				if (tChild.name.indexOf("Couleur") == 0 && tChild.name.length > 7)
-				{
-					tHex = int("0x" + tChild.name.substr(tChild.name.indexOf("_") + 1, 6));
-					applyColorToObject(tChild, tHex);
-				}
-				++loc1;
-			}
+			// var tChild:*=null;
+			// var tHex:int=0;
+			// var loc1:*=0;
+			// while (loc1 < pMC.numChildren)
+			// {
+			// 	tChild = pMC.getChildAt(loc1);
+			// 	if (tChild.name.indexOf("Couleur") == 0 && tChild.name.length > 7)
+			// 	{
+			// 		tHex = int("0x" + tChild.name.substr(tChild.name.indexOf("_") + 1, 6));
+			// 		applyColorToObject(tChild, tHex);
+			// 	}
+			// 	++loc1;
+			// }
 			return pMC;
 		}
 
 		// pData = { obj:DisplayObject, color:String OR int, ?swatch:int, ?name:String, ?colors:Array<int> }
 		public static function colorItem(pData:Object) : DisplayObject {
-			if (pData.obj == null) { return; }
+			if (pData.obj == null) { return null; }
 
 			var tHex:int = convertColorToNumber(pData.color);
 
@@ -570,22 +573,22 @@ package app.data
 			pItem.transform.colorTransform = new flash.geom.ColorTransform(tR / 128, tG / 128, tB / 128);
 		}
 
-		public static function getColors(pMC:MovieClip) : Array {
-			var tChild:*=null;
-			var tTransform:*=null;
-			var tArray:Array=new Array();
+		// public static function getColors(pMC:MovieClip) : Array {
+		// 	var tChild:*=null;
+		// 	var tTransform:*=null;
+		// 	var tArray:Array=new Array();
 
-			var i:int=0;
-			while (i < pMC.numChildren) {
-				tChild = pMC.getChildAt(i);
-				if (tChild.name.indexOf("Couleur") == 0 && tChild.name.length > 7) {
-					tTransform = tChild.transform.colorTransform;
-					tArray[tChild.name.charAt(7)] = ColorMathUtil.RGBToHex(tTransform.redMultiplier * 128, tTransform.greenMultiplier * 128, tTransform.blueMultiplier * 128);
-				}
-				i++;
-			}
-			return tArray;
-		}
+		// 	var i:int=0;
+		// 	while (i < pMC.numChildren) {
+		// 		tChild = pMC.getChildAt(i);
+		// 		if (tChild.name.indexOf("Couleur") == 0 && tChild.name.length > 7) {
+		// 			tTransform = tChild.transform.colorTransform;
+		// 			tArray[tChild.name.charAt(7)] = ColorMathUtil.RGBToHex(tTransform.redMultiplier * 128, tTransform.greenMultiplier * 128, tTransform.blueMultiplier * 128);
+		// 		}
+		// 		i++;
+		// 	}
+		// 	return tArray;
+		// }
 
 		public static function getNumOfCustomColors(pMC:MovieClip) : int {
 			var tChild:*=null;
@@ -602,8 +605,8 @@ package app.data
 		}
 		
 		public static function getColoredItemImage(pData:ItemData) : MovieClip {
-			/*return colorItem({ obj:getItemImage(pData), colors:pData.colors });*/
-			return getItemImage(pData); // Colored items not supported
+			return colorItem({ obj:getItemImage(pData), colors:[pData.color] }) as MovieClip;//pData.colors });
+			// return getItemImage(pData); // Colored items not supported
 		}
 
 		/****************************
@@ -649,7 +652,7 @@ package app.data
 			var tApplyData = pData.baseArgs != null ? pData.baseArgs : {};
 			tApplyData.facingForward = true;
 			
-			tPose = new Pose(tPoseData);
+			var tPose = new Pose(tPoseData);
 			/*if(tSkinData.sex == SEX.MALE) {
 				tPose.apply({ items:[
 					tSkinData,

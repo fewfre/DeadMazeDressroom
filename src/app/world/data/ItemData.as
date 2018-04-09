@@ -4,6 +4,7 @@ package app.world.data
 	import app.data.*;
 	import flash.display.*;
 	import flash.geom.*;
+	import flash.display.MovieClip;
 
 	public class ItemData
 	{
@@ -47,7 +48,7 @@ package app.world.data
 			}
 			return false;
 		}
-		private function _partProvesItemIsColorable(part:DisplayObject) : Boolean {
+		private function _partProvesItemIsColorable(part:MovieClip) : Boolean {
 			if(part.totalFrames > 1) {
 				part.gotoAndPlay(part.totalFrames);
 				return part.$2 != null;

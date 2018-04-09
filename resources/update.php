@@ -6,13 +6,15 @@ $resources_base = array(
 );
 $resources = array();
 foreach ($resources_base as $filebase) {
-	for ($i = 1; $i <= 4; $i++) {
+	for ($i = 4; $i >= 1; $i--) {
 		$filename = "{$filebase}_0{$i}.swf";
 		$url = "http://www.transformice.com/images/x_deadmeat/bibliotheques/$filename";
 		$code = checkExternalFile($url);
 		if($code == 200 || $code == 300) {
 			file_put_contents($filename, fopen($url, 'r'));
-			$resources[] = $filename;
+			// if($filename == "Hauts_01.swf" || $filename == "Hauts_01.swf") {
+				$resources[] = $filename;
+			// }
 		}
 	}
 }
