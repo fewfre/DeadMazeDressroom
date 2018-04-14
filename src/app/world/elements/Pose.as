@@ -134,7 +134,7 @@ package app.world.elements
 		}
 		
 		private function _orderType(pItems:Array) : Array {
-			var i = pItems.length;
+			var i:int = pItems.length;
 			while(i > 0) { i--;
 				if(pItems[i] == null) {
 					pItems.splice(i, 1);

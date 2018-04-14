@@ -50,7 +50,7 @@ package app.ui.screens
 			
 			var tFlagTray = _tray.addChild(new MovieClip()), tFlagRowTray, tX;
 			var tBtn:SpriteButton, tLangData:Object, tColumns = 8, tRows = 1+Math.floor((tLanguages.length-1) / tColumns), tColumnsInRow = tColumns;
-			for(var i = 0; i < tLanguages.length; i++) { tLangData = tLanguages[i];
+			for(var i:int = 0; i < tLanguages.length; i++) { tLangData = tLanguages[i];
 				if(i%tColumns == 0) {
 					tColumnsInRow = i+tColumns > tLanguages.length ? tLanguages.length - i : tColumns;
 					tFlagRowTray = tFlagTray.addChild(new MovieClip());

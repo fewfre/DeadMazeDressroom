@@ -22,7 +22,7 @@ package app.ui
 			this.x = pData.x;
 			this.y = pData.y;
 			
-			var btn:ButtonBase;
+			var btn;
 			
 			_bg = addChild(new RoundedRectangle({ width:365, height:35, origin:0.5 })) as RoundedRectangle;
 			_bg.drawSimpleGradient(ConstantsApp.COLOR_TRAY_GRADIENT, 15, ConstantsApp.COLOR_TRAY_B_1, ConstantsApp.COLOR_TRAY_B_2, ConstantsApp.COLOR_TRAY_B_3);
@@ -53,7 +53,7 @@ package app.ui
 			btn.addEventListener(ButtonBase.CLICK, pData.onShare);
 			tButtonsOnLeft++;
 			
-			imgurButton = btn = tTray.addChild(new SpriteButton({ x:tX+tButtonXInc*tButtonsOnLeft, y:tY, width:tButtonSize, height:tButtonSize, obj_scale:0.45, obj:new $ImgurIcon(), origin:0.5 }));
+			imgurButton = btn = tTray.addChild(new SpriteButton({ x:tX+tButtonXInc*tButtonsOnLeft, y:tY, width:tButtonSize, height:tButtonSize, obj_scale:0.45, obj:new $ImgurIcon(), origin:0.5 })) as SpriteButton;
 			var tCharacter = pData.character;
 			btn.addEventListener(ButtonBase.CLICK, function(e:*){
 				ImgurApi.uploadImage(tCharacter);

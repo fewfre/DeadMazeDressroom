@@ -10,6 +10,7 @@ package app
 	import flash.events.*;
 	import flash.system.Capabilities;
 
+	[SWF(backgroundColor="0x6A7495" , width="900" , height="425")]
 	public class Main extends MovieClip
 	{
 		// Storage

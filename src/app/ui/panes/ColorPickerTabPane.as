@@ -39,7 +39,7 @@ package app.ui.panes
 		{
 			var tLength:int = pSwatches.length;
 			
-			for(var i = 0; i < _colorSwatches.length; i++) {
+			for(var i:int = 0; i < _colorSwatches.length; i++) {
 				_colorSwatches[i].alpha = 0;
 				
 				if (tLength > i) {
@@ -101,7 +101,7 @@ package app.ui.panes
 		
 		private function _selectSwatch(pNum:int, pSetCursor:Boolean=true) : void {
 			if(_colorSwatches[pNum].alpha == 0) { return; }
-			for(var i = 0; i < _colorSwatches.length; i++) {
+			for(var i:int = 0; i < _colorSwatches.length; i++) {
 				_colorSwatches[i].unselect();
 			}
 			_selectedSwatch = pNum;

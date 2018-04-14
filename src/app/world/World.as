@@ -24,6 +24,9 @@ package app.world
 	import flash.net.*;
 	import flash.utils.*;
 	import app.ui.panes.DyePane;
+	import app.ui.panes.ColorFinderPane;
+	import app.ui.panes.ColorPickerTabPane;
+	import app.ui.panes.ConfigTabPane;
 	
 	public class World extends MovieClip
 	{
@@ -41,11 +44,11 @@ package app.world
 		internal var configCurrentlyColoringType:String;
 		
 		// Constants
-		public static const COLOR_PANE_ID = "colorPane";
-		public static const CONFIG_PANE_ID = "configPane";
-		public static const CONFIG_COLOR_PANE_ID = "configColorPane";
-		public static const COLOR_FINDER_PANE_ID = "colorFinderPane";
-		public static const DYE_PANE_ID = "colorDyePane";
+		public static const COLOR_PANE_ID:String = "colorPane";
+		public static const CONFIG_PANE_ID:String = "configPane";
+		public static const CONFIG_COLOR_PANE_ID:String = "configColorPane";
+		public static const COLOR_FINDER_PANE_ID:String = "colorFinderPane";
+		public static const DYE_PANE_ID:String = "colorDyePane";
 		
 		// Constructor
 		public function World(pStage:Stage) {
@@ -54,7 +57,7 @@ package app.world
 			pStage.addEventListener(MouseEvent.MOUSE_WHEEL, _onMouseWheel);
 		}
 		
-		private function _buildWorld(pStage:Stage) {
+		private function _buildWorld(pStage:Stage) : void {
 			/* GameAssets.init(); */
 
 			/****************************
@@ -131,9 +134,9 @@ package app.world
 			tPane.colorPickerButton.addEventListener(ButtonBase.CLICK, _onDyeCustomPickerClicked);
 			
 			tPane = _paneManager.addPane(CONFIG_PANE_ID, new ConfigTabPane(character));
-			tPane.hairColorPickerButton.addEventListener(ButtonBase.CLICK, function(pEvent:Event){ _configColorButtonClicked("hair", pEvent.target.id); });
-			tPane.skinColorPickerButton.addEventListener(ButtonBase.CLICK, function(pEvent:Event){ _configColorButtonClicked("skin", pEvent.target.id); });
-			tPane.secondaryColorPickerButton.addEventListener(ButtonBase.CLICK, function(pEvent:Event){ _configColorButtonClicked("secondary", pEvent.target.id); });
+			tPane.hairColorPickerButton.addEventListener(ButtonBase.CLICK, function(pEvent:Event):void{ _configColorButtonClicked("hair", pEvent.target.id); });
+			tPane.skinColorPickerButton.addEventListener(ButtonBase.CLICK, function(pEvent:Event):void{ _configColorButtonClicked("skin", pEvent.target.id); });
+			tPane.secondaryColorPickerButton.addEventListener(ButtonBase.CLICK, function(pEvent:Event):void{ _configColorButtonClicked("secondary", pEvent.target.id); });
 			tPane.addEventListener("sex_change", _onSexChanged);
 			tPane.addEventListener("facing_change", _onFacingChanged);
 			tPane.addEventListener("color_changed", _onConfigColorChanged);
@@ -141,7 +144,7 @@ package app.world
 
 			tPane = _paneManager.addPane(CONFIG_COLOR_PANE_ID, new ColorPickerTabPane({ hide_default:true }));
 			tPane.addEventListener(ColorPickerTabPane.EVENT_COLOR_PICKED, _onConfigColorPickChanged);
-			tPane.addEventListener(ColorPickerTabPane.EVENT_EXIT, function(pEvent:Event){ _paneManager.openPane(CONFIG_PANE_ID); });
+			tPane.addEventListener(ColorPickerTabPane.EVENT_EXIT, function(pEvent:Event):void{ _paneManager.openPane(CONFIG_PANE_ID); });
 			
 			tPane = _paneManager.addPane(COLOR_FINDER_PANE_ID, new ColorFinderPane({ }));
 			tPane.addEventListener(ColorPickerTabPane.EVENT_EXIT, _onColorFinderBackClicked);
@@ -175,7 +178,7 @@ package app.world
 		}
 		
 		private function _setupDirtyPanePopulation(tType:String) : void {
-			_paneManager.getPane(tType).populateFunction = function(){
+			_paneManager.getPane(tType).populateFunction = function():void{
 				_setupPaneButtons(_paneManager.getPane(tType), GameAssets.getArrayByType(tType));
 				//_removeItem(tType);
 				
@@ -198,15 +201,15 @@ package app.world
 			var tPane:TabPane = new TabPane();
 			tPane.addInfoBar( new ShopInfoBar({ showEyeDropButton:pType!=ITEM.POSE, showQualityButton:pType==ITEM.SHIRT||pType==ITEM.PANTS }) );
 			_setupPaneButtons(tPane, GameAssets.getArrayByType(pType));
-			tPane.infoBar.colorWheel.addEventListener(ButtonBase.CLICK, function(){ _dyeButtonClicked(pType); });
-			tPane.infoBar.imageCont.addEventListener(MouseEvent.CLICK, function(){ _removeItem(pType); });
-			tPane.infoBar.refreshButton.addEventListener(ButtonBase.CLICK, function(){ _randomItemOfType(pType); });
+			tPane.infoBar.colorWheel.addEventListener(ButtonBase.CLICK, function():void{ _dyeButtonClicked(pType); });
+			tPane.infoBar.imageCont.addEventListener(MouseEvent.CLICK, function():void{ _removeItem(pType); });
+			tPane.infoBar.refreshButton.addEventListener(ButtonBase.CLICK, function():void{ _randomItemOfType(pType); });
 			if(tPane.infoBar.eyeDropButton) {
-				tPane.infoBar.eyeDropButton.addEventListener(ButtonBase.CLICK, function(){ _eyeDropButtonClicked(pType); });
+				tPane.infoBar.eyeDropButton.addEventListener(ButtonBase.CLICK, function():void{ _eyeDropButtonClicked(pType); });
 			}
 			if(tPane.infoBar.qualityButton) {
 				tPane.infoBar.qualityButton.toggle(!!GameAssets.tornStates[pType], false);
-				tPane.infoBar.qualityButton.addEventListener(ButtonBase.CLICK, function(){ _qualityButtonClicked(pType); });
+				tPane.infoBar.qualityButton.addEventListener(ButtonBase.CLICK, function():void{ _qualityButtonClicked(pType); });
 			}
 			return tPane;
 		}
@@ -230,7 +233,7 @@ package app.world
 
 			var shopItem : Sprite;
 			var shopItemButton : PushButton;
-			var i = -1;
+			var i:int = -1;
 			pPane.buttons = [];
 			while (i < pItemArray.length-1) { i++;
 				if(pItemArray[i].sex != GameAssets.sex && pItemArray[i].sex != null) { continue; }
@@ -252,7 +255,7 @@ package app.world
 				var tIndex = FewfUtils.getIndexFromArrayWithKeyVal(pItemArray, "id", 41);
 				var tButton = pPane.buttons[tIndex];
 				var tMiniButton = tButton.parent.addChild(new ScaleButton({ x:tButton.x + 50, y:tButton.y + 12, obj:new $PlayButton(), obj_scale:0.5 }));
-				tMiniButton.addEventListener(ButtonBase.CLICK, function(){
+				tMiniButton.addEventListener(ButtonBase.CLICK, function():void{
 					tButton.toggleOn();
 					// Mod over total frame (note that frame go to 1 -> max frames, not 0 -> max frames-1)
 					pItemArray[tIndex].stopFrame++;
@@ -332,7 +335,7 @@ package app.world
 				}
 			}
 
-			var tButton:PushButton = pEvent.target;//tButtons[pEvent.data.id];
+			var tButton:PushButton = pEvent.target as PushButton;//tButtons[pEvent.data.id];
 			var tData:ItemData;
 			// If clicked button is toggled on, equip it. Otherwise remove it.
 			if(tButton.pushed) {
@@ -372,7 +375,7 @@ package app.world
 		}
 
 		private function _onRandomizeDesignClicked(pEvent:Event) : void {
-			for each(var tItem in ITEM.LAYERING) {
+			for each(var tItem:String in ITEM.LAYERING) {
 				if(_paneManager.getPane(tItem)) {
 					if(tItem == ITEM.SHIRT || tItem == ITEM.PANTS || tItem == ITEM.SHOES || tItem == ITEM.OBJECT) {
 						_randomItemOfType(tItem);
@@ -483,7 +486,7 @@ package app.world
 				var tItem2:MovieClip = GameAssets.getColoredItemImage(tData);
 				_paneManager.getPane(COLOR_FINDER_PANE_ID).infoBar.addInfo( tData, tItem );
 				this.currentlyColoringType = pType;
-				_paneManager.getPane(COLOR_FINDER_PANE_ID).setItem(tItem2);
+				(_paneManager.getPane(COLOR_FINDER_PANE_ID) as ColorFinderPane).setItem(tItem2);
 				_paneManager.openPane(COLOR_FINDER_PANE_ID);
 			}
 
@@ -563,7 +566,7 @@ package app.world
 				var tData:ItemData = getInfoBarByType(pType).data;
 				_paneManager.getPane(COLOR_PANE_ID).infoBar.addInfo( tData, GameAssets.getItemImage(tData) );
 				this.currentlyColoringType = pType;
-				_paneManager.getPane(COLOR_PANE_ID).setupSwatches( [tData.color] );
+				(_paneManager.getPane(COLOR_PANE_ID) as ColorPickerTabPane).setupSwatches( [tData.color] );
 				_paneManager.openPane(COLOR_PANE_ID);
 			}
 
@@ -577,7 +580,7 @@ package app.world
 			private function _onConfigColorPickChanged(pEvent:flash.events.DataEvent):void
 			{
 				var tVal:uint = uint(pEvent.data);
-				_paneManager.getPane(CONFIG_PANE_ID).updateCustomColor(configCurrentlyColoringType, tVal);
+				(_paneManager.getPane(CONFIG_PANE_ID) as ConfigTabPane).updateCustomColor(configCurrentlyColoringType, tVal);
 			}
 			
 			// When any color type changes, be it via color picker or just button.
@@ -599,13 +602,13 @@ package app.world
 
 			private function _configColorButtonClicked(pType:String, pColor:int) : void {
 				this.configCurrentlyColoringType = pType;
-				_paneManager.getPane(CONFIG_COLOR_PANE_ID).setupSwatches( [ pColor ] );
+				(_paneManager.getPane(CONFIG_COLOR_PANE_ID) as ColorPickerTabPane).setupSwatches( [ pColor ] );
 				_paneManager.openPane(CONFIG_COLOR_PANE_ID);
 			}
 				
 
 			private function _onSexChanged(pEvent:Event) : void {
-				var tTypes = [ ITEM.OBJECT, ITEM.SKIN, ITEM.FACE, ITEM.BEARD, ITEM.HAIR, ITEM.HEAD, ITEM.SHIRT, ITEM.PANTS, ITEM.SHOES, ITEM.POSE, ITEM.MASK, ITEM.BELT, ITEM.GLOVES, ITEM.BAG ];
+				var tTypes:Array = [ ITEM.OBJECT, ITEM.SKIN, ITEM.FACE, ITEM.BEARD, ITEM.HAIR, ITEM.HEAD, ITEM.SHIRT, ITEM.PANTS, ITEM.SHOES, ITEM.POSE, ITEM.MASK, ITEM.BELT, ITEM.GLOVES, ITEM.BAG ];
 				var tType:String, tData, tNewSexIsMale;
 				for(var i in tTypes) { tType = tTypes[i];
 					if(_paneManager.getPane(tType)) {
@@ -632,7 +635,7 @@ package app.world
 			private function _onShowExtraToggled(pEvent:Event) : void {
 				GameAssets.showAll = !GameAssets.showAll;
 				
-				var tTypes = ITEM.LAYERING; tTypes.push(ITEM.POSE);
+				var tType:String, tTypes = ITEM.LAYERING; tTypes.push(ITEM.POSE);
 				if(!GameAssets.showAll) {
 					for(var i in tTypes) { tType = tTypes[i];
 						if(_paneManager.getPane(tType)) {

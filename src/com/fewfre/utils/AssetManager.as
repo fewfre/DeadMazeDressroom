@@ -46,8 +46,8 @@ package com.fewfre.utils
 				_loadNextItem();
 			}
 			
-			private function _loadNextItem() {
-				var tItem = _urlsToLoad.shift();
+			private function _loadNextItem() : void {
+				var tItem:* = _urlsToLoad.shift();
 				if(!(tItem is Array)) {
 					_newLoader( tItem );
 				} else {
@@ -56,7 +56,7 @@ package com.fewfre.utils
 			}
 			
 			private function _newLoader(pUrl:String, pOptions:Object=null) : void {
-				var tUrlParts = pUrl.split("/").pop().split("."), tName = tUrlParts[0], tType = tUrlParts[1];
+				var tUrlParts:Array = pUrl.split("/").pop().split("."), tName:String = tUrlParts[0], tType:String = tUrlParts[1];
 				if(_cacheBreaker && ExternalInterface.call("eval", "window.location.href")) {
 					pUrl += "?cb="+_cacheBreaker;
 				}
@@ -78,12 +78,12 @@ package com.fewfre.utils
 						break;
 					case "json":
 						var tUrlLoader:URLLoader = new URLLoader();
-						tUrlLoader.addEventListener(Event.COMPLETE, function(e:Event){ _onJsonLoaded(e, tName, arguments.callee); });
-						tUrlLoader.addEventListener(IOErrorEvent.IO_ERROR, function(e:Event){ _onURLLoadError(e as IOErrorEvent, pUrl, arguments.callee); });
+						tUrlLoader.addEventListener(Event.COMPLETE, function(e:Event):void{ _onJsonLoaded(e, tName, arguments.callee); });
+						tUrlLoader.addEventListener(IOErrorEvent.IO_ERROR, function(e:Event):void{ _onURLLoadError(e as IOErrorEvent, pUrl, arguments.callee); });
 						tUrlLoader.addEventListener(ProgressEvent.PROGRESS, _onProgress);
-						var tRequest:URLRequest = new URLRequest(pUrl);
-						tRequest.requestHeaders.push(new URLRequestHeader("pragma", "no-cache"));
-						tUrlLoader.load(tRequest);
+						var tRequest2:URLRequest = new URLRequest(pUrl);
+						tRequest2.requestHeaders.push(new URLRequestHeader("pragma", "no-cache"));
+						tUrlLoader.load(tRequest2);
 						break;
 					default:
 						trace("[AssetManager](_newLoader) Unknown file type: "+tType);
@@ -138,7 +138,7 @@ package com.fewfre.utils
 					_loadNextItem();
 				} else {
 					trace("[AssetManager](_checkIfLoadingDone) All resources loaded.");
-					setTimeout(function(){ dispatchEvent(new Event(AssetManager.LOADING_FINISHED)); }, 0);
+					setTimeout(function():void{ dispatchEvent(new Event(AssetManager.LOADING_FINISHED)); }, 0);
 				}
 			}
 		
@@ -150,7 +150,7 @@ package com.fewfre.utils
 			}
 			
 			public function getLoadedClass(pName:String, pTrace:Boolean=false) : Class {
-				for(var i = 0; i < _applicationDomains.length; i++) {
+				for(var i:int = 0; i < _applicationDomains.length; i++) {
 					if(_applicationDomains[i].hasDefinition(pName)) {
 						return _applicationDomains[i].getDefinition( pName ) as Class;
 					}

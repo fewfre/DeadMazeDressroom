@@ -15,8 +15,7 @@ package app.ui
 		
 		// Constructor
 		// pData = { x:Number, y:Number, width:Number, height:Number, ?obj:DisplayObject, ?obj_scale:Number, ?id:int, ?text:String, ?origin:Number, ?originX:Number, ?originY:Number }
-		public function LangButton(pData:Object)
-		{
+		public function LangButton(pData:Object) {
 			pData.obj = new MovieClip();
 			pData.obj_scale = 0.18;
 			super(pData);
@@ -25,8 +24,8 @@ package app.ui
 			Fewf.dispatcher.addEventListener(I18n.FILE_UPDATED, _onFileUpdated);
 		}
 		
-		private function _changeImageToCurrentLanguage() {
-			var tLangData = Fewf.i18n.getConfigLangData();
+		private function _changeImageToCurrentLanguage():void {
+			var tLangData:Object = Fewf.i18n.getConfigLangData();
 			ChangeImage(new (Fewf.assets.getLoadedClass(tLangData.flags_swf_linkage))());
 			this.Image.x -= this.Image.width*0.5;
 			this.Image.y -= this.Image.height*0.5;

@@ -29,7 +29,7 @@ package app.ui
 		
 		// Array<{ text:String, event:String }
 		public function populate(pTabs:Array) : void {
-			var i:int, tTabInfo = pTabs;
+			var i:int, tTabInfo:Array = pTabs;
 			
 			// Clear old tabs (if any)
 			for(i = 0; i < tabs.length; i++) {
@@ -54,7 +54,7 @@ package app.ui
 		private function _createTab(pText:String, pX:Number, pY:Number, pWidth:Number, pHeight:Number, pEvent:String) : PushButton {
 			var tBttn:PushButton = new PushButton({ x:pX, y:pY, width:pWidth, height:pHeight, text:pText, allowToggleOff:false });
 			tabs.push(addChild(tBttn));
-			tBttn.addEventListener(PushButton.STATE_CHANGED_BEFORE, function(tBttn){ return function(){ untoggle(tBttn, pEvent); }; }(tBttn));//, false, 0, true
+			tBttn.addEventListener(PushButton.STATE_CHANGED_BEFORE, function(tBttn):Function{ return function():void{ untoggle(tBttn, pEvent); }; }(tBttn));//, false, 0, true
 			return tBttn;
 		}
 

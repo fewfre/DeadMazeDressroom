@@ -8,9 +8,7 @@ package app.ui.screens
 	import flash.display.*;
 	import flash.events.*
 	import flash.text.*;
-	import resources.assets_interface.*;
-	import assets.$Loader;
-	import assets.assets_interface.$Loader;
+	import flash.display.MovieClip;
 	
 	public class LoaderDisplay extends RoundedRectangle
 	{
@@ -31,7 +29,7 @@ package app.ui.screens
 			Fewf.assets.addEventListener(ProgressEvent.PROGRESS, _onLoadProgress);
 			Fewf.assets.addEventListener(AssetManager.PACK_LOADED, _onPackLoaded);
 			
-			_loadingSpinner = addChild( new $Loader() );
+			_loadingSpinner = addChild( new $Loader() ) as MovieClip;
 			_loadingSpinner.y -= 45;
 			_loadingSpinner.scaleX = 2;
 			_loadingSpinner.scaleY = 2;

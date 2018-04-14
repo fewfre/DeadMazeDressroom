@@ -75,15 +75,15 @@ package app.ui.screens
 			/****************************
 			* Copy Button and message
 			*****************************/
-			var tCopyButton:SpriteButton = addChild(new SpriteButton({ x:tWidth*0.5-75+25, y:52, text:"share_copy", width:50, height:25, origin:0.5 }));
+			var tCopyButton:SpriteButton = addChild(new SpriteButton({ x:tWidth*0.5-75+25, y:52, text:"share_copy", width:50, height:25, origin:0.5 })) as SpriteButton;
 			tCopyButton.addEventListener(ButtonBase.CLICK, function(){ _copyToClipboard(); });
 			
-			_textCopiedMessage = addChild(new TextBase({ text:"share_link_copied", size:17, originX:1, x:tCopyButton.x - 40, y:tCopyButton.y, alpha:0 }));
+			_textCopiedMessage = addChild(new TextBase({ text:"share_link_copied", size:17, originX:1, x:tCopyButton.x - 40, y:tCopyButton.y, alpha:0 })) as TextBase;
 			
 			/****************************
 			* Close Button
 			*****************************/
-			var tCloseButton:ScaleButton = addChild(new ScaleButton({ x:tWidth*0.5 - 5, y:-tHeight*0.5 + 5, obj:new MovieClip() }));
+			var tCloseButton:ScaleButton = addChild(new ScaleButton({ x:tWidth*0.5 - 5, y:-tHeight*0.5 + 5, obj:new MovieClip() })) as ScaleButton;
 			tCloseButton.addEventListener(ButtonBase.CLICK, _onCloseClicked);
 			
 			var tSize:Number = 10;

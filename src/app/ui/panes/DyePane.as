@@ -41,7 +41,7 @@ package app.ui.panes
 			defaults_btn = this.addItem( new SpriteButton({ x:ConstantsApp.PANE_WIDTH*0.5, y:15, width:100, height:22, text:"btn_color_defaults", obj:new MovieClip(), origin:0.5 }) ) as SpriteButton;
 			defaults_btn.addEventListener(ButtonBase.CLICK, _onDefaultButtonClicked);
 
-			var i:int, xx:Number, yy:Number, spacing:Number, sizex:Number, sizey:Number, clr:int, tIndex:int, columns:int=7;
+			var i, xx:Number, yy:Number, spacing:Number, sizex:Number, sizey:Number, clr:int, tIndex:int, columns:int=7;
 			i = 0; spacing = 34*BUTTON_SCALE; sizex = sizey = 30*BUTTON_SCALE;
 			xx = 0; yy = 215 - Math.ceil((_colors.length+1) / columns) * spacing * 0.5;
 

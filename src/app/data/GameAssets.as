@@ -503,7 +503,7 @@ package app.data
 		*****************************/
 		public static function copyColor(copyFromMC:MovieClip, copyToMC:MovieClip) : MovieClip {
 			if (copyFromMC == null || copyToMC == null) { return null; }
-			copyToMC.gotoAndPlay(copyFromMC.currentFrame);
+			// copyToMC.gotoAndPlay(copyFromMC.currentFrame);
 			var tChild1:*=null;
 			var tChild2:*=null;
 			var i:int = 0;
