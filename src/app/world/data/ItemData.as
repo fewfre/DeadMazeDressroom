@@ -18,6 +18,7 @@ package app.world.data
 		
 		public var tags			: Array; // Array<String>
 		public var colorable	: Boolean;
+		public var colorLastFrame: Boolean;
 		public var color		: int;
 
 		// pData = { id:String, type:String(ITEM), itemClass:Class, ?sex:String, ?classMap:String -> Class, ?assetID:String }
@@ -31,6 +32,7 @@ package app.world.data
 			classMap = pData.classMap;
 			stopFrame = 1;
 			color = -1;
+			colorLastFrame = true;
 			colorable = _isColorable();
 			tags = [];
 		}
@@ -50,6 +52,7 @@ package app.world.data
 		}
 		private function _partProvesItemIsColorable(part:MovieClip) : Boolean {
 			if(part.totalFrames > 1) {
+				if(part.$2 != null) { colorLastFrame = false; return true; } // Items that use underwear color trigger this.
 				part.gotoAndPlay(part.totalFrames);
 				return part.$2 != null;
 			}

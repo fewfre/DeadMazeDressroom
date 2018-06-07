@@ -97,7 +97,7 @@ package app.world.elements
 				var tClass = pData.getPart(pID, pOptions);
 				if(tClass) {
 					var tItem = new tClass();
-					if(pData.color >= 0) {
+					if(pData.color >= 0 && pData.colorLastFrame) {
 						tItem.gotoAndPlay(tItem.totalFrames);
 					} else {
 						tItem.gotoAndPlay(pData.stopFrame);

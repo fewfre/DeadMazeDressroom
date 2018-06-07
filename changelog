@@ -1,3 +1,8 @@
+== V1.10 - 6 June 2018 ==
+- Async loading added, that preserves load order.
+- [Bug] Items that used underwear coloring didn't show the dye feature.
+
+
 == V1.9b - 8 April 2018 ==
 - Clothing coloring now lists default dye colors.
 - Various code tweaks

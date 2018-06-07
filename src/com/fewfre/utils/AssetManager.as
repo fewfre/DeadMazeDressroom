@@ -22,13 +22,17 @@ package com.fewfre.utils
 		public static const PACK_LOADED:String = "asset_pack_loaded";
 		
 		// Storage
-		internal var _urlsToLoad:Array;
-		internal var _applicationDomains:Array;
-		internal var _loadedData:Dictionary;
 		internal var _cacheBreaker:String;
 		
+		internal var _urlsToLoad:Array;
+		internal var _loadedStuffCallbacks:Array; // Store all loaded stuff in here to allow async loading, but still force loading in specified order.
+		internal var _itemsLeftToLoad:Number;
+		
+		internal var _applicationDomains:Array;
+		internal var _loadedData:Dictionary;
+		
 		// Properties
-		public function get itemsLeftToLoad():int { return _urlsToLoad.length; }
+		public function get itemsLeftToLoad():int { return _itemsLeftToLoad; }//_urlsToLoad.length; }
 		
 		public function AssetManager() {
 			super();
@@ -42,20 +46,26 @@ package com.fewfre.utils
 		*****************************/
 			public function load(pURLs:Array, pCacheBreaker:String=null) : void {
 				_urlsToLoad = pURLs;
+				_itemsLeftToLoad = _urlsToLoad.length;
+				_loadedStuffCallbacks = [];
 				_cacheBreaker = pCacheBreaker;
-				_loadNextItem();
-			}
-			
-			private function _loadNextItem() : void {
-				var tItem:* = _urlsToLoad.shift();
-				if(!(tItem is Array)) {
-					_newLoader( tItem );
-				} else {
-					_newLoader( tItem[0], tItem[1] );
+				var i = -1;
+				while(_urlsToLoad.length > 0) { i++;
+					_loadedStuffCallbacks.push(null);
+					_loadNextItem(i);
 				}
 			}
 			
-			private function _newLoader(pUrl:String, pOptions:Object=null) : void {
+			private function _loadNextItem(i:int) : void {
+				var tItem:* = _urlsToLoad.shift();
+				if(!(tItem is Array)) {
+					_newLoader( i, tItem );
+				} else {
+					_newLoader( i, tItem[0], tItem[1] );
+				}
+			}
+			
+			private function _newLoader(pIndex:int, pUrl:String, pOptions:Object=null) : void {
 				var tUrlParts:Array = pUrl.split("/").pop().split("."), tName:String = tUrlParts[0], tType:String = tUrlParts[1];
 				if(_cacheBreaker && ExternalInterface.call("eval", "window.location.href")) {
 					pUrl += "?cb="+_cacheBreaker;
@@ -64,8 +74,8 @@ package com.fewfre.utils
 					case "swf":
 					case "swc":
 						var tLoader:Loader = new Loader();
-						tLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, _onAssetsLoaded);
-						tLoader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, _onLoadError);
+						tLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(e:Event):void{ _onAssetsLoaded(pIndex, e, arguments.callee); });//, _onAssetsLoaded);
+						tLoader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, function(e:Event):void{ _onLoadError(e as IOErrorEvent, arguments.callee); });//, _onLoadError);
 						tLoader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS, _onProgress);
 						var tRequest:URLRequest = new URLRequest(pUrl);
 						tRequest.requestHeaders.push(new URLRequestHeader("pragma", "no-cache"));
@@ -78,7 +88,7 @@ package com.fewfre.utils
 						break;
 					case "json":
 						var tUrlLoader:URLLoader = new URLLoader();
-						tUrlLoader.addEventListener(Event.COMPLETE, function(e:Event):void{ _onJsonLoaded(e, tName, arguments.callee); });
+						tUrlLoader.addEventListener(Event.COMPLETE, function(e:Event):void{ _onJsonLoaded(pIndex, e, tName, arguments.callee); });
 						tUrlLoader.addEventListener(IOErrorEvent.IO_ERROR, function(e:Event):void{ _onURLLoadError(e as IOErrorEvent, pUrl, arguments.callee); });
 						tUrlLoader.addEventListener(ProgressEvent.PROGRESS, _onProgress);
 						var tRequest2:URLRequest = new URLRequest(pUrl);
@@ -91,8 +101,8 @@ package com.fewfre.utils
 				}
 			}
 			
-			private function _destroyAssetLoader(pLoader:Loader) : void {
-				pLoader.contentLoaderInfo.removeEventListener(Event.COMPLETE, _onAssetsLoaded);
+			private function _destroyAssetLoader(pLoader:Loader, pOnComplete) : void {
+				pLoader.contentLoaderInfo.removeEventListener(Event.COMPLETE, pOnComplete);//_onAssetsLoaded);
 				pLoader.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, _onLoadError);
 				pLoader.contentLoaderInfo.removeEventListener(ProgressEvent.PROGRESS, _onProgress);
 			}
@@ -103,21 +113,25 @@ package com.fewfre.utils
 				pLoader.removeEventListener(ProgressEvent.PROGRESS, _onProgress);
 			}
 			
-			private function _onAssetsLoaded(e:Event) : void {
-				_applicationDomains.push( MovieClip(e.target.content).loaderInfo.applicationDomain );
-				_destroyAssetLoader(e.target.loader);
+			private function _onAssetsLoaded(pIndex:int, e:Event, pOnComplete) : void {
+				_loadedStuffCallbacks[pIndex] = function(){
+					_applicationDomains.push( MovieClip(e.target.content).loaderInfo.applicationDomain );
+					_destroyAssetLoader(e.target.loader, pOnComplete);
+				};
 				_checkIfLoadingDone();
 			}
 			
-			private function _onJsonLoaded(e:Event, pKey:String, pOnComplete) : void {
-				_loadedData[pKey] = JSON.parse(e.target.data);
-				_destroyURLLoader(e.target as URLLoader, pOnComplete);
+			private function _onJsonLoaded(pIndex:int, e:Event, pKey:String, pOnComplete) : void {
+				_loadedStuffCallbacks[pIndex] = function(){
+					_loadedData[pKey] = JSON.parse(e.target.data);
+					_destroyURLLoader(e.target as URLLoader, pOnComplete);
+				};
 				_checkIfLoadingDone();
 			}
 			
-			private function _onLoadError(e:IOErrorEvent) : void {
+			private function _onLoadError(e:IOErrorEvent, pOnComplete) : void {
 				trace("[AssetManager](_onLoadError) ERROR("+e.errorID+"): Was not able to load url: "+e.target.url);
-				_destroyAssetLoader(e.target.loader);
+				_destroyAssetLoader(e.target.loader, pOnComplete);
 				_checkIfLoadingDone();
 			}
 			
@@ -133,11 +147,17 @@ package com.fewfre.utils
 			}
 			
 			private function _checkIfLoadingDone() : void {
+				_itemsLeftToLoad--;
 				dispatchEvent(new FewfEvent(PACK_LOADED, { itemsLeftToLoad:itemsLeftToLoad }));
-				if(_urlsToLoad.length > 0) {
-					_loadNextItem();
+				if(itemsLeftToLoad > 0) {
+					// _loadNextItem();
 				} else {
 					trace("[AssetManager](_checkIfLoadingDone) All resources loaded.");
+					for each(var pCallback in _loadedStuffCallbacks) {
+						if(pCallback != null) { pCallback(); }
+					}
+					_loadedStuffCallbacks = null;
+					trace("[AssetManager](_checkIfLoadingDone) All resources stored.");
 					setTimeout(function():void{ dispatchEvent(new Event(AssetManager.LOADING_FINISHED)); }, 0);
 				}
 			}
