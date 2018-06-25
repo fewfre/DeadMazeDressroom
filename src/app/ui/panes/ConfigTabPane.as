@@ -38,7 +38,7 @@ package app.ui.panes
 			
 			var i:int, xx:Number, yy:Number, spacing:Number, sizex:Number, sizey:Number, clr:int, tIndex:int;
 
-			i = 0; xx = 70; yy = 40; spacing = 75; sizex = 60; sizey = 35;
+			i = 0; xx = 70; yy = 30; spacing = 75; sizex = 60; sizey = 35;
 			addChild(new TextBase({ text:"label_sex", x:35, y:yy+3, size:17, originY:0 }));
 			sexButtons = [
 				addChild( new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"btn_female", allowToggleOff:false, data:{ id:SEX.FEMALE } }) ),
@@ -58,22 +58,25 @@ package app.ui.panes
 			_registerClickHandler(facingButtons, _onFacingButtonClicked);
 			facingButtons[ GameAssets.facingForward == false ? 1 : 0].toggleOn();*/
 
-			i = 0; spacing = 34; xx = ConstantsApp.PANE_WIDTH*0.5 - spacing*(GameAssets.hairColors.length+0.5)*0.5; yy = yy+90; sizex = 30; sizey = 30;
-			addChild(new TextBase({ text:"label_hair_color", x:ConstantsApp.PANE_WIDTH*0.5, y:yy-40, size:17, originY:0 }));
+			i = 0; spacing = 34; xx = ConstantsApp.PANE_WIDTH*0.5 - spacing*(10+0.5)*0.5; yy = yy+80; sizex = 30; sizey = 30;
+			addChild(new TextBase({ text:"label_hair_color", x:ConstantsApp.PANE_WIDTH*0.5, y:yy-35, size:17, originY:0 }));
 			hairColorButtons = [];
 			for(i = 0; i < GameAssets.hairColors.length; i++) {
+				if(i%10 == 0 && i >= 10) {
+					yy += spacing;
+				}
 				clr = GameAssets.hairColors[i];
-				hairColorButtons.push( addChild( new PushButton({ x:xx + (spacing*i), y:yy, width:sizex, height:sizey, obj:_colorSpriteBox({ color:clr }), id:clr, allowToggleOff:false }) ) );
+				hairColorButtons.push( addChild( new PushButton({ x:xx + (spacing*(i%10)), y:yy, width:sizex, height:sizey, obj:_colorSpriteBox({ color:clr }), id:clr, allowToggleOff:false }) ) );
 			}
-			hairColorButtons.push( addChild( hairColorPickerButton = new PushButton({ x:xx + (spacing*i), y:yy, width:sizex, height:sizey, obj:new $ColorWheel(), obj_scale:0.7, id:GameAssets.hairColor }) ) );
+			hairColorButtons.push( addChild( hairColorPickerButton = new PushButton({ x:xx + (spacing*10), y:yy-(spacing*0.5), width:sizex, height:sizey, obj:new $ColorWheel(), obj_scale:0.7, id:GameAssets.hairColor }) ) );
 			hairColorPickerButtonBox = hairColorPickerButton.addChild(_colorSpriteBox({ color:hairColorPickerButton.id, size:MINI_BOX_SIZE, x:(sizex-MINI_BOX_SIZE)*0.5, y:(sizey-MINI_BOX_SIZE)*0.5 })) as Sprite;
 			_registerClickHandler(hairColorButtons, _onHairColorButtonClicked);
 			hairColorPickerButtonBox.addEventListener(PushButton.STATE_CHANGED_BEFORE, _onColorPickerButtonClicked);
 			tIndex = GameAssets.hairColors.indexOf(GameAssets.hairColor);
 			hairColorButtons[tIndex > -1 ? tIndex : (hairColorButtons.length-1)].toggleOn();
 
-			i = 0; spacing = 34; xx = ConstantsApp.PANE_WIDTH*0.5 - spacing*(GameAssets.skinColors.length+0.5)*0.5; yy = yy+90; sizex = 30; sizey = 30;
-			addChild(new TextBase({ text:"label_skin_color", x:ConstantsApp.PANE_WIDTH*0.5, y:yy-40, size:17, originY:0 }));
+			i = 0; spacing = 34; xx = ConstantsApp.PANE_WIDTH*0.5 - spacing*(GameAssets.skinColors.length+0.5)*0.5; yy = yy+80; sizex = 30; sizey = 30;
+			addChild(new TextBase({ text:"label_skin_color", x:ConstantsApp.PANE_WIDTH*0.5, y:yy-35, size:17, originY:0 }));
 			skinColorButtons = [];
 			for(i = 0; i < GameAssets.skinColors.length; i++) {
 				clr = GameAssets.skinColors[i];
@@ -86,8 +89,8 @@ package app.ui.panes
 			tIndex = GameAssets.skinColors.indexOf(GameAssets.skinColor);
 			skinColorButtons[tIndex > -1 ? tIndex : (skinColorButtons.length-1)].toggleOn();
 
-			i = 0; spacing = 34; xx = ConstantsApp.PANE_WIDTH*0.5 - spacing*(GameAssets.secondaryColors.length+0.5)*0.5; yy = yy+90; sizex = 30; sizey = 30;
-			addChild(new TextBase({ text:"label_other_color", x:ConstantsApp.PANE_WIDTH*0.5, y:yy-40, size:17, originY:0 }));
+			i = 0; spacing = 34; xx = ConstantsApp.PANE_WIDTH*0.5 - spacing*(GameAssets.secondaryColors.length+0.5)*0.5; yy = yy+80; sizex = 30; sizey = 30;
+			addChild(new TextBase({ text:"label_other_color", x:ConstantsApp.PANE_WIDTH*0.5, y:yy-35, size:17, originY:0 }));
 			secondaryColorButtons = [];
 			for(i = 0; i < GameAssets.secondaryColors.length; i++) {
 				clr = GameAssets.secondaryColors[i];
@@ -148,6 +151,9 @@ package app.ui.panes
 			GameAssets.hairColor = pEvent.target.id;
 			character.updatePose();
 			dispatchEvent(new FewfEvent("color_changed", { type:"hair" }));
+			
+			hairColorPickerButton.id = GameAssets.hairColor;
+			_colorSpriteBox({ color:GameAssets.hairColor, box:hairColorPickerButtonBox, size:MINI_BOX_SIZE });
 		}
 
 		private function _onSkinColorButtonClicked(pEvent:Event) {
@@ -155,6 +161,9 @@ package app.ui.panes
 			GameAssets.skinColor = pEvent.target.id;
 			character.updatePose();
 			dispatchEvent(new FewfEvent("color_changed", { type:"skin" }));
+			
+			skinColorPickerButton.id = GameAssets.skinColor;
+			_colorSpriteBox({ color:GameAssets.skinColor, box:skinColorPickerButtonBox, size:MINI_BOX_SIZE });
 		}
 
 		private function _onSecondaryColorButtonClicked(pEvent:Event) {
@@ -162,6 +171,9 @@ package app.ui.panes
 			GameAssets.secondaryColor = pEvent.target.id;
 			character.updatePose();
 			dispatchEvent(new FewfEvent("color_changed", { type:"secondary" }));
+			
+			secondaryColorPickerButton.id = GameAssets.secondaryColor;
+			_colorSpriteBox({ color:GameAssets.secondaryColor, box:secondaryColorPickerButtonBox, size:MINI_BOX_SIZE });
 		}
 		
 		// Unlike the default color buttons, "allowToggleOff" is set to true
