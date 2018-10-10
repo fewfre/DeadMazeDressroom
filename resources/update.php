@@ -12,9 +12,8 @@ foreach ($resources_base as $filebase) {
 		$code = checkExternalFile($url);
 		if($code == 200 || $code == 300) {
 			file_put_contents($filename, fopen($url, 'r'));
-			// if($filename == "Hauts_01.swf" || $filename == "Hauts_01.swf") {
-				$resources[] = $filename;
-			// }
+			if($filename == "Hauts_01.swf") { continue; } // Has old assets we don't want overriding new ones (isn't even loaded in anymore in the game)
+			$resources[] = $filename;
 		}
 	}
 }

@@ -41,7 +41,7 @@ package app.ui.panes
 			defaults_btn = this.addItem( new SpriteButton({ x:ConstantsApp.PANE_WIDTH*0.5, y:15, width:100, height:22, text:"btn_color_defaults", obj:new MovieClip(), origin:0.5 }) ) as SpriteButton;
 			defaults_btn.addEventListener(ButtonBase.CLICK, _onDefaultButtonClicked);
 
-			var i, xx:Number, yy:Number, spacing:Number, sizex:Number, sizey:Number, clr:int, tIndex:int, columns:int=7;
+			var i, xx:Number, yy:Number, spacing:Number, sizex:Number, sizey:Number, clr:int, tIndex:int, columns:int=7, columnI:int=0;
 			i = 0; spacing = 34*BUTTON_SCALE; sizex = sizey = 30*BUTTON_SCALE;
 			xx = 0; yy = 215 - Math.ceil((_colors.length+1) / columns) * spacing * 0.5;
 
@@ -52,12 +52,14 @@ package app.ui.panes
 					columns = i + columns < _colors.length ? columns : _colors.length%columns + 1;//((_colors.length - i)%columns)+1;
 					xx = ConstantsApp.PANE_WIDTH*0.5 - spacing*(columns-1)*0.5;
 					yy += spacing;
+					columnI = 0;
 				}
 				clr = _colors[i] = parseInt(_colors[i]);
-				colorButtons.push( addChild( btn = new PushButton({ x:xx + (spacing*(i%columns)), y:yy, width:sizex, height:sizey, origin:0.5, obj:_colorSpriteBox({ color:clr }), id:clr, allowToggleOff:false }) ) );
+				colorButtons.push( addChild( btn = new PushButton({ x:xx + (spacing*columnI), y:yy, width:sizex, height:sizey, origin:0.5, obj:_colorSpriteBox({ color:clr }), id:clr, allowToggleOff:false }) ) );
 				btn.addEventListener(PushButton.STATE_CHANGED_BEFORE, _onDyeButtonClicked);
+				columnI++;
 			}
-			colorButtons.push( addChild( colorPickerButton = new PushButton({ x:xx + (spacing*((i+1)%columns)), y:yy, width:sizex, height:sizey, origin:0.5, obj:new $ColorWheel(), obj_scale:0.7*BUTTON_SCALE, id:-2 }) ) );
+			colorButtons.push( addChild( colorPickerButton = new PushButton({ x:xx + (spacing*columnI), y:yy, width:sizex, height:sizey, origin:0.5, obj:new $ColorWheel(), obj_scale:0.7*BUTTON_SCALE, id:-2 }) ) );
 			colorPickerButtonBox = colorPickerButton.addChild(_colorSpriteBox({ color:colorPickerButton.id, size:MINI_BOX_SIZE })) as Sprite;
 			colorPickerButtonBox.addEventListener(PushButton.STATE_CHANGED_BEFORE, _onColorPickerButtonClicked);
 		}

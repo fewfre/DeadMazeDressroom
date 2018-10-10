@@ -129,7 +129,8 @@ package app.world.elements
 					GameAssets.applyColorToObject(part,  pOptions.hairColor);
 				}
 				GameAssets.colorItem({ obj:part, color: pOptions.skinColor, name:"$0" });
-				GameAssets.colorItem({ obj:part, color: pData.color < 0 ? pOptions.secondaryColor : pData.color, name:"$2" });
+				GameAssets.colorItem({ obj:part, color: pData.color < 0 ? pOptions.secondaryColor : pData.color, name:"$2", debug:pData.id == "73F" });
+				GameAssets.colorItem({ obj:part, color: pData.color < 0 ? pOptions.secondaryColor : pData.color, name:"$" });
 			}
 		}
 		
