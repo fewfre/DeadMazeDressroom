@@ -20,5 +20,9 @@ package app.data
 		
 		// Order of item layering when occupying the same spot.
 		public static const LAYERING			: Array = [ SKIN, FACE, BEARD, HAIR, SHIRT, MASK, HEAD, PANTS, BELT, GLOVES, BAG, SHOES, OBJECT ];
+		// Certain layers require a different sort order
+		public static const LAYERING_BY_LAYER	: Object = {
+			TS: [ SKIN, FACE, BEARD, HAIR, HEAD, SHIRT, MASK, PANTS, BELT, GLOVES, BAG, SHOES, OBJECT ]
+		};
 	}
 }

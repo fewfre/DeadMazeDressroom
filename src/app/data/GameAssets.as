@@ -631,6 +631,7 @@ package app.data
 					tItem = getDefaultPoseSetup({ pose:pData, baseArgs:{ skinColor:GameAssets.skinColor } });
 					break;
 				// Items with multiple parts (or needs to be colored) that must be added onto a pose to show properly
+				case ITEM.HEAD:
 				case ITEM.SHIRT:
 				case ITEM.PANTS:
 				case ITEM.SHOES:

@@ -65,7 +65,7 @@ package app.world.elements
 			
 			_createPoseFromData(pData);
 			
-			var tShopData = _orderType(pData.items);
+			var tShopDataOrig = _orderType(pData.items), tShopData;
 			var part:MovieClip = null;
 			var tChild:DisplayObject = null;
 			var tItemsOnChild:int = 0;
@@ -77,6 +77,7 @@ package app.world.elements
 				tChild = _pose.getChildAt(i);
 				tItemsOnChild = 0;
 				
+				tShopData = ITEM.LAYERING_BY_LAYER[tChild.name] ? _orderType(pData.items, tChild.name) : tShopDataOrig;
 				for(var j:int = 0; j < tShopData.length; j++) {
 					part = _addToPoseIfCan(tChild as MovieClip, tShopData[j], tChild.name, pData);
 					if(pData.tornStates && pData.tornStates[tShopData[j].type]) _applyTornMask(tChild.name, part);
@@ -134,16 +135,17 @@ package app.world.elements
 			}
 		}
 		
-		private function _orderType(pItems:Array) : Array {
+		private function _orderType(pItems:Array, pSlotName:String=null) : Array {
 			var i:int = pItems.length;
 			while(i > 0) { i--;
 				if(pItems[i] == null) {
 					pItems.splice(i, 1);
 				}
 			}
-
+			
+			var tLayerOrder = ITEM.LAYERING_BY_LAYER[pSlotName] ? ITEM.LAYERING_BY_LAYER[pSlotName] : ITEM.LAYERING;
 			pItems.sort(function(a, b){
-				return ITEM.LAYERING.indexOf(a.type) > ITEM.LAYERING.indexOf(b.type) ? 1 : -1;
+				return tLayerOrder.indexOf(a.type) > tLayerOrder.indexOf(b.type) ? 1 : -1;
 			});
 			
 			return pItems;

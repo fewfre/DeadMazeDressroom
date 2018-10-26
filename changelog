@@ -1,3 +1,9 @@
+== V1.12 - 25 October 2018 ==
+- Move waitperson pants to "extras" tab since no longer in the game apparently
+- Head items that now have a shirt comment show the shirt part in the button icon
+- Fixed layer ordering, where head item parts on the shirt layer need to be -under- the shirt
+
+
 == V1.11c - 10 October 2018 ==
 - Added additional clothing dye color
 - Fixed display bug when number of colors on last dye row was not 3
