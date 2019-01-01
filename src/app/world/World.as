@@ -403,7 +403,7 @@ package app.world
 			var tURL = "";
 			try {
 				tURL = ExternalInterface.call("eval", "window.location.origin+window.location.pathname");
-				tURL += "?"+this.character.getParams().toString().replace(/%5f/gi, "_");
+				tURL += "?"+this.character.getParams();
 			} catch (error:Error) {
 				tURL = "<error creating link>";
 			};

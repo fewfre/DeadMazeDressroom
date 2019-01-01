@@ -120,7 +120,7 @@ package app.world.elements
 		private function _setParamToType(pParams:URLVariables, pType:String, pParam:String, pAllowNull:Boolean=true) {
 			var tData:ItemData = null, tID = pParams[pParam];
 			if(tID != null && tID != "") {
-				var tColors = tID.split(","); // Get a list of all the colors (ID is first); ex: 5,ffffff,abcdef,169742
+				var tColors = _splitOnUrlColorSeperator(tID); // Get a list of all the colors (ID is first); ex: 5;ffffff;abcdef;169742
 				tID = tColors.splice(0, 1)[0]; // Remove first item and store it as the ID.
 				tData = GameAssets.getItemFromTypeID(pType, tID);
 				if(tColors.length > 0) { tData.color = _hexToInt(tColors[0]); }
@@ -130,8 +130,12 @@ package app.world.elements
 		private function _hexToInt(pVal:String) : int {
 			return parseInt(pVal, 16);
 		}
+		private function _splitOnUrlColorSeperator(pVal:String) : Array {
+			// Used to be , but changed to ; (for atelier801 forum support)
+			return pVal.indexOf(";") > -1 ? pVal.split(";") : pVal.split(",");
+		}
 
-		public function getParams() : URLVariables {
+		public function getParams() : String {
 			var tParms = new URLVariables();
 
 			tParms.xtr = GameAssets.showAll ? "1" : "0";
@@ -176,14 +180,14 @@ package app.world.elements
 			tParms.sex = GameAssets.sex;
 			/*tParms.ff = GameAssets.facingForward ? "1" : "0";*/
 
-			return tParms;
+			return tParms.toString().replace(/%5f/gi, "_").replace(/%3B/g, ";");
 		}
 		private function _addParamToVariables(pParams:URLVariables, pParam:String, pType:String) {
 			var tData:ItemData = getItemData(pType);
 			if(tData) {
 				pParams[pParam] = tData.id;
 				if(tData.color > -1) {
-					pParams[pParam] += ","+_intToHex(tData.color);
+					pParams[pParam] += ";"+_intToHex(tData.color);
 				}
 			}
 			/*else { pParams[pParam] = ''; }*/
