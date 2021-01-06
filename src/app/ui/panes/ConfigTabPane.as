@@ -22,6 +22,7 @@ package app.ui.panes
 		public var hairColorButtons:Array;
 		public var skinColorButtons:Array;
 		public var secondaryColorButtons:Array;
+		public var advancedButton:PushButton;
 
 		public var hairColorPickerButton:PushButton;
 		public var hairColorPickerButtonBox:Sprite;
@@ -106,10 +107,10 @@ package app.ui.panes
 			// Advanced
 			i = 0; spacing = 34; xx = 90; yy = yy+50; sizex = 45; sizey = 25;
 			addChild(new TextBase({ text:"label_advanced", x:45, y:yy+3, size:12, originY:0 }));
-			var tButton = addChild( new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"btn_extras" }) );
-			tButton.Text.size = 11;
-			tButton.toggle(GameAssets.showAll);
-			tButton.addEventListener(PushButton.STATE_CHANGED_BEFORE, function(pEvent:Event){
+			advancedButton = addChild( new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"btn_extras" }) ) as PushButton;
+			advancedButton.Text.size = 11;
+			advancedButton.toggle(GameAssets.showAll);
+			advancedButton.addEventListener(PushButton.STATE_CHANGED_BEFORE, function(pEvent:Event){
 				dispatchEvent(new Event("show_extra"));
 			});
 		}
@@ -218,6 +219,35 @@ package app.ui.panes
 				}
 			}
 			dispatchEvent(new FewfEvent("color_changed", { type:pType }));
+		}
+		
+		public function updateButtonsBasedOnCurrentData() : void {
+			var tIndex:int, tColor:int;
+			_untoggle(sexButtons);
+			sexButtons[ GameAssets.sex == SEX.MALE ? 1 : 0].toggleOn(false);
+			
+			tColor = GameAssets.hairColor;
+			tIndex = GameAssets.hairColors.indexOf(tColor);
+			_untoggle(hairColorButtons);
+			hairColorButtons[tIndex > -1 ? tIndex : (hairColorButtons.length-1)].toggleOn(false);
+			hairColorPickerButton.id = tColor;
+			_colorSpriteBox({ color:tColor, box:hairColorPickerButtonBox, size:MINI_BOX_SIZE });
+			
+			tColor = GameAssets.skinColor;
+			tIndex = GameAssets.skinColors.indexOf(tColor);
+			_untoggle(skinColorButtons);
+			skinColorButtons[tIndex > -1 ? tIndex : (skinColorButtons.length-1)].toggleOn(false);
+			skinColorPickerButton.id = tColor;
+			_colorSpriteBox({ color:tColor, box:skinColorPickerButtonBox, size:MINI_BOX_SIZE });
+			
+			tColor = GameAssets.secondaryColor;
+			tIndex = GameAssets.secondaryColors.indexOf(tColor);
+			_untoggle(secondaryColorButtons);
+			secondaryColorButtons[tIndex > -1 ? tIndex : (secondaryColorButtons.length-1)].toggleOn(false);
+			secondaryColorPickerButton.id = tColor;
+			_colorSpriteBox({ color:tColor, box:secondaryColorPickerButtonBox, size:MINI_BOX_SIZE });
+			
+			advancedButton.toggle(GameAssets.showAll, false);
 		}
 	}
 }

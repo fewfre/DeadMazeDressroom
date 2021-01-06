@@ -41,6 +41,25 @@
 			"objects.swf"
 		]
 	},
+	"CMNT_packs_external": [
+		"http://www.transformice.com/images/x_deadmeat/bibliotheques/Hauts_02.swf",
+		"http://www.transformice.com/images/x_deadmeat/bibliotheques/Hauts_03.swf",
+		"http://www.transformice.com/images/x_deadmeat/bibliotheques/Pantalons_01.swf",
+		"http://www.transformice.com/images/x_deadmeat/bibliotheques/Chapeaux_01.swf",
+		"http://www.transformice.com/images/x_deadmeat/bibliotheques/Chaussures_01.swf",
+		"http://www.transformice.com/images/x_deadmeat/bibliotheques/Visages_01.swf",
+		"http://www.transformice.com/images/x_deadmeat/bibliotheques/Accessoires_visage_01.swf",
+		"http://www.transformice.com/images/x_deadmeat/bibliotheques/Coiffures_01.swf",
+		"http://www.transformice.com/images/x_deadmeat/bibliotheques/Coiffures_02.swf",
+		"http://www.transformice.com/images/x_deadmeat/bibliotheques/Accessoires_01.swf",
+		"http://www.transformice.com/images/x_deadmeat/bibliotheques/Sacs_01.swf",
+		"http://www.transformice.com/images/x_deadmeat/bibliotheques/Masques_01.swf",
+		"http://www.transformice.com/images/x_deadmeat/bibliotheques/Gants_01.swf",
+		"http://www.transformice.com/images/x_deadmeat/bibliotheques/Ceintures_01.swf",
+		
+		"https://projects.fewfre.com/a801/deadmaze/dressroom/resources/poses.swf",
+		"https://projects.fewfre.com/a801/deadmaze/dressroom/resources/objects.swf"
+	],
 	"colors": {
 		"dye": [
 			"0xFEFEFE", "0xEBEBEB", "0xFFD7C1", "0xF886E7", "0x13A4B7", "0x1F6074", "0x304693",

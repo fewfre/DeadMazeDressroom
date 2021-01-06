@@ -22,10 +22,19 @@ package app
 		// Constructor
 		public function Main() {
 			super();
-			Fewf.init(stage);
+			
+			if (stage) {
+				this._start();
+			} else {
+				addEventListener(Event.ADDED_TO_STAGE, this._start);
+			}
+		}
+		
+		private function _start(...args:*) {
+			Fewf.init(stage, this.loaderInfo.parameters.swfUrlBase);
 			
 			stage.align = StageAlign.TOP;
-			stage.scaleMode = StageScaleMode.NO_SCALE;
+			stage.scaleMode = StageScaleMode.SHOW_ALL;
 			stage.frameRate = 10;
 			
 			BrowserMouseWheelPrevention.init(stage);
@@ -37,7 +46,7 @@ package app
 		
 		private function _startPreload() : void {
 			_load([
-				"resources/config.json",
+				Fewf.swfUrlBase+"resources/config.json",
 			], String( new Date().getTime() ), _onPreloadComplete);
 		}
 		
@@ -50,7 +59,7 @@ package app
 		
 		private function _startInitialLoad() : void {
 			_load([
-				"resources/i18n/"+_defaultLang+".json",
+				Fewf.swfUrlBase+"resources/i18n/"+_defaultLang+".json",
 			], Fewf.assets.getData("config").cachebreaker, _onInitialLoadComplete);
 		}
 		
@@ -63,14 +72,19 @@ package app
 		// Start main load
 		private function _startLoad() : void {
 			var tPacks = [
-				["resources/interface.swf", { useCurrentDomain:true }],
-				"resources/flags.swf"
+				[Fewf.swfUrlBase+"resources/interface.swf", { useCurrentDomain:true }],
+				Fewf.swfUrlBase+"resources/flags.swf"
 			];
 			
-			var tPack = _config.packs.parts.concat(_config.packs.outfit);
-			for(var i:int = 0; i < tPack.length; i++) { tPacks.push("resources/"+tPack[i]); }
+			if(Fewf.isExternallyLoaded && _config.packs_external) {
+				var tPack = _config.packs_external;
+				for(var i:int = 0; i < tPack.length; i++) { tPacks.push(tPack[i]); }
+			} else {
+				var tPack = _config.packs.parts.concat(_config.packs.outfit);
+				for(var i:int = 0; i < tPack.length; i++) { tPacks.push(Fewf.swfUrlBase+"resources/"+tPack[i]); }
+			}
 			
-			_load(tPacks, Fewf.assets.getData("config").cachebreaker, _onLoadComplete);
+			_load(tPacks, "f"+Fewf.assets.getData("config").cachebreaker, _onLoadComplete);
 		}
 
 		private function _onLoadComplete() : void {

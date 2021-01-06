@@ -1,3 +1,7 @@
+== V1.14 - 6 January 2021 ==
+- Added support for being externally loaded by AIR app
+
+
 == V1.13 - 1 January 2019 ==
 - Updating share links to use ";" instead of "," to better support atelier801 forum
 

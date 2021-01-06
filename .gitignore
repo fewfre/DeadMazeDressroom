@@ -1,2 +1,4 @@
 .vscode
 asconfig.json
+bin/
+bat/
