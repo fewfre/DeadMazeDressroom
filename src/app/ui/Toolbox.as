@@ -71,7 +71,7 @@ package app.ui
 			btn.addEventListener(ButtonBase.CLICK, pData.onTrash);
 			tButtonOnRight++;
 
-			btn = tTray.addChild(new SpriteButton({ x:tX-tButtonXInc*tButtonOnRight, y:tY, width:tButtonSize, height:tButtonSize, obj_scale:0.5, obj:new $Refresh(), origin:0.5 }));
+			btn = tTray.addChild(new SpriteButton({ x:tX-tButtonXInc*tButtonOnRight, y:tY, width:tButtonSize, height:tButtonSize, obj_scale:1, obj:new $Dice(), origin:0.5 }));
 			btn.addEventListener(ButtonBase.CLICK, pData.onRandomize);
 			tButtonOnRight++;
 			
