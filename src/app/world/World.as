@@ -137,9 +137,9 @@ package app.world
 			tPane.colorPickerButton.addEventListener(ButtonBase.CLICK, _onDyeCustomPickerClicked);
 			
 			tPane = _paneManager.addPane(CONFIG_PANE_ID, new ConfigTabPane(character));
-			tPane.hairColorPickerButton.addEventListener(ButtonBase.CLICK, function(pEvent:Event):void{ _configColorButtonClicked("hair", pEvent.target.id); });
-			tPane.skinColorPickerButton.addEventListener(ButtonBase.CLICK, function(pEvent:Event):void{ _configColorButtonClicked("skin", pEvent.target.id); });
-			tPane.secondaryColorPickerButton.addEventListener(ButtonBase.CLICK, function(pEvent:Event):void{ _configColorButtonClicked("secondary", pEvent.target.id); });
+			tPane.hairColorPickerButton.addEventListener(ButtonBase.CLICK, function(pEvent:Event):void{ _configColorButtonClicked("hair", pEvent.target.color); });
+			tPane.skinColorPickerButton.addEventListener(ButtonBase.CLICK, function(pEvent:Event):void{ _configColorButtonClicked("skin", pEvent.target.color); });
+			tPane.secondaryColorPickerButton.addEventListener(ButtonBase.CLICK, function(pEvent:Event):void{ _configColorButtonClicked("secondary", pEvent.target.color); });
 			tPane.addEventListener("sex_change", _onSexChanged);
 			tPane.addEventListener("facing_change", _onFacingChanged);
 			tPane.addEventListener("color_changed", _onConfigColorChanged);
@@ -202,11 +202,12 @@ package app.world
 
 		private function _setupPane(pType:String) : TabPane {
 			var tPane:TabPane = new TabPane();
-			tPane.addInfoBar( new ShopInfoBar({ showEyeDropButton:pType!=ITEM.POSE, showQualityButton:pType==ITEM.SHIRT||pType==ITEM.PANTS }) );
+			tPane.addInfoBar( new ShopInfoBar({ showEyeDropButton:pType!=ITEM.POSE, showQualityButton:pType==ITEM.SHIRT||pType==ITEM.PANTS, showReverseIcon:true }) );
 			_setupPaneButtons(tPane, GameAssets.getArrayByType(pType));
 			tPane.infoBar.colorWheel.addEventListener(ButtonBase.CLICK, function():void{ _dyeButtonClicked(pType); });
 			tPane.infoBar.imageCont.addEventListener(MouseEvent.CLICK, function():void{ _removeItem(pType); });
 			tPane.infoBar.refreshButton.addEventListener(ButtonBase.CLICK, function():void{ _randomItemOfType(pType); });
+			tPane.infoBar.reverseButton.addEventListener(ButtonBase.CLICK, function(){ _reverseGrid(pType); });
 			if(tPane.infoBar.eyeDropButton) {
 				tPane.infoBar.eyeDropButton.addEventListener(ButtonBase.CLICK, function():void{ _eyeDropButtonClicked(pType); });
 			}
@@ -253,21 +254,31 @@ package app.world
 				grid.add(shopItemButton)
 				shopItemButton.addEventListener(PushButton.STATE_CHANGED_AFTER, _onItemToggled);
 			}
+			if(tType !== ITEM.POSE) {
+				// don't reverse by default for DeadMaze
+				// grid.reverse();
+				_addSpecialIconsToPaneButtons(pPane, tType);
+			}
+			pPane.UpdatePane();
+		}
+		
+		private function _addSpecialIconsToPaneButtons(pPane:TabPane, pType:String) {
 			// Guitar state button
-			if(tType == ITEM.OBJECT) {
-				var tIndex = FewfUtils.getIndexFromArrayWithKeyVal(pItemArray, "id", 41);
+			// cannot attach to button due to main button eating mouse events
+			if(pType == ITEM.OBJECT) {
+				var tItemArray = GameAssets.getArrayByType(pType);
+				var tIndex = FewfUtils.getIndexFromArrayWithKeyVal(tItemArray, "id", 41);
 				var tButton = pPane.buttons[tIndex];
 				var tMiniButton = tButton.parent.addChild(new ScaleButton({ x:tButton.x + 50, y:tButton.y + 12, obj:new $PlayButton(), obj_scale:0.5 }));
 				tMiniButton.addEventListener(ButtonBase.CLICK, function():void{
 					tButton.toggleOn();
 					// Mod over total frame (note that frame go to 1 -> max frames, not 0 -> max frames-1)
-					pItemArray[tIndex].stopFrame++;
-					pItemArray[tIndex].stopFrame %= (pPane.buttons[tIndex].Image.totalFrames+1);
-					pItemArray[tIndex].stopFrame = Math.max(pItemArray[tIndex].stopFrame, 1);
-					_refreshSelectedItemColor(tType, true);
+					tItemArray[tIndex].stopFrame++;
+					tItemArray[tIndex].stopFrame %= (pPane.buttons[tIndex].Image.totalFrames+1);
+					tItemArray[tIndex].stopFrame = Math.max(tItemArray[tIndex].stopFrame, 1);
+					_refreshSelectedItemColor(pType, true);
 				});
 			}
-			pPane.UpdatePane();
 		}
 		
 		private function _populateShopTabs() : void {
@@ -456,6 +467,12 @@ package app.world
 				_removeItem(pType);
 			}
 		}
+		
+		private function _reverseGrid(pType:String) : void {
+			var tPane = getTabByType(pType);
+			tPane.grid.reverse();
+			_addSpecialIconsToPaneButtons(tPane, pType);
+		}
 
 		private function _onShareButtonClicked(pEvent:Event) : void {
 			var tURL = "";
@@ -590,7 +607,8 @@ package app.world
 		//{REGION Color Tab
 			private function _onColorPickChanged(pEvent:flash.events.DataEvent):void
 			{
-				var tVal:uint = uint(pEvent.data);
+				// since we never have multiple colors, don't care about negative number indicating all color randomized
+				var tVal:uint = Math.abs(int(pEvent.data));
 				this.character.getItemData(this.currentlyColoringType).color = tVal;//s[_paneManager.getPane(COLOR_PANE_ID).selectedSwatch] = tVal;
 				(_paneManager.getPane(DYE_PANE_ID) as DyePane).setColor(tVal);
 				_refreshSelectedItemColor(this.currentlyColoringType);

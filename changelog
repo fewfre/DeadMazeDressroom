@@ -1,3 +1,17 @@
+== V1.15 - 6 October 2022 ==
+- Added randomize color button to item color picker page
+- Undo button added on color picker - clicking it will show colors previously used on the specific color swatch for that specific item.
+- Updated color buttons to look nicer
+- Recent colors list design reworked and moved to it's own class
+- Recent colors now also shown on color finder
+- Color finder now supports scaling image & dragging it around
+- Files can now be uploaded from the user's computer into the color finder (request by Milinili)
+- Manually selecting a language will now cause the app to remember it the next time it is opened (request by Zelenpixel#9767)
+- A button has been added to reverse the order of the item lists
+- Back button added when in downloadable app
+- Recent colors now remembered across dressrooms in the app
+
+
 == V1.14c - 1 May 2021 ==
 - Randomize button icon changed to dice
 - Lock icon on infobar now disables randomize button to make it's purpose clearer

@@ -46,7 +46,7 @@ package app.ui.panes
 			xx = 0; yy = 215 - Math.ceil((_colors.length+1) / columns) * spacing * 0.5;
 
 			colorButtons = [];
-			var btn:PushButton;
+			var btn:ColorButton;
 			for(i in _colors) {
 				if(i%columns==0) {
 					columns = i + columns < _colors.length ? columns : _colors.length%columns + 1;//((_colors.length - i)%columns)+1;
@@ -55,8 +55,8 @@ package app.ui.panes
 					columnI = 0;
 				}
 				clr = _colors[i] = parseInt(_colors[i]);
-				colorButtons.push( addChild( btn = new PushButton({ x:xx + (spacing*columnI), y:yy, width:sizex, height:sizey, origin:0.5, obj:_colorSpriteBox({ color:clr }), id:clr, allowToggleOff:false }) ) );
-				btn.addEventListener(PushButton.STATE_CHANGED_BEFORE, _onDyeButtonClicked);
+				colorButtons.push( addChild( btn = new ColorButton({ color:clr, x:xx + (spacing*columnI), y:yy, width:sizex, height:sizey }) ) );
+				btn.addEventListener(ButtonBase.CLICK, _onDyeButtonClicked);
 				columnI++;
 			}
 			colorButtons.push( addChild( colorPickerButton = new PushButton({ x:xx + (spacing*columnI), y:yy, width:sizex, height:sizey, origin:0.5, obj:new $ColorWheel(), obj_scale:0.7*BUTTON_SCALE, id:-2 }) ) );
@@ -82,7 +82,8 @@ package app.ui.panes
 			_untoggle(colorButtons);
 			if(pColor != -1) {
 				var tIndex = _colors.indexOf(pColor);
-				colorButtons[tIndex > -1 ? tIndex : (colorButtons.length-1)].toggleOn();
+				var btn = colorButtons[tIndex > -1 ? tIndex : (colorButtons.length-1)];
+				btn is PushButton ? btn.toggleOn() : (btn.selected = true);
 			} else {
 				// No dye set
 			}
@@ -91,8 +92,10 @@ package app.ui.panes
 		}
 
 		private function _onDyeButtonClicked(pEvent:Event) {
-			_untoggle(colorButtons, pEvent.target as PushButton);
-			updateCustomColor(pEvent.target.id);
+			var btn = pEvent.target as ColorButton;
+			_untoggle(colorButtons, btn);
+			btn.selected = true;
+			updateCustomColor(btn.color);
 		}
 		
 		// Unlike the default color buttons, "allowToggleOff" is set to true
@@ -108,12 +111,18 @@ package app.ui.panes
 			updateCustomColor(-1);
 		}
 
-		private function _untoggle(pList:Array, pButton:PushButton=null) : void {
-			if (pButton != null && pButton.pushed) { return; }
+		private function _untoggle(pList:Array, pButton:ButtonBase=null) : void {
+			if (pButton != null && (pButton is PushButton ? pButton.pushed : pButton.selected)) { return; }
 
 			for(var i:int = 0; i < pList.length; i++) {
-				if (pList[i].pushed && pList[i] != pButton) {
-					pList[i].toggleOff();
+				if(pList[i] is PushButton) {
+					if (pList[i].pushed && pList[i] != pButton) {
+						pList[i].toggleOff();
+					}
+				} else {
+					if (pList[i].selected && pList[i] != pButton) {
+						pList[i].selected = false;
+					}
 				}
 			}
 		}
