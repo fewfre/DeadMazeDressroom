@@ -12,7 +12,7 @@ package app.data
 		/****************************
 		* General
 		*****************************/
-		public static const VERSION					: String = "1.15";
+		public static const VERSION					: String = "1.15b";
 		public static const SOURCE_URL				: String = "https://github.com/fewfre/DeadMazeDressroom/blob/master/changelog";
 
 		public static const DEFAULT_SKIN_ID			: int = 0;
@@ -25,6 +25,8 @@ package app.data
 		/****************************
 		* Colors
 		*****************************/
+		public static const APP_BG_COLOR					: int = 0x6A7495;
+		
 		public static const COLOR_BUTTON_BLUE				: int = 0x3C5064;
 		public static const COLOR_BUTTON_DOWN				: int = 0x2C3947;
 		public static const COLOR_BUTTON_MOUSE_OVER			: int = 0x42586E;

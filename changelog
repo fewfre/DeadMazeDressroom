@@ -1,3 +1,8 @@
+== V1.15b - 1 May 2023 ==
+- [Bug] Clicking scale slider will no longer prevent left/right arrow keys from traversing item grid.
+- Scale slider code polished - track hitbox increased & clicking anywhere on track now starts drag.
+
+
 == V1.15 - 6 October 2022 ==
 - Added randomize color button to item color picker page
 - Undo button added on color picker - clicking it will show colors previously used on the specific color swatch for that specific item.
