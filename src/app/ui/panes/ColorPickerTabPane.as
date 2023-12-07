@@ -98,6 +98,7 @@ package app.ui.panes
 		public override function close() : void {
 			super.close();
 			_addRecentColor(); // Add here since we're exiting, and thus change is finalized
+			_recentColorsDisplay.toggleOffDeleteMode();
 		}
 		
 		/****************************
@@ -171,6 +172,7 @@ package app.ui.panes
 				_dontTrackNextRecentChange = !pAllowTrackRecentChange;
 				_psColorPick.setCursor(_colorSwatches[pNum].textValue);
 			}
+			_recentColorsDisplay.toggleOffDeleteMode();
 		}
 		
 		private function changeColor(color:uint) {
@@ -224,6 +226,7 @@ package app.ui.panes
 			_dontTrackNextRecentChange = true;
 			_psColorPick.setCursor(_colorSwatches[_selectedSwatch].textValue);
 			// Sent number back as negative as an indicator that all swatches were randomized
+			_recentColorsDisplay.toggleOffDeleteMode();
 			dispatchEvent(new DataEvent(EVENT_COLOR_PICKED, false, false, (-_colorSwatches[_selectedSwatch].intValue).toString()));
 		}
 		
@@ -287,6 +290,7 @@ package app.ui.panes
 		*****************************/
 		private function _onColorPickChanged(pEvent:DataEvent) : void {
 			changeColor(uint(pEvent.data));
+			_recentColorsDisplay.toggleOffDeleteMode();
 		}
 		
 		private function _onRecentColorBtnClicked(pEvent:DataEvent) : void {

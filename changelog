@@ -1,6 +1,7 @@
 == V1.15b - 1 May 2023 ==
 - [Bug] Clicking scale slider will no longer prevent left/right arrow keys from traversing item grid.
 - Scale slider code polished - track hitbox increased & clicking anywhere on track now starts drag.
+- (6 Dec 2023) Fixed bug causing color history to stay in delete mode when it shouldn't.
 
 
 == V1.15 - 6 October 2022 ==
