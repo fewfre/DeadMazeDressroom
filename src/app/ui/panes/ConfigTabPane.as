@@ -37,7 +37,7 @@ package app.ui.panes
 			
 			var i:int, xx:Number, yy:Number, spacing:Number, sizex:Number, sizey:Number, clr:int, tIndex:int;
 
-			i = 0; xx = 70; yy = 30; spacing = 75; sizex = 60; sizey = 35;
+			i = 0; xx = 70; yy = 30; spacing = 95; sizex = 80; sizey = 35;
 			addChild(new TextBase({ text:"label_sex", x:35, y:yy+3, size:17, originY:0 }));
 			sexButtons = [
 				addChild( new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"btn_female", allowToggleOff:false, data:{ id:SEX.FEMALE } }) ),
@@ -98,7 +98,7 @@ package app.ui.panes
 			secondaryColorButtons[tIndex > -1 ? tIndex : (secondaryColorButtons.length-1)].selected = true;
 			
 			// Advanced
-			i = 0; spacing = 34; xx = 90; yy = yy+50; sizex = 45; sizey = 25;
+			i = 0; spacing = 39; xx = 90; yy = yy+50; sizex = 80; sizey = 25;
 			addChild(new TextBase({ text:"label_advanced", x:45, y:yy+3, size:12, originY:0 }));
 			advancedButton = addChild( new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"btn_extras" }) ) as PushButton;
 			advancedButton.Text.size = 11;
