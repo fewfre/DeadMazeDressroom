@@ -16,7 +16,7 @@
 		
 		"label_sex":			{ "text":"Płeć" },
 		"btn_female":			{ "text":"Kobieta" },
-		"btn_male":				{ "text":"Męźczyzna" },
+		"btn_male":				{ "text":"Mężczyzna" },
 		"label_advanced":		{ "text":"" },
 		"btn_extras":			{ "text":"Zaawansowane", "scale":0.8 },
 		"label_face_dir":		{ "text":"Twarz" },
