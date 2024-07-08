@@ -20,34 +20,34 @@ package app.data
 		private static const _CHECK_SKINS:Number = 5;
 		private static const _CHECK_OBJECTS:Number = 999;
 		
-		public static var faces:Array;
-		public static var hair:Array;
-		public static var beards:Array;
-		public static var head:Array;
-		public static var masks:Array;
-		public static var shirts:Array;
-		public static var pants:Array;
-		public static var belts:Array;
-		public static var gloves:Array;
-		public static var shoes:Array;
-		public static var bags:Array;
-		public static var objects:Array;
+		public static var faces:Vector.<ItemData>;
+		public static var hair:Vector.<ItemData>;
+		public static var beards:Vector.<ItemData>;
+		public static var head:Vector.<ItemData>;
+		public static var masks:Vector.<ItemData>;
+		public static var shirts:Vector.<ItemData>;
+		public static var pants:Vector.<ItemData>;
+		public static var belts:Vector.<ItemData>;
+		public static var gloves:Vector.<ItemData>;
+		public static var shoes:Vector.<ItemData>;
+		public static var bags:Vector.<ItemData>;
+		public static var objects:Vector.<ItemData>;
 
-		public static var skins:Array;
-		public static var poses:Array;
+		public static var skins:Vector.<ItemData>;
+		public static var poses:Vector.<ItemData>;
 
 		//public static var defaultSkinIndex:int;
 		//public static var defaultPoseIndex:int;
-		public static function get defaultSkinIndex():int { return 0; sex == SEX.MALE ? 1 : 0; }
-		public static function get defaultPoseIndex():int { return 0; }//sex == SEX.MALE ? 1 : 0; }
-		public static function get defaultFaceIndex():int { return sex == SEX.MALE ? 1 : 0; }
+		public static function get defaultSkinIndex():int { return 0; sex == Sex.MALE ? 1 : 0; }
+		public static function get defaultPoseIndex():int { return 0; }//sex == Sex.MALE ? 1 : 0; }
+		public static function get defaultFaceIndex():int { return sex == Sex.MALE ? 1 : 0; }
 
-		public static var hairColors:Array;
-		public static var skinColors:Array;
-		public static var secondaryColors:Array;
+		public static var hairColors:Vector.<uint>;
+		public static var skinColors:Vector.<uint>;
+		public static var secondaryColors:Vector.<uint>;
 
 		// Current
-		public static var sex:String;
+		public static var sex:Sex;
 		public static var hairColor:int;
 		public static var skinColor:int;
 		public static var secondaryColor:int;
@@ -57,11 +57,11 @@ package app.data
 		public static var showAll:Boolean = false;
 
 		/*public static function get sexNum():String {
-			return sex == SEX.MALE ? "_2" : "_1"; // Default to female
+			return sex == Sex.MALE ? "_2" : "_1"; // Default to female
 		}
 
 		public static function get sexChar():String {
-			return sex == SEX.MALE ? "H" : "F"; // Default to female
+			return sex == Sex.MALE ? "H" : "F"; // Default to female
 		}*/
 
 		public static function get defaultSkin() : ItemData { return skins[defaultSkinIndex]; }
@@ -70,20 +70,20 @@ package app.data
 
 		public static function init(pCallback:Function) : void {
 			// hairColors = [ 0x211e24, 0xdcb33a, 0xe98537, 0xe0ae5b, 0xf9d28a, 0xc16333, 0xe98537, 0xab6e37, 0x89541c, 0xf5d3ae ];
-			hairColors = [
+			hairColors = new <uint>[
 				0xd64f0d, 0xddb43b, 0xab2009, 0x597817,
 				0xeaa3b7, 0xd16382, 0x458f6a, 0x5d5a88,
 				0xa3cedc, 0xfff99b, 0x282828, 0x19202f,
 				0xe08637, 0xe0ae5b, 0xfed78c, 0xac703b,
 				0xc16234, 0xf6883d, 0x86521c, 0xdfceaf
 			];
-			// skinColors = [ 0xf5d3ae, 0xf3d9c1, 0xf9d28a, 0xf9d28a, 0xe0b484, 0xd3b18e, 0xd19a5e, 0x8a5a38, 0x4b3a2b, 0x563312 ];
-			skinColors = [ 0xf6d4af, 0xf5dac0, 0xf8da8a, 0xf6c88a, 0xe0b484, 0xd6b392, 0xd19a5e, 0x935d37, 0x503d2a, 0x573719 ];
-			// secondaryColors = [ 0xf5ece5, 0x2a312a, 0x076586, 0x87475a, 0x8a5a38, 0xd63343, 0xe98537, 0xf6c549, 0x50a341, 0x7841a2, 0x13a4b7 ];
-			secondaryColors = [ 0xebebeb, 0x303030, 0x206075, 0x87465b, 0x81583e, 0xd63343, 0xe88133, 0xf6c549, 0x4ca241, 0x7841a2, 0x13a4b8 ];
-			tornStates = {}; tornStates[ITEM.PANTS] = false; tornStates[ITEM.SHIRT] = false;
+			// skinColors = new <uint>[ 0xf5d3ae, 0xf3d9c1, 0xf9d28a, 0xf9d28a, 0xe0b484, 0xd3b18e, 0xd19a5e, 0x8a5a38, 0x4b3a2b, 0x563312 ];
+			skinColors = new <uint>[ 0xf6d4af, 0xf5dac0, 0xf8da8a, 0xf6c88a, 0xe0b484, 0xd6b392, 0xd19a5e, 0x935d37, 0x503d2a, 0x573719 ];
+			// secondaryColors = new <uint>[ 0xf5ece5, 0x2a312a, 0x076586, 0x87475a, 0x8a5a38, 0xd63343, 0xe98537, 0xf6c549, 0x50a341, 0x7841a2, 0x13a4b7 ];
+			secondaryColors = new <uint>[ 0xebebeb, 0x303030, 0x206075, 0x87465b, 0x81583e, 0xd63343, 0xe88133, 0xf6c549, 0x4ca241, 0x7841a2, 0x13a4b8 ];
+			tornStates = {}; tornStates[ItemType.PANTS] = false; tornStates[ItemType.SHIRT] = false;
 			
-			sex = SEX.FEMALE;
+			sex = Sex.FEMALE;
 			skinColor = skinColors[0];
 			hairColor = hairColors[0];
 			secondaryColor = secondaryColors[0];
@@ -94,52 +94,52 @@ package app.data
 			
 			var tFlowFunctions = [
 				function(){
-					hair = _setupCostumeArray({ base:"M_1", type:ITEM.HAIR, pad:4, after:"_", map:tSkinParts, sex:true, numToCheck:_CHECK_HAIR });
+					hair = _setupCostumeList(ItemType.HAIR, "M_1", { pad:4, after:"_", map:tSkinParts, sex:true, numToCheck:_CHECK_HAIR });
 				},
 				function(){
-					head = _setupCostumeArray({ base:"M_2", type:ITEM.HEAD, pad:4, after:"_", map:tSkinParts, sex:true });
+					head = _setupCostumeList(ItemType.HEAD, "M_2", { pad:4, after:"_", map:tSkinParts, sex:true });
 				},
 				function(){
-					shirts = _setupCostumeArray({ base:"M_3", type:ITEM.SHIRT, pad:4, after:"_", map:tSkinParts, sex:true });
+					shirts = _setupCostumeList(ItemType.SHIRT, "M_3", { pad:4, after:"_", map:tSkinParts, sex:true });
 				},
 				function(){
-					pants = _setupCostumeArray({ base:"M_4", type:ITEM.PANTS, pad:4, after:"_", map:tSkinParts, sex:true });
+					pants = _setupCostumeList(ItemType.PANTS, "M_4", { pad:4, after:"_", map:tSkinParts, sex:true });
 				},
 				function(){
-					shoes = _setupCostumeArray({ base:"M_5", type:ITEM.SHOES, pad:4, after:"_", map:tSkinParts, sex:true });
+					shoes = _setupCostumeList(ItemType.SHOES, "M_5", { pad:4, after:"_", map:tSkinParts, sex:true });
 				},
 				function(){
-					faces = _setupCostumeArray({ base:"M_5", type:ITEM.FACE, pad:3, after:"_", map:tSkinParts, sex:true, numToCheck:_CHECK_MISC });
-					faces.push( new ItemData({ type:ITEM.FACE, classMap:{} }) );
+					faces = _setupCostumeList(ItemType.FACE, "M_5", { pad:3, after:"_", map:tSkinParts, sex:true, numToCheck:_CHECK_MISC });
+					faces.push( new ItemData(ItemType.FACE, "inv", { classMap:{} }) );
 					faces[faces.length-1].tags.push('invisible');
 				},
 				function(){
-					beards = _setupCostumeArray({ base:"M_7", type:ITEM.BEARD, pad:3, after:"_", map:tSkinParts, sex:true, numToCheck:_CHECK_MISC });
+					beards = _setupCostumeList(ItemType.BEARD, "M_7", { pad:3, after:"_", map:tSkinParts, sex:true, numToCheck:_CHECK_MISC });
 				},
 				function(){
-					masks = _setupCostumeArray({ base:"M_17", type:ITEM.MASK, pad:3, after:"_", map:tSkinParts, sex:true, numToCheck:_CHECK_SURVIVOR });
-					masks = masks.concat(_setupCostumeArray({ base:"M_34", type:ITEM.MASK, pad:3, after:"_", map:tSkinParts, sex:true, idPrefix:"nk", numToCheck:_CHECK_SURVIVOR }));
+					masks = _setupCostumeList(ItemType.MASK, "M_17", { pad:3, after:"_", map:tSkinParts, sex:true, numToCheck:_CHECK_SURVIVOR });
+					masks = masks.concat(_setupCostumeList(ItemType.MASK, "M_34", { pad:3, after:"_", map:tSkinParts, sex:true, idPrefix:"nk", numToCheck:_CHECK_SURVIVOR }));
 				},
 				function(){
-					bags = _setupCostumeArray({ base:"M_35", type:ITEM.BAG, pad:3, after:"_", map:tSkinParts, sex:true, numToCheck:_CHECK_SURVIVOR });
+					bags = _setupCostumeList(ItemType.BAG, "M_35", { pad:3, after:"_", map:tSkinParts, sex:true, numToCheck:_CHECK_SURVIVOR });
 				},
 				function(){
-					gloves = _setupCostumeArray({ base:"M_37", type:ITEM.GLOVES, pad:3, after:"_", map:tSkinParts, sex:true, numToCheck:_CHECK_SURVIVOR });
+					gloves = _setupCostumeList(ItemType.GLOVES, "M_37", { pad:3, after:"_", map:tSkinParts, sex:true, numToCheck:_CHECK_SURVIVOR });
 				},
 				function(){
-					belts = _setupCostumeArray({ base:"M_45", type:ITEM.BELT, pad:3, after:"_", map:tSkinParts, sex:true, numToCheck:_CHECK_SURVIVOR });
+					belts = _setupCostumeList(ItemType.BELT, "M_45", { pad:3, after:"_", map:tSkinParts, sex:true, numToCheck:_CHECK_SURVIVOR });
 				},
 				function(){
-					objects = _setupCostumeArray({ base:"dmo_", type:ITEM.OBJECT, itemClassToClassMap:"_Arme", numToCheck:_CHECK_OBJECTS });
+					objects = _setupCostumeList(ItemType.OBJECT, "dmo_", { itemClassToClassMap:"_Arme", numToCheck:_CHECK_OBJECTS });
 				},
 				function(){
-					skins = new Array();
+					skins = new Vector.<ItemData>();
 					for(i = 0; i < _CHECK_SKINS; i++) {
 						/*if(Fewf.assets.getLoadedClass( "M_"+i+"_BS1_1" ) != null) {
-							skins.push( new SkinData( i, SEX.FEMALE ) );
+							skins.push( new SkinData( i, Sex.FEMALE ) );
 						}
 						if(Fewf.assets.getLoadedClass( "M_"+i+"_BS1_2" ) != null) {
-							skins.push( new SkinData( i, SEX.MALE ) );
+							skins.push( new SkinData( i, Sex.MALE ) );
 						}*/
 						/*if(Fewf.assets.getLoadedClass( "M_"+i+"_BS1_1" ) != null) {*/
 						if(Fewf.assets.getLoadedClass( "M_"+i+"_BS1" ) != null) {
@@ -149,12 +149,12 @@ package app.data
 					skins.push( new SkinData( "inv", null ) );
 					skins[skins.length-1].classMap = {};
 					skins[skins.length-1].tags.push('invisible');
-					skins[skins.length-1].hair = new ItemData({ type:ITEM.HAIR, classMap:{} });
+					(skins[skins.length-1] as SkinData).hair = new ItemData(ItemType.HAIR, "inv", { classMap:{} });
 					/*defaultSkinIndex = 0;//FewfUtils.getIndexFromArrayWithKeyVal(skins, "id", ConstantsApp.DEFAULT_SKIN_ID);*/
 					//defaultSkinIndexMale = 1;//FewfUtils.getIndexFromArrayWithKeyVal(skins, "id", ConstantsApp.DEFAULT_SKIN_ID);
 				},
 				function(){
-					poses = [];
+					poses = new Vector.<ItemData>();
 					var tPoseClasses = [
 						"Statique",
 						"Course",
@@ -389,10 +389,10 @@ package app.data
 					var tClass:Class, tClassName:String, tClassNameSimple:String;
 					for(i = 0; i < tPoseClasses.length; i++) {
 						/*if((tClass = Fewf.assets.getLoadedClass( "$Anim"+(tClassName=strReplace(tPoseClasses[i], "{0}", "F")) )) != null) {
-							poses.push(new PoseData({ id:tClassName, type:ITEM.POSE, itemClass:tClass, sex:SEX.FEMALE }));
+							poses.push(new PoseData({ id:tClassName, type:ItemType.POSE, itemClass:tClass, sex:Sex.FEMALE }));
 						}
 						if((tClass = Fewf.assets.getLoadedClass( "$Anim"+(tClassName=strReplace(tPoseClasses[i], "{0}", "H")) )) != null) {
-							poses.push(new PoseData({ id:tClassName, type:ITEM.POSE, itemClass:tClass, sex:SEX.MALE }));
+							poses.push(new PoseData({ id:tClassName, type:ItemType.POSE, itemClass:tClass, sex:Sex.MALE }));
 						}*/
 						/*if((tClass = Fewf.assets.getLoadedClass( "$Anim"+strReplace(tPoseClasses[i], "{0}", "F") )) != null) {*/
 						tClassName = tClassNameSimple = tPoseClasses[i];
@@ -405,7 +405,7 @@ package app.data
 							tClassName = "$Anim"+tClassName;
 						}
 						if((tClass = Fewf.assets.getLoadedClass( tClassName )) != null) {
-							poses.push(new PoseData({ id:tClassNameSimple, assetID:tClassNameSimple, type:ITEM.POSE, itemClass:tClass, sex:null }));
+							poses.push(new PoseData(tClassNameSimple, { assetID:tClassNameSimple, itemClass:tClass, sex:null }));
 						}
 					}
 					/*defaultPoseIndex = 0;//FewfUtils.getIndexFromArrayWithKeyVal(poses, "id", ConstantsApp.DEFAULT_POSE_ID);*/
@@ -413,11 +413,11 @@ package app.data
 				},
 				function(){
 					// Loop through config and mark required assets as "extra" so they can be toggled on/off.
-					var tExtras = Fewf.assets.getData("config").extras, tDataArray, tData;
+					var tExtras = Fewf.assets.getData("config").extras, tDataArray:Vector.<ItemData>, tData:ItemData;
 					for(var key:String in tExtras) {
-						if((tDataArray = getArrayByType(key)) != null) {
-							for each(var tID in tExtras[key]) {
-								tData = FewfUtils.getFromArrayWithKeyVal(tDataArray, "id", tID);
+						if((tDataArray = getItemDataListByType(ItemType.fromString(key))) != null) {
+							for each(var tID:String in tExtras[key]) {
+								tData = FewfUtils.getFromVectorWithKeyVal(tDataArray, "id", tID);
 								if(tData) { tData.tags.push("extra"); }
 							}
 						}
@@ -441,9 +441,9 @@ package app.data
 			return str.split(search).join(replace);
 		}
 
-		// pData = { base:String, type:String, after:String, pad:int, map:Array, sex:Boolean, itemClassToClassMap:String OR Array, numToCheck:int=null, ?idPrefix:String }
-		private static function _setupCostumeArray(pData:Object) : Array {
-			var tArray:Array = new Array();
+		// pData = { after:String, pad:int, map:Array, sex:Boolean, itemClassToClassMap:String OR Array, numToCheck:int=null, ?idPrefix:String }
+		private static function _setupCostumeList(type:ItemType, base:String, pData:Object) : Vector.<ItemData> {
+			var list:Vector.<ItemData> = new Vector.<ItemData>();
 			var tClassName:String;
 			var tClass:Class;
 			var tSexSpecificParts:int;
@@ -454,12 +454,12 @@ package app.data
 			// Loop
 			for(var i = 0; i <= tLength; i++) {
 				if(pData.map) {
-					var tSexSpecificArray = new Array();
+					var tSexSpecificList:Vector.<ItemData> = new Vector.<ItemData>();
 					for(var g:int = 0; g < (pData.sex ? 2 : 1); g++) {
 						var tClassMap = {  }, tClassSuccess = null;
 						tSexSpecificParts = 0;
 						for(var j = 0; j < pData.map.length; j++) {
-							tClass = Fewf.assets.getLoadedClass( tClassName = pData.base+zeroPad(i, pData.pad)+pData.after+pData.map[j] );
+							tClass = Fewf.assets.getLoadedClass( tClassName = base+zeroPad(i, pData.pad)+pData.after+pData.map[j] );
 							if(tClass) { tClassMap[pData.map[j]] = tClass; tClassSuccess = tClass; }
 							else if(pData.sex){
 								tClass = Fewf.assets.getLoadedClass( tClassName+"_"+(g==0?1:2) );
@@ -468,7 +468,7 @@ package app.data
 						}
 						if(tClassSuccess) {
 							var tIsSexSpecific = pData.sex && tSexSpecificParts > 0;
-							tSexSpecificArray.push( new ItemData({ id:tIdPrefix+i+(tIsSexSpecific ? (g==1 ? "M" : "F") : ""), assetID:pData.base+(pData.pad ? zeroPad(i, pData.pad) : i), type:pData.type, classMap:tClassMap, itemClass:tClassSuccess, sex:(tIsSexSpecific ? (g==1?SEX.MALE:SEX.FEMALE) : null) }) );
+							tSexSpecificList.push( new ItemData(type, tIdPrefix+i+(tIsSexSpecific ? (g==1 ? "M" : "F") : ""), { assetID:base+(pData.pad ? zeroPad(i, pData.pad) : i), classMap:tClassMap, itemClass:tClassSuccess, sex:(tIsSexSpecific ? (g==1?Sex.MALE:Sex.FEMALE) : null) }) );
 						}
 						if(tSexSpecificParts == 0 && tClassSuccess) {
 							break;
@@ -476,32 +476,32 @@ package app.data
 					}
 					// TODO: This is a hacky way to removed the items after they've been created. Rework?
 					// Check if more than 1 entry
-					if(tSexSpecificArray.length > 1) {
+					if(tSexSpecificList.length > 1) {
 						// If there are two entries then at least one must be sex-specific.
 						// If one of these is gender neutral, it should be removed.
-						for(var n:int = 0; n < tSexSpecificArray.length; n++) {
-							if(tSexSpecificArray[n].sex == null) { tSexSpecificArray.splice(n, 1); break; }
+						for(var n:int = 0; n < tSexSpecificList.length; n++) {
+							if(tSexSpecificList[n].sex == null) { tSexSpecificList.splice(n, 1); break; }
 						}
 					}
-					tArray = tArray.concat(tSexSpecificArray);
+					list = list.concat(tSexSpecificList);
 				} else {
-					tClass = Fewf.assets.getLoadedClass( pData.base+(pData.pad ? zeroPad(i, pData.pad) : i)+(pData.after ? pData.after : "") );
+					tClass = Fewf.assets.getLoadedClass( base+(pData.pad ? zeroPad(i, pData.pad) : i)+(pData.after ? pData.after : "") );
 					if(tClass != null) {
-						tArray.push( new ItemData({ id:tIdPrefix+i, type:pData.type, itemClass:tClass}) );
+						list.push( new ItemData(type, tIdPrefix+i, { itemClass:tClass}) );
 						if(pData.itemClassToClassMap) {
-							tArray[tArray.length-1].classMap = {};
+							list[list.length-1].classMap = {};
 							if(pData.itemClassToClassMap is Array) {
 								for(var c:int = 0; c < pData.itemClassToClassMap.length; c++) {
-									tArray[tArray.length-1].classMap[pData.itemClassToClassMap[c]] = tClass;
+									list[list.length-1].classMap[pData.itemClassToClassMap[c]] = tClass;
 								}
 							} else {
-								tArray[tArray.length-1].classMap[pData.itemClassToClassMap] = tClass;
+								list[list.length-1].classMap[pData.itemClassToClassMap] = tClass;
 							}
 						}
 					}
 				}
 			}
-			return tArray;
+			return list;
 		}
 
 		public static function zeroPad(number:int, width:int):String {
@@ -512,39 +512,34 @@ package app.data
 			return ret;
 		}
 
-		public static function getArrayByType(pType:String) : Array {
+		public static function getItemDataListByType(pType:ItemType) : Vector.<ItemData> {
 			switch(pType) {
-				case ITEM.FACE:		return faces;
-				case ITEM.HAIR:		return hair;
-				case ITEM.BEARD:	return beards;
-				case ITEM.HEAD:		return head;
-				case ITEM.MASK:		return masks;
-				case ITEM.SHIRT:	return shirts;
-				case ITEM.PANTS:	return pants;
-				case ITEM.BELT:		return belts;
-				case ITEM.GLOVES:	return gloves;
-				case ITEM.SHOES:	return shoes;
-				case ITEM.BAG:		return bags;
-				case ITEM.OBJECT:	return objects;
+				case ItemType.FACE:		return faces;
+				case ItemType.HAIR:		return hair;
+				case ItemType.BEARD:	return beards;
+				case ItemType.HEAD:		return head;
+				case ItemType.MASK:		return masks;
+				case ItemType.SHIRT:	return shirts;
+				case ItemType.PANTS:	return pants;
+				case ItemType.BELT:		return belts;
+				case ItemType.GLOVES:	return gloves;
+				case ItemType.SHOES:	return shoes;
+				case ItemType.BAG:		return bags;
+				case ItemType.OBJECT:	return objects;
 
-				case ITEM.SKIN:		return skins;
-				case ITEM.POSE:		return poses;
-				default: trace("[GameAssets](getArrayByType) Unknown type: "+pType);
+				case ItemType.SKIN:		return skins;
+				case ItemType.POSE:		return poses;
+				default: trace("[GameAssets](getItemDataListByType) Unknown type: "+pType);
 			}
 			return null;
 		}
-		
-		public static function getItemDataListByType(pType:String) : Vector.<ItemData> {
-			var myArray:Array = getArrayByType(pType);
-			var myVector:Vector.<ItemData> = new Vector.<ItemData>();
-			for each (var itemData:ItemData in myArray) {
-				myVector.push(itemData);
-			}
-			return myVector;
+
+		public static function getItemFromTypeID(pType:ItemType, pID:String) : ItemData {
+			return FewfUtils.getFromVectorWithKeyVal(getItemDataListByType(pType), "id", pID);
 		}
 
-		public static function getItemFromTypeID(pType:String, pID:String) : ItemData {
-			return FewfUtils.getFromArrayWithKeyVal(getArrayByType(pType), "id", pID);
+		public static function getItemIndexFromTypeID(pType:ItemType, pID:String) : int {
+			return FewfUtils.getIndexFromVectorWithKeyVal(getItemDataListByType(pType), "id", pID);
 		}
 
 		public static function doesItemDataMatchDefaultOfTypeIfAny(pItemData:ItemData) : Boolean {
@@ -668,25 +663,25 @@ package app.data
 		public static function getItemImage(pData:ItemData) : MovieClip {
 			var tItem:MovieClip;
 			switch(pData.type) {
-				case ITEM.SKIN:
+				case ItemType.SKIN:
 					tItem = getDefaultPoseSetup({ skin:pData, skipItems:true, baseArgs:{ skinColor:GameAssets.skinColor, secondaryColor:GameAssets.secondaryColor } });
 					break;
-				case ITEM.POSE:
+				case ItemType.POSE:
 					tItem = getDefaultPoseSetup({ pose:pData, baseArgs:{ skinColor:GameAssets.skinColor } });
 					break;
 				// Items with multiple parts (or needs to be colored) that must be added onto a pose to show properly
-				case ITEM.HEAD:
-				case ITEM.SHIRT:
-				case ITEM.PANTS:
-				case ITEM.SHOES:
-				case ITEM.MASK:
-				case ITEM.BAG:
-				case ITEM.GLOVES:
-					tItem = new Pose(poses[defaultPoseIndex]).apply({ items:[ pData ], removeBlanks:true, facingForward:true });
+				case ItemType.HEAD:
+				case ItemType.SHIRT:
+				case ItemType.PANTS:
+				case ItemType.SHOES:
+				case ItemType.MASK:
+				case ItemType.BAG:
+				case ItemType.GLOVES:
+					tItem = new Pose(poses[defaultPoseIndex] as PoseData).apply(new <ItemData>[ pData ], { removeBlanks:true, facingForward:true });
 					break;
-				case ITEM.HAIR:
-				case ITEM.BEARD:
-					tItem = new Pose(poses[defaultPoseIndex]).apply({ items:[ pData ], removeBlanks:true, facingForward:true, hairColor:GameAssets.hairColor });
+				case ItemType.HAIR:
+				case ItemType.BEARD:
+					tItem = new Pose(poses[defaultPoseIndex] as PoseData).apply(new <ItemData>[ pData ], { removeBlanks:true, facingForward:true, hairColor:GameAssets.hairColor });
 					break;
 				default:
 					tItem = new pData.itemClass();
@@ -706,22 +701,22 @@ package app.data
 			var tApplyData = pData.baseArgs != null ? pData.baseArgs : {};
 			tApplyData.facingForward = true;
 			
-			var tPose = new Pose(tPoseData);
-			/*if(tSkinData.sex == SEX.MALE) {
-				tPose.apply({ items:[
+			var items:Vector.<ItemData>;
+			/*if(tSkinData.sex == Sex.MALE) {
+				tPose.apply([
 					tSkinData,
 					shirts[1],
 					pants[1],
 					shoes[0]
-				] });
+				], {});
 			} else {*/
 				if(pData.skipItems) {
-					tApplyData.items = [
+					items = new <ItemData>[
 						tSkinData,
 						faces[0]
 					];
 				} else {
-					tApplyData.items = [
+					items = new <ItemData>[
 						tSkinData,
 						shirts[0],
 						pants[0],
@@ -730,7 +725,8 @@ package app.data
 					];
 				}
 			/*}*/
-			tPose.apply(tApplyData);
+			var tPose:Pose = new Pose(tPoseData);
+			tPose.apply(items, tApplyData);
 			tApplyData = null;
 			tPose.stopAtLastFrame();
 			

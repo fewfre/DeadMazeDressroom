@@ -45,16 +45,16 @@ package app.world.elements
 			stop();
 		}
 		
-		// pData = { ?items:Array, ?removeBlanks:Boolean=false, ?skinColor:int, ?hairColor:int, ?secondaryColor:int, ?facingForward:Boolean=true, ?sex:SEX, ?tornStates:Object<ITEM, Boolean> }
-		public function apply(pData:Object) : MovieClip {
-			if(!pData.items) pData.items = [];
+		// pData = { ?removeBlanks:Boolean=false, ?skinColor:int, ?hairColor:int, ?secondaryColor:int, ?facingForward:Boolean=true, ?sex:Sex, ?tornStates:Object<ITEM, Boolean> }
+		public function apply(items:Vector.<ItemData>, pData:Object) : MovieClip {
+			if(!items) items = new Vector.<ItemData>();
 			
 			// If no hair data in array, add the skin's default hair style (if there is one).
-			var tHairData = FewfUtils.getFromArrayWithKeyVal(pData.items, "type", ITEM.HAIR);
+			var tHairData = FewfUtils.getFromVectorWithKeyVal(items, "type", ItemType.HAIR);
 			if(!tHairData) {
-				var tSkinData = FewfUtils.getFromArrayWithKeyVal(pData.items, "type", ITEM.SKIN);
+				var tSkinData = FewfUtils.getFromVectorWithKeyVal(items, "type", ItemType.SKIN);
 				if(tSkinData) {
-					pData.items.unshift(tSkinData.hair);
+					items.unshift(tSkinData.hair);
 				}
 			}
 			
@@ -65,7 +65,7 @@ package app.world.elements
 			
 			_createPoseFromData(pData);
 			
-			var tShopDataOrig = _orderType(pData.items), tShopData;
+			var tShopDataOrig = _orderType(items), tShopData;
 			var part:MovieClip = null;
 			var tChild:DisplayObject = null;
 			var tItemsOnChild:int = 0;
@@ -77,7 +77,7 @@ package app.world.elements
 				tChild = _pose.getChildAt(i);
 				tItemsOnChild = 0;
 				
-				tShopData = ITEM.LAYERING_BY_LAYER[tChild.name] ? _orderType(pData.items, tChild.name) : tShopDataOrig;
+				tShopData = ItemType.LAYERING_BY_LAYER[tChild.name] ? _orderType(items, tChild.name) : tShopDataOrig;
 				for(var j:int = 0; j < tShopData.length; j++) {
 					part = _addToPoseIfCan(tChild as MovieClip, tShopData[j], tChild.name, pData);
 					if(pData.tornStates && pData.tornStates[tShopData[j].type]) _applyTornMask(tChild.name, part);
@@ -126,7 +126,7 @@ package app.world.elements
 				}
 				else { GameAssets.colorDefault(part); }*/
 				
-				if((pData.type == ITEM.HAIR || pData.type == ITEM.BEARD) && pOptions.hairColor != null) {
+				if((pData.type == ItemType.HAIR || pData.type == ItemType.BEARD) && pOptions.hairColor != null) {
 					GameAssets.applyColorToObject(part,  pOptions.hairColor);
 				}
 				GameAssets.colorItem({ obj:part, color: pOptions.skinColor, name:"$0" });
@@ -135,7 +135,7 @@ package app.world.elements
 			}
 		}
 		
-		private function _orderType(pItems:Array, pSlotName:String=null) : Array {
+		private function _orderType(pItems:Vector.<ItemData>, pSlotName:String=null) : Vector.<ItemData> {
 			var i:int = pItems.length;
 			while(i > 0) { i--;
 				if(pItems[i] == null) {
@@ -143,7 +143,7 @@ package app.world.elements
 				}
 			}
 			
-			var tLayerOrder = ITEM.LAYERING_BY_LAYER[pSlotName] ? ITEM.LAYERING_BY_LAYER[pSlotName] : ITEM.LAYERING;
+			var tLayerOrder:Vector.<ItemType> = ItemType.LAYERING_BY_LAYER[pSlotName] ? ItemType.LAYERING_BY_LAYER[pSlotName] : ItemType.LAYERING;
 			pItems.sort(function(a, b){
 				return tLayerOrder.indexOf(a.type) > tLayerOrder.indexOf(b.type) ? 1 : -1;
 			});

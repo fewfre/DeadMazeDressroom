@@ -7,11 +7,11 @@ package app.world.data
 
 	public class PoseData extends ItemData
 	{
-		public function PoseData(pData:Object) {
-			super(pData);
+		public function PoseData(pId:String, pData:Object) {
+			super(ItemType.POSE, pId, pData);
 		}
 		
-		// pOptions = { ?facingForward:Boolean=true, ?sex:SEX }
+		// pOptions = { ?facingForward:Boolean=true, ?sex:Sex }
 		public function getClass(pOptions:Object=null) : Class {
 			var facingForward = GameAssets.facingForward;
 			var sex = GameAssets.sex;
@@ -19,7 +19,7 @@ package app.world.data
 				if(pOptions.facingForward) { facingForward = pOptions.facingForward; }
 				if(pOptions.sex) { sex = pOptions.sex; }
 			}
-			/*var tSex = sex == SEX.MALE ? "H" : "F";
+			/*var tSex = sex == Sex.MALE ? "H" : "F";
 			var tFacing = facingForward ? "" : "D";*/
 			
 			/*var tClass = Fewf.assets.getLoadedClass( "$Anim"+strReplace(_assetID, "{0}", tSex)+tFacing );*/

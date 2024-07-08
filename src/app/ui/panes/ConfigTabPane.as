@@ -48,12 +48,12 @@ package app.ui.panes
 			i = 0; xx = 70; yy = 30; spacing = 95; sizex = 80; sizey = 35;
 			new TextTranslated("label_sex", { x:35, y:yy+3, size:17, originY:0 }).appendToT(this);
 			sexButtons = new <PushButton>[
-				new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"btn_female", allowToggleOff:false, data:{ id:SEX.FEMALE } }).appendTo(this) as PushButton,
-				new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"btn_male", allowToggleOff:false, data:{ id:SEX.MALE } }).appendTo(this) as PushButton
+				new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"btn_female", allowToggleOff:false, data:{ id:Sex.FEMALE } }).appendTo(this) as PushButton,
+				new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"btn_male", allowToggleOff:false, data:{ id:Sex.MALE } }).appendTo(this) as PushButton
 				//new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"All", allowToggleOff:false }).appendTo(this) as PushButton
 			];
 			_registerClickHandler(sexButtons, PushButton.STATE_CHANGED_BEFORE, _onSexButtonClicked);
-			sexButtons[ GameAssets.sex == SEX.MALE ? 1 : 0].toggleOn();
+			sexButtons[ GameAssets.sex == Sex.MALE ? 1 : 0].toggleOn();
 			
 			/*i = 0; xx = 285;
 			new TextLocalized("label_face_dir", { x:250, y:yy+3, size:17, originY:0 }).appendToT(this);
@@ -241,7 +241,7 @@ package app.ui.panes
 		public function updateButtonsBasedOnCurrentData() : void {
 			var tIndex:int, tColor:int;
 			_untoggle(sexButtons);
-			sexButtons[ GameAssets.sex == SEX.MALE ? 1 : 0].toggleOn(false);
+			sexButtons[ GameAssets.sex == Sex.MALE ? 1 : 0].toggleOn(false);
 			
 			tColor = GameAssets.hairColor;
 			tIndex = GameAssets.hairColors.indexOf(tColor);

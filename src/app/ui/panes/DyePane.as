@@ -28,7 +28,7 @@ package app.ui.panes
 		// private var _character : Character;
 		private var _colors    : Array;
 
-		public var colorButtons:Array;
+		public var colorButtons:Vector.<Object>;
 
 		public var colorPickerButton:PushButton;
 		public var colorPickerButtonBox:Sprite;
@@ -50,7 +50,7 @@ package app.ui.panes
 			i = 0; spacing = 34*BUTTON_SCALE; sizex = sizey = 30*BUTTON_SCALE;
 			xx = 0; yy = 215 - Math.ceil((_colors.length+1) / columns) * spacing * 0.5;
 
-			colorButtons = [];
+			colorButtons = new Vector.<Object>();
 			var btn:ColorButton;
 			for(i in _colors) {
 				if(i%columns==0) {
@@ -117,7 +117,7 @@ package app.ui.panes
 			updateCustomColor(-1);
 		}
 
-		private function _untoggle(pList:Array, pButton:ButtonBase=null) : void {
+		private function _untoggle(pList:Vector.<Object>, pButton:ButtonBase=null) : void {
 			if (pButton != null && (
 				pButton is PushButton && (pButton as PushButton).pushed || 
 				pButton is ColorButton && (pButton as ColorButton).selected

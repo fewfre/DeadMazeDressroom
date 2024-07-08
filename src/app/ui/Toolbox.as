@@ -1,6 +1,5 @@
 package app.ui
 {
-	import app.ui.buttons.PushButton;
 	import app.ui.buttons.SpriteButton;
 	import app.ui.common.FancySlider;
 	import app.ui.common.FrameBase;
@@ -33,7 +32,7 @@ package app.ui
 		
 		public var scaleSlider       : FancySlider;
 		private var _downloadButton  : ButtonBase;
-		private var _animateButton   : PushButton;
+		private var _animateButton   : SpriteButton;
 		private var _imgurButton     : SpriteButton;
 		private var _clipboardButton : SpriteButton;
 		
@@ -97,14 +96,11 @@ package app.ui
 				.on(ButtonBase.CLICK, dispatchEventHandler(RANDOM_CLICKED));
 			tButtonOnRight++;
 			
-			_animateButton = new PushButton({ size:tButtonSize, obj_scale:0.65, obj:new $PlayButton(), origin:0.5 })
+			_animateButton = new SpriteButton({ size:tButtonSize, obj:new $PlayButton(), obj_scale:0.5, origin:0.5 })
 				.setXY(tX-tButtonXInc*tButtonOnRight, yy)
-				.on(PushButton.STATE_CHANGED_AFTER, dispatchEventHandler(ANIMATION_TOGGLED))
-				.on(PushButton.STATE_CHANGED_AFTER, function(e):void{
-					var icon:Sprite = !_animateButton.pushed ? new $PlayButton() : new $PauseButton();
-					_animateButton.ChangeImage(icon, 0.65);
-				})
-				.appendTo(tTray) as PushButton;
+				.on(ButtonBase.CLICK, dispatchEventHandler(ANIMATION_TOGGLED))
+				.appendTo(tTray) as SpriteButton;
+			toggleAnimateButtonAsset(pCharacter.animatePose);
 			tButtonOnRight++;
 			
 			/********************

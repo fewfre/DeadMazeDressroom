@@ -241,7 +241,7 @@ package app.ui.panes.infobar
 		public function addInfo(pData:ItemData, pMC:MovieClip) : void {
 			if(pData == null) { return; }
 			_itemData = pData;
-			if(_itemData.type == ITEM.POSE || _itemData.type == ITEM.SKIN) {
+			if(_itemData.type == ItemType.POSE || _itemData.type == ItemType.SKIN) {
 				pMC.scaleX = pMC.scaleY = 0.6;
 			}
 			ChangeImage(pMC);
@@ -253,7 +253,7 @@ package app.ui.panes.infobar
 			if(_qualityButton) _qualityButton.enable().alpha = 1;
 			if(_favoriteButton) {
 				_favoriteButton.enable().alpha = 1;
-				// var on:Boolean = FavoriteItemsLocalStorageManager.hasId(pData.type, pData.id);
+				var on:Boolean = false;//FavoriteItemsLocalStorageManager.hasId(pData.type, pData.id);
 				_updateFavoriteButton(on);
 			}
 		}

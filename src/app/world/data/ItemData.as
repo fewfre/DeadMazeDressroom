@@ -10,7 +10,7 @@ package app.world.data
 	{
 		public var id			: String;
 		protected var _assetID	: String; // Actual ID, not display id.
-		public var type			: String;
+		public var type			: ItemType;
 		public var sex			: String;
 		public var itemClass	: Class;
 		public var classMap		: Object;
@@ -21,12 +21,12 @@ package app.world.data
 		public var colorLastFrame: Boolean;
 		public var color		: int;
 
-		// pData = { id:String, type:String(ITEM), itemClass:Class, ?sex:String, ?classMap:String -> Class, ?assetID:String }
-		public function ItemData(pData:Object) {
+		// pData = { itemClass:Class, ?sex:Sex, ?classMap:String -> Class, ?assetID:String }
+		public function ItemData(pType:ItemType, pId:String, pData:Object) {
 			super();
-			id = pData.id;
+			type = pType;
+			id = pId;
 			_assetID = pData.assetID != null ? pData.assetID : id;
-			type = pData.type;
 			sex = pData.sex;
 			itemClass = pData.itemClass;
 			classMap = pData.classMap;
@@ -38,8 +38,8 @@ package app.world.data
 		}
 		
 		private function _isColorable() : Boolean {
-			if(type == ITEM.HEAD || type == ITEM.SHIRT || type == ITEM.PANTS || type == ITEM.SHOES
-			|| type == ITEM.MASK || type == ITEM.BELT || type == ITEM.GLOVES || type == ITEM.BAG) {
+			if(type == ItemType.HEAD || type == ItemType.SHIRT || type == ItemType.PANTS || type == ItemType.SHOES
+			|| type == ItemType.MASK || type == ItemType.BELT || type == ItemType.GLOVES || type == ItemType.BAG) {
 				if(classMap != null) {
 					for(var i:String in classMap) {
 						if(_partProvesItemIsColorable( new classMap[i]() )) { return true; }
@@ -71,16 +71,16 @@ package app.world.data
 			return tags.indexOf(tag) != -1
 		}
 		
-		// pOptions = { ?facingForward:Boolean=true, ?sex:SEX }
+		// pOptions = { ?facingForward:Boolean=true, ?sex:Sex }
 		public function getPart(pID:String, pOptions:Object=null) : Class {
-			if(type != ITEM.OBJECT) {
+			if(type != ItemType.OBJECT) {
 				var facingForward = GameAssets.facingForward;
 				var sex = GameAssets.sex;
 				if(pOptions != null) {
 					if(pOptions.facingForward) { facingForward = pOptions.facingForward; }
 					if(pOptions.sex) { sex = pOptions.sex; }
 				}
-				var tSex = sex == SEX.MALE ? "_2" : "_1";
+				var tSex = sex == Sex.MALE ? "_2" : "_1";
 				var tFacing = facingForward ? "" : "_dos";
 				
 				var tClass = Fewf.assets.getLoadedClass( _assetID+"_"+pID+tFacing+tSex );

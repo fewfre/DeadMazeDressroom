@@ -12,7 +12,7 @@ package app.world.elements
 	public class Character extends Sprite
 	{
 		// Storage
-		public var outfit:MovieClip;
+		public var outfit:Pose;
 		public var animatePose:Boolean;
 
 		private var _itemDataMap:Object;
@@ -38,20 +38,20 @@ package app.world.elements
 			* Store Data
 			*****************************/
 			_itemDataMap = {};
-			_itemDataMap[ITEM.SKIN] = pData.skin;
-			_itemDataMap[ITEM.FACE] = pData.face;
-			_itemDataMap[ITEM.HAIR] = pData.hair;
-			_itemDataMap[ITEM.BEARD] = pData.beard;
-			_itemDataMap[ITEM.HEAD] = pData.head;
-			_itemDataMap[ITEM.MASK] = pData.mask;
-			_itemDataMap[ITEM.SHIRT] = pData.shirt;
-			_itemDataMap[ITEM.PANTS] = pData.pants;
-			_itemDataMap[ITEM.BELT] = pData.belt;
-			_itemDataMap[ITEM.GLOVES] = pData.gloves;
-			_itemDataMap[ITEM.SHOES] = pData.shoes;
-			_itemDataMap[ITEM.BAG] = pData.bag;
-			_itemDataMap[ITEM.OBJECT] = pData.object;
-			_itemDataMap[ITEM.POSE] = pData.pose;
+			_itemDataMap[ItemType.SKIN] = pData.skin;
+			_itemDataMap[ItemType.FACE] = pData.face;
+			_itemDataMap[ItemType.HAIR] = pData.hair;
+			_itemDataMap[ItemType.BEARD] = pData.beard;
+			_itemDataMap[ItemType.HEAD] = pData.head;
+			_itemDataMap[ItemType.MASK] = pData.mask;
+			_itemDataMap[ItemType.SHIRT] = pData.shirt;
+			_itemDataMap[ItemType.PANTS] = pData.pants;
+			_itemDataMap[ItemType.BELT] = pData.belt;
+			_itemDataMap[ItemType.GLOVES] = pData.gloves;
+			_itemDataMap[ItemType.SHOES] = pData.shoes;
+			_itemDataMap[ItemType.BAG] = pData.bag;
+			_itemDataMap[ItemType.OBJECT] = pData.object;
+			_itemDataMap[ItemType.POSE] = pData.pose;
 
 			if(pData.params) parseParams(pData.params);
 
@@ -61,32 +61,31 @@ package app.world.elements
 		public function updatePose(pScale:Number=-1) {
 			var tScale = pScale;
 			if(outfit != null) { tScale = outfit.scaleX; removeChild(outfit); }
-			outfit = addChild(new Pose(getItemData(ITEM.POSE) as PoseData)) as Pose;
+			outfit = addChild(new Pose(getItemData(ItemType.POSE) as PoseData)) as Pose;
 			outfit.scaleX = outfit.scaleY = tScale;
 			// Don't let the pose eat mouse input
 			outfit.mouseChildren = false;
 			outfit.mouseEnabled = false;
 
-			outfit.apply({
+			outfit.apply(new <ItemData>[
+					getItemData(ItemType.SKIN),
+					getItemData(ItemType.FACE),
+					getItemData(ItemType.HAIR),
+					getItemData(ItemType.BEARD),
+					getItemData(ItemType.HEAD),
+					getItemData(ItemType.MASK),
+					getItemData(ItemType.SHIRT),
+					getItemData(ItemType.PANTS),
+					getItemData(ItemType.BELT),
+					getItemData(ItemType.GLOVES),
+					getItemData(ItemType.SHOES),
+					getItemData(ItemType.BAG),
+					getItemData(ItemType.OBJECT)
+				], {
 				skinColor:GameAssets.skinColor,
 				hairColor:GameAssets.hairColor,
 				secondaryColor:GameAssets.secondaryColor,
-				tornStates:GameAssets.tornStates,
-				items:[
-					getItemData(ITEM.SKIN),
-					getItemData(ITEM.FACE),
-					getItemData(ITEM.HAIR),
-					getItemData(ITEM.BEARD),
-					getItemData(ITEM.HEAD),
-					getItemData(ITEM.MASK),
-					getItemData(ITEM.SHIRT),
-					getItemData(ITEM.PANTS),
-					getItemData(ITEM.BELT),
-					getItemData(ITEM.GLOVES),
-					getItemData(ITEM.SHOES),
-					getItemData(ITEM.BAG),
-					getItemData(ITEM.OBJECT)
-				]
+				tornStates:GameAssets.tornStates
 			});
 			if(animatePose) outfit.play(); else outfit.stopAtLastFrame();
 		}
@@ -99,28 +98,28 @@ package app.world.elements
 			if(pParams.sk) { GameAssets.skinColor = uint("0x"+pParams.sk); }
 			if(pParams.oc) { GameAssets.secondaryColor = uint("0x"+pParams.oc); }
 			
-			GameAssets.tornStates[ITEM.SHIRT] = pParams.t_t == "1";
-			GameAssets.tornStates[ITEM.PANTS] = pParams.b_t == "1";
+			GameAssets.tornStates[ItemType.SHIRT] = pParams.t_t == "1";
+			GameAssets.tornStates[ItemType.PANTS] = pParams.b_t == "1";
 
-			_setParamToType(pParams, ITEM.SKIN, "s", false);
-			_setParamToType(pParams, ITEM.HAIR, "d");
-			_setParamToType(pParams, ITEM.BEARD, "fh");
-			_setParamToType(pParams, ITEM.FACE, "fc");
-			_setParamToType(pParams, ITEM.HEAD, "h");
-			_setParamToType(pParams, ITEM.MASK, "m");
-			_setParamToType(pParams, ITEM.SHIRT, "t");
-			_setParamToType(pParams, ITEM.PANTS, "b");
-			_setParamToType(pParams, ITEM.BELT, "bt");
-			_setParamToType(pParams, ITEM.GLOVES, "g");
-			_setParamToType(pParams, ITEM.SHOES, "f");
-			_setParamToType(pParams, ITEM.BAG, "bg");
-			_setParamToType(pParams, ITEM.OBJECT, "o");
-			_setParamToType(pParams, ITEM.POSE, "p", false);
+			_setParamToType(pParams, ItemType.SKIN, "s", false);
+			_setParamToType(pParams, ItemType.HAIR, "d");
+			_setParamToType(pParams, ItemType.BEARD, "fh");
+			_setParamToType(pParams, ItemType.FACE, "fc");
+			_setParamToType(pParams, ItemType.HEAD, "h");
+			_setParamToType(pParams, ItemType.MASK, "m");
+			_setParamToType(pParams, ItemType.SHIRT, "t");
+			_setParamToType(pParams, ItemType.PANTS, "b");
+			_setParamToType(pParams, ItemType.BELT, "bt");
+			_setParamToType(pParams, ItemType.GLOVES, "g");
+			_setParamToType(pParams, ItemType.SHOES, "f");
+			_setParamToType(pParams, ItemType.BAG, "bg");
+			_setParamToType(pParams, ItemType.OBJECT, "o");
+			_setParamToType(pParams, ItemType.POSE, "p", false);
 			
-			if(pParams.sex) { GameAssets.sex = pParams.sex == SEX.MALE ? SEX.MALE : SEX.FEMALE; }
+			if(pParams.sex) { GameAssets.sex = pParams.sex == Sex.MALE.toString() ? Sex.MALE : Sex.FEMALE; }
 			/*if(pParams.ff) { GameAssets.facingForward = pParams.ff != "0"; }*/
 		}
-		private function _setParamToType(pParams:URLVariables, pType:String, pParam:String, pAllowNull:Boolean=true) {
+		private function _setParamToType(pParams:URLVariables, pType:ItemType, pParam:String, pAllowNull:Boolean=true) {
 			var tData:ItemData = null, tID = pParams[pParam];
 			if(tID != null && tID != "") {
 				var tColors = _splitOnUrlColorSeperator(tID); // Get a list of all the colors (ID is first); ex: 5;ffffff;abcdef;169742
@@ -147,45 +146,45 @@ package app.world.elements
 			tParms.sk = GameAssets.skinColor.toString(16);
 			tParms.oc = GameAssets.secondaryColor.toString(16);
 			
-			tParms.t_t = GameAssets.tornStates[ITEM.SHIRT] ? "1" : "0";
-			tParms.b_t = GameAssets.tornStates[ITEM.PANTS] ? "1" : "0";
+			tParms.t_t = GameAssets.tornStates[ItemType.SHIRT] ? "1" : "0";
+			tParms.b_t = GameAssets.tornStates[ItemType.PANTS] ? "1" : "0";
 			
 			var tData:ItemData;
-			_addParamToVariables(tParms, "s", ITEM.SKIN);
-			_addParamToVariables(tParms, "d", ITEM.HAIR);
-			_addParamToVariables(tParms, "fh", ITEM.BEARD);
-			_addParamToVariables(tParms, "h", ITEM.HEAD);
-			_addParamToVariables(tParms, "m", ITEM.MASK);
-			_addParamToVariables(tParms, "t", ITEM.SHIRT);
-			_addParamToVariables(tParms, "b", ITEM.PANTS);
-			_addParamToVariables(tParms, "bt", ITEM.BELT);
-			_addParamToVariables(tParms, "g", ITEM.GLOVES);
-			_addParamToVariables(tParms, "f", ITEM.SHOES);
-			_addParamToVariables(tParms, "bg", ITEM.BAG);
-			_addParamToVariables(tParms, "o", ITEM.OBJECT);
-			_addParamToVariables(tParms, "p", ITEM.POSE);
-			_addParamToVariables(tParms, "fc", ITEM.FACE);
-			/* tParms.s = (tData = getItemData(ITEM.SKIN)) ? tData.id : ''; */
-			/* tParms.d = (tData = getItemData(ITEM.HAIR)) ? tData.id : ''; */
-			/* tParms.fh = (tData = getItemData(ITEM.BEARD)) ? tData.id : ''; */
-			/* tParms.h = (tData = getItemData(ITEM.HEAD)) ? tData.id : ''; */
-			/* tParms.m = (tData = getItemData(ITEM.MASK)) ? tData.id : ''; */
-			/* tParms.t = (tData = getItemData(ITEM.SHIRT)) ? tData.id : ''; */
-			/* tParms.b = (tData = getItemData(ITEM.PANTS)) ? tData.id : ''; */
-			/* tParms.bt = (tData = getItemData(ITEM.BELT)) ? tData.id : ''; */
-			/* tParms.g = (tData = getItemData(ITEM.GLOVES)) ? tData.id : ''; */
-			/* tParms.f = (tData = getItemData(ITEM.SHOES)) ? tData.id : ''; */
-			/* tParms.bg = (tData = getItemData(ITEM.BAG)) ? tData.id : ''; */
-			/* tParms.o = (tData = getItemData(ITEM.OBJECT)) ? tData.id : ''; */
-			/* tParms.p = (tData = getItemData(ITEM.POSE)) ? tData.id : ''; */
-			/* tParms.fc = (tData = getItemData(ITEM.FACE)) ? tData.id : ''; */
+			_addParamToVariables(tParms, "s", ItemType.SKIN);
+			_addParamToVariables(tParms, "d", ItemType.HAIR);
+			_addParamToVariables(tParms, "fh", ItemType.BEARD);
+			_addParamToVariables(tParms, "h", ItemType.HEAD);
+			_addParamToVariables(tParms, "m", ItemType.MASK);
+			_addParamToVariables(tParms, "t", ItemType.SHIRT);
+			_addParamToVariables(tParms, "b", ItemType.PANTS);
+			_addParamToVariables(tParms, "bt", ItemType.BELT);
+			_addParamToVariables(tParms, "g", ItemType.GLOVES);
+			_addParamToVariables(tParms, "f", ItemType.SHOES);
+			_addParamToVariables(tParms, "bg", ItemType.BAG);
+			_addParamToVariables(tParms, "o", ItemType.OBJECT);
+			_addParamToVariables(tParms, "p", ItemType.POSE);
+			_addParamToVariables(tParms, "fc", ItemType.FACE);
+			/* tParms.s = (tData = getItemData(ItemType.SKIN)) ? tData.id : ''; */
+			/* tParms.d = (tData = getItemData(ItemType.HAIR)) ? tData.id : ''; */
+			/* tParms.fh = (tData = getItemData(ItemType.BEARD)) ? tData.id : ''; */
+			/* tParms.h = (tData = getItemData(ItemType.HEAD)) ? tData.id : ''; */
+			/* tParms.m = (tData = getItemData(ItemType.MASK)) ? tData.id : ''; */
+			/* tParms.t = (tData = getItemData(ItemType.SHIRT)) ? tData.id : ''; */
+			/* tParms.b = (tData = getItemData(ItemType.PANTS)) ? tData.id : ''; */
+			/* tParms.bt = (tData = getItemData(ItemType.BELT)) ? tData.id : ''; */
+			/* tParms.g = (tData = getItemData(ItemType.GLOVES)) ? tData.id : ''; */
+			/* tParms.f = (tData = getItemData(ItemType.SHOES)) ? tData.id : ''; */
+			/* tParms.bg = (tData = getItemData(ItemType.BAG)) ? tData.id : ''; */
+			/* tParms.o = (tData = getItemData(ItemType.OBJECT)) ? tData.id : ''; */
+			/* tParms.p = (tData = getItemData(ItemType.POSE)) ? tData.id : ''; */
+			/* tParms.fc = (tData = getItemData(ItemType.FACE)) ? tData.id : ''; */
 			
-			tParms.sex = GameAssets.sex;
+			tParms.sex = GameAssets.sex.toString();
 			/*tParms.ff = GameAssets.facingForward ? "1" : "0";*/
 
 			return tParms.toString().replace(/%5f/gi, "_").replace(/%3B/g, ";");
 		}
-		private function _addParamToVariables(pParams:URLVariables, pParam:String, pType:String) {
+		private function _addParamToVariables(pParams:URLVariables, pParam:String, pType:ItemType) {
 			var tData:ItemData = getItemData(pType);
 			if(tData) {
 				pParams[pParam] = tData.id;
@@ -202,7 +201,7 @@ package app.world.elements
 		/****************************
 		* Update Data
 		*****************************/
-		public function getItemData(pType:String) : ItemData {
+		public function getItemData(pType:ItemType) : ItemData {
 			return _itemDataMap[pType];
 		}
 
@@ -211,7 +210,7 @@ package app.world.elements
 			updatePose();
 		}
 
-		public function removeItem(pType:String) : void {
+		public function removeItem(pType:ItemType) : void {
 			_itemDataMap[pType] = null;
 			updatePose();
 		}

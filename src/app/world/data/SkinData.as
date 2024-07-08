@@ -11,11 +11,11 @@ package app.world.data
 		public var hair			: ItemData;
 
 		// Constructor
-		public function SkinData(pID:String, pSex:String) {
-			super({ id:pID, type:ITEM.SKIN, sex:pSex });
+		public function SkinData(pId:String, pSex:String) {
+			super(ItemType.SKIN, pId, { sex:pSex });
 
 			/*classMap = {};
-			var tSex = sex == SEX.FEMALE ? "_1" : "_2";
+			var tSex = sex == Sex.FEMALE ? "_1" : "_2";
 			var tPrefix = "M_"+id+"_";*/
 
 			// Hair may be replaced, so we don't want it in the classMap.
@@ -57,10 +57,10 @@ package app.world.data
 			classMap.P1		= Fewf.assets.getLoadedClass( tSk+"P1"+tSex );
 			classMap.P2		= Fewf.assets.getLoadedClass( tSk+"P2"+tSex );*/
 
-			/*if(sex) this.id += (sex == SEX.FEMALE ? "F" : "M");*/
+			/*if(sex) this.id += (sex == Sex.FEMALE ? "F" : "M");*/
 		}
 		
-		// pOptions = { ?facingForward:Boolean=true, ?sex:SEX }
+		// pOptions = { ?facingForward:Boolean=true, ?sex:Sex }
 		public override function getPart(pID:String, pOptions:Object=null) : Class {
 			var facingForward = GameAssets.facingForward;
 			var sex = GameAssets.sex;
@@ -68,7 +68,7 @@ package app.world.data
 				if(pOptions.facingForward) { facingForward = pOptions.facingForward; }
 				if(pOptions.sex) { sex = pOptions.sex; }
 			}
-			var tSex = sex == SEX.MALE ? "_2" : "_1";
+			var tSex = sex == Sex.MALE ? "_2" : "_1";
 			var tFacing = facingForward ? "" : "_dos";
 			
 			var tClass = Fewf.assets.getLoadedClass( "M_"+_assetID+"_"+pID+tFacing+tSex );

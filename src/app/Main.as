@@ -52,7 +52,13 @@ package app
 		
 		private function _onPreloadComplete() : void {
 			_config = Fewf.assets.getData("config");
-			_defaultLang = _getDefaultLang(_config.languages.default);
+			_defaultLang = _getDefaultLang(_config.languages["default"]);
+			
+			// Some slight analytics
+			Fewf.assets.lazyLoadImageUrlAsBitmap("https://fewfre.com/images/avatar.jpg?tag=dmdress-swf&pref="+encodeURIComponent(JSON.stringify({
+				source: Fewf.isExternallyLoaded ? 'app' : Fewf.isBrowserLoaded ? 'browser' : 'direct',
+				lang: _defaultLang
+			})));
 			
 			_startInitialLoad();
 		}
@@ -76,13 +82,15 @@ package app
 				Fewf.swfUrlBase+"resources/flags.swf"
 			];
 			
+			var tPack:Array, prefix:String;
 			if(Fewf.isExternallyLoaded && _config.packs_external) {
-				var tPack = _config.packs_external;
-				for(var i:int = 0; i < tPack.length; i++) { tPacks.push(tPack[i]); }
+				tPack = _config.packs_external;
+				prefix = "";
 			} else {
-				var tPack = _config.packs.parts.concat(_config.packs.outfit);
-				for(var i:int = 0; i < tPack.length; i++) { tPacks.push(Fewf.swfUrlBase+"resources/"+tPack[i]); }
+				tPack = _config.packs.parts.concat(_config.packs.outfit);
+				prefix = Fewf.swfUrlBase+"resources/";
 			}
+			for(var i:int = 0; i < tPack.length; i++) { tPacks.push(prefix+tPack[i]); }
 			
 			_load(tPacks, "f"+Fewf.assets.getData("config").cachebreaker, _onLoadComplete);
 		}

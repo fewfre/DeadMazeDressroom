@@ -2,18 +2,30 @@
 - Moved a bunch of changes from tfm dressroom to here
 	- Added copy to clipboard option
 	- Updated back button arrow to have a larger hit area
+	- Replaced bottom left github button/version text with a new button to a new "About" screen (where aforementioned content has been moved)
+		- Added a discord link button on new About screen
 	- [Code] Rewrote grid button logic such that only 1 grid is needed for additional buttons in same cell (such as delete button)
 	- [Code] Color Finder cropping code made a tiny bit clearer
 	- [Code] `ShopInfobar` rewrite (and renamed to `Infobar`)
 		- Moved grid management logic to it's own component
 		- Grid management button groups can now be hidden individually, instead of all or nothing
 		- Hovering over item preview on infobar now properly shows a pointer cursor (to make it more obvious it's clickable)
+	- [Code] Small `RoundedRectangle` revamp
 	- [Code] Rewrote `RoundedRectangle` to have width/height as normal params
 	- [Code] Renamed `TextBase` to `TextTranslated`, and then a new `TextBase` made (which `TextTranslated` inherits from)
 	- [Misc] Converted changelog into markdown
 	- [Code] Cleaned up `Toolbox` and made it `Event` driven
 	- [Code] `BitmapLoaderManager` updated to correctly use local images when not run in app
 	- [Code] Rewrote the `TabPane` (now `SidePane`) and scrollbox logic
+	- [Misc] Added some analytics (via tracking pixel) for user language + whether using app or browser
+	- [Code] Moved shop item pane code from `World` into `ShopCategoryPane`
+	- [Code] Various arrays converted to vectors
+	- [Code] `ITEM` renamed to `ItemType` and given proper enum typing
+	- [Code] `SEX` renamed to `Sex` and given proper enum typing
+	- [Code] `ImgurApi` moved to `com.fewfre.utils`
+	- [Code] `Grid` revamped and moved to `com.fewfre.display`
+	- [Code] Some components in `ui` moved to new `ui.common` folder
+	- [Code] Multiple `_drawLine` function replaced with new `GameAssets.createHorizontalRule()`
 
 
 ## V1.15b - 1 May 2023

@@ -26,10 +26,11 @@ package app.ui.panes
 	import flash.events.TextEvent;
 	import flash.text.TextFormat;
 	import app.world.elements.Character;
+	import app.data.ItemType;
 
 	public class ShopCategoryPane extends ButtonGridSidePane
 	{
-		private var _type: String;
+		private var _type: ItemType;
 		private var _itemDataVector: Vector.<ItemData>;
 		private var _character : Character;
 		public var selectedButtonIndex : int;
@@ -37,23 +38,23 @@ package app.ui.panes
 		private var _flagWaveInput: FancyInput;
 		public function get flagWaveInput() : FancyInput { return _flagWaveInput; }
 		
-		public function get type():String { return _type; }
+		public function get type():ItemType { return _type; }
 		
 		public static const ITEM_TOGGLED : String = 'ITEM_TOGGLED';
 		
 		// Constructor
-		public function ShopCategoryPane(pType:String, pCharacter:Character) {
+		public function ShopCategoryPane(pType:ItemType, pCharacter:Character) {
 			this._type = pType;
 			this._character = pCharacter;
 			var buttonPerRow:int = 6;
-			if(_type == ITEM.SKIN || _type == ITEM.POSE) { buttonPerRow = 4; }
+			if(_type == ItemType.SKIN || _type == ItemType.POSE) { buttonPerRow = 4; }
 			super(buttonPerRow);
 			
 			// don't reverse by default for DeadMaze
 			// grid.reverse();
 			
 			selectedButtonIndex = -1;
-			this.addInfoBar( new Infobar({ showEyeDropper:_type!=ITEM.POSE, showQualityButton:pType==ITEM.SHIRT||pType==ITEM.PANTS, gridManagement:true }) );
+			this.addInfoBar( new Infobar({ showEyeDropper:_type!=ItemType.POSE, showQualityButton:pType==ItemType.SHIRT||pType==ItemType.PANTS, gridManagement:true }) );
 			
 			// We don't want data added right away, add when pane opened
 			// _setupGrid(GameAssets.getItemDataListByType(_type));
@@ -109,7 +110,7 @@ package app.ui.panes
 		
 		public function chooseRandomItem() : void {
 			var tLength = grid.cells.length;
-			if(_type == ITEM.SKIN || _type == ITEM.FACE) { /* Don't select "invisible" */ tLength--; }
+			if(_type == ItemType.SKIN || _type == ItemType.FACE) { /* Don't select "invisible" */ tLength--; }
 			var cell:DisplayObject = grid.cells[ Math.floor(Math.random() * tLength) ];
 			var btn:PushButton = _findPushButtonInCell(cell);
 			btn.toggleOn();
@@ -126,7 +127,7 @@ package app.ui.panes
 
 			resetGrid();
 
-			var scale = _type == ITEM.SKIN || _type == ITEM.POSE ? 0.8 : 1;
+			var scale = _type == ItemType.SKIN || _type == ItemType.POSE ? 0.8 : 1;
 			for(var i:int = 0; i < pItemList.length; i++) {
 				if(pItemList[i].sex != GameAssets.sex && pItemList[i].sex != null) { continue; }
 				if(!GameAssets.showAll && pItemList[i].hasTag("extra")) { continue; }
@@ -157,8 +158,8 @@ package app.ui.panes
 		}
 		
 		private function _addGuitarFrameStepperIfNeeded(itemData:ItemData, cell:Sprite, parentButton:PushButton) : void {
-			if(_type != ITEM.OBJECT) { return; }
-			if(!GameAssets.getItemFromTypeID(ITEM.OBJECT, "41").matches(itemData)) { return; }
+			if(_type != ItemType.OBJECT) { return; }
+			if(!GameAssets.getItemFromTypeID(ItemType.OBJECT, "41").matches(itemData)) { return; }
 			
 			new ScaleButton({ x:50, y:12, obj:new $PlayButton(), obj_scale:0.5 }).appendTo(cell)
 			.on(ButtonBase.CLICK, function():void{
