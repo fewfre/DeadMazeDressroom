@@ -31,7 +31,7 @@ package app
 		}
 		
 		private function _start(...args:*) {
-			Fewf.init(stage, this.loaderInfo.parameters.swfUrlBase);
+			Fewf.init(stage, this.loaderInfo.parameters.swfUrlBase, 'deadmaze-dressroom');
 			
 			stage.align = StageAlign.TOP;
 			stage.scaleMode = StageScaleMode.SHOW_ALL;

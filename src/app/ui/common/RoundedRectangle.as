@@ -1,7 +1,8 @@
-package app.ui 
+package app.ui.common
 {
 	import flash.display.*;
 	import flash.geom.Matrix;
+	import app.data.ConstantsApp;
 	
 	public class RoundedRectangle extends Sprite
 	{
@@ -12,15 +13,16 @@ package app.ui
 		public var originY:Number;
 		
 		// Constructor
-		// pData = { x:Number, y:Number, width:Number, height:Number, ?origin:Number, ?originX:Number, ?originY:Number }
-		public function RoundedRectangle(pData:Object)
-		{
+		// pData = { x:Number, y:Number, ?origin:Number, ?originX:Number=0, ?originY:Number=0 }
+		public function RoundedRectangle(pWidth:Number, pHeight:Number, pData:Object=null) {
 			super();
+			pData = pData || {};
+
+			Width = pWidth;
+			Height = pHeight;
 			
 			this.x = pData.x;
 			this.y = pData.y;
-			Width = pData.width;
-			Height = pData.height;
 			originX = 0;
 			originY = 0;
 			if(pData.origin != null) {
@@ -30,10 +32,18 @@ package app.ui
 			if(pData.originX != null) { originX = pData.originX; }
 			if(pData.originY != null) { originY = pData.originY; }
 		}
+		public function setXY(pX:Number, pY:Number) : RoundedRectangle { x = pX; y = pY; return this; }
+		public function appendTo(target:Sprite): RoundedRectangle { target.addChild(this); return this; }
 		
-		public function draw(pColor:Number, pRadius:Number, pLineColor1:Number, pLineColor2:Number, pLineColor3:Number) : void {
+		/****************************
+		* Public
+		*****************************/
+		public function draw(pColor:uint, pRadius:Number, pLineColor1:uint, pLineColor2:int=-1, pLineColor3:int=-1) : RoundedRectangle {
 			var tX:Number = 0 - (Width * originX);
 			var tY:Number = 0 - (Height * originY);
+			
+			if(pLineColor2 == -1) pLineColor2 = pLineColor1;
+			if(pLineColor3 == -1) pLineColor3 = pLineColor1;
 			
 			graphics.clear();
 			graphics.moveTo(tX, tY);
@@ -45,9 +55,10 @@ package app.ui
 			graphics.beginFill(pColor);
 			graphics.drawRoundRect(tX+1, tY+1, this.Width - 3, this.Height - 3, pRadius, pRadius);
 			graphics.endFill();
+			return this;
 		}
 		
-		public function drawSimpleGradient(pColors:Array, pRadius:Number, pLineColor1:Number, pLineColor2:Number, pLineColor3:Number) : void {
+		public function drawSimpleGradient(pColors:Array, pRadius:Number, pLineColor1:uint, pLineColor2:uint, pLineColor3:uint) : RoundedRectangle {
 			var tX:Number = 0 - (Width * originX);
 			var tY:Number = 0 - (Height * originY);
 			
@@ -63,17 +74,17 @@ package app.ui
 			//var colors:Array = [0x00FF00, 0x000088];
 			var alphas:Array = [1, 1];
 			var ratios:Array = [0, 255];
-			var spreadMethod:String = SpreadMethod.PAD; 
-			var interp:String = InterpolationMethod.LINEAR_RGB; 
-			var focalPtRatio:Number = 0; 
+			var spreadMethod:String = SpreadMethod.PAD;
+			var interp:String = InterpolationMethod.LINEAR_RGB;
+			var focalPtRatio:Number = 0;
 			
-			var matrix:Matrix = new Matrix(); 
-			var boxWidth:Number = this.Width; 
-			var boxHeight:Number = this.Height; 
-			var boxRotation:Number = Math.PI/2; // 90° 
+			var matrix:Matrix = new Matrix();
+			var boxWidth:Number = this.Width;
+			var boxHeight:Number = this.Height;
+			var boxRotation:Number = Math.PI/2; // 90°
 			var tx:Number = tX;
 			var ty:Number = tY-(this.Height)*0.1;
-			matrix.createGradientBox(boxWidth, boxHeight, boxRotation, tx, ty); 
+			matrix.createGradientBox(boxWidth, boxHeight, boxRotation, tx, ty);
 			 
 			this.graphics.beginGradientFill(
 				type,
@@ -84,12 +95,21 @@ package app.ui
 				spreadMethod,
 				interp,
 				focalPtRatio
-			); 
+			);
 			//this.graphics.drawRect(0, 0, this.Width, this.Height);
 			
 			// Finish
 			graphics.drawRoundRect(tX+1, tY+1, this.Width - 3, this.Height - 3, pRadius, pRadius);
 			graphics.endFill();
+			return this;
+		}
+		
+		/****************************
+		* Convience methods
+		*****************************/
+		public function drawAsTray() : RoundedRectangle {
+			this.drawSimpleGradient(ConstantsApp.COLOR_TRAY_GRADIENT, 15, ConstantsApp.COLOR_TRAY_B_1, ConstantsApp.COLOR_TRAY_B_2, ConstantsApp.COLOR_TRAY_B_3);
+			return this;
 		}
 	}
 }

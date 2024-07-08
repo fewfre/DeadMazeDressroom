@@ -16,7 +16,7 @@ package app.world.data
 		public var classMap		: Object;
 		public var stopFrame	: int;
 		
-		public var tags			: Array; // Array<String>
+		public var tags			: Vector.<String>;
 		public var colorable	: Boolean;
 		public var colorLastFrame: Boolean;
 		public var color		: int;
@@ -34,7 +34,7 @@ package app.world.data
 			color = -1;
 			colorLastFrame = true;
 			colorable = _isColorable();
-			tags = [];
+			tags = new Vector.<String>();
 		}
 		
 		private function _isColorable() : Boolean {
@@ -57,6 +57,18 @@ package app.world.data
 				return part.$2 != null;
 			}
 			return false;
+		}
+		
+		public function matches(compare:ItemData) : Boolean {
+			return !!compare && type == compare.type && id == compare.id;
+		}
+		
+		public function uniqId() : String {
+			return this.type + '--' + this.id;
+		}
+		
+		public function hasTag(tag:String) : Boolean {
+			return tags.indexOf(tag) != -1
 		}
 		
 		// pOptions = { ?facingForward:Boolean=true, ?sex:SEX }

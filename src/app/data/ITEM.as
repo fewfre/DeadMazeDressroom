@@ -24,5 +24,9 @@ package app.data
 		public static const LAYERING_BY_LAYER	: Object = {
 			TS: [ SKIN, FACE, BEARD, HAIR, HEAD, SHIRT, MASK, PANTS, BELT, GLOVES, BAG, SHOES, OBJECT ]
 		};
+		
+		// Which ones have panes, and the order the tabs appear in
+		public static const TYPES_WITH_SHOP_PANES : Vector.<String> = new <String>[
+			OBJECT, SKIN, FACE, BEARD, HAIR, HEAD, SHIRT, PANTS, SHOES, MASK, BELT, GLOVES, BAG, POSE ];
 	}
 }

@@ -1,11 +1,11 @@
-package app.ui
+package app.ui.panes.colorpicker
 {
 	import flash.display.*;
 	import flash.events.*;
 	import flash.text.*;
 	import com.fewfre.display.TextBase;
 	import app.ui.buttons.*;
-	import app.ui.buttons.ScaleButton;
+	import flash.ui.Keyboard;
 	
 	public class ColorSwatch extends Sprite
 	{
@@ -28,19 +28,18 @@ package app.ui
 		private var _locked:Boolean = false;
 		
 		// Properties
-		public function get textValue():String { return _text.text; }
-		public function get intValue():uint { return int("0x" + _text.text); }
-		public function set value(pColor:uint) : void
+		public function get color():uint { return int("0x" + _text.text); }
+		public function set color(pColor:uint) : void
 		{
-			_swatch.graphics.clear();
-			_swatch.graphics.beginFill(pColor);
-			_swatch.graphics.drawRoundRect(1, 1, 18, 18, 5);
-			_swatch.graphics.endFill();
+			_drawSwatch(pColor);
 			_text.text = pColor.toString(16);
+			padCodeIfNeeded();
 		}
 		public function get historyButton():ScaleButton { return _historyBtn; }
 		public function get lockIcon():ScaleButton { return _lockIcon; }
 		public function get locked():Boolean { return _locked; }
+		
+		public function get swatch():Sprite { return _swatch; }
 		
 		// Constructor
 		public function ColorSwatch() {
@@ -48,15 +47,12 @@ package app.ui
 			_swatch = addChild(new Sprite()) as Sprite;
 			_swatch.x = 5;
 			_swatch.buttonMode = true;
-			_swatch.graphics.beginFill(0);
-			_swatch.graphics.drawRoundRect(1, 1, SWATCH_SIZE, SWATCH_SIZE, 5);
-			_swatch.graphics.endFill();
-			_swatch.addEventListener(flash.events.MouseEvent.CLICK, _onSwatchClicked);
+			_drawSwatch(0);
+			_swatch.addEventListener(MouseEvent.CLICK, _onSwatchClicked);
 			
 			_border = addChild(new Sprite()) as Sprite;
 			_border.x = 5;
-			_border.graphics.lineStyle(1.5, 0);
-			_border.graphics.drawRoundRect(0, 0, SWATCH_SIZE+2, SWATCH_SIZE+2, 5);
+			_drawBorder();
 			
 			_text = addChild(new TextField()) as TextField;
 			_text.defaultTextFormat = new TextFormat("Verdana", 11, 0xc2c2da);
@@ -68,14 +64,15 @@ package app.ui
 			_text.text = "000000";
 			_text.maxChars = 6;
 			_text.restrict = "0-9a-f";
-			_text.addEventListener(flash.events.KeyboardEvent.KEY_UP, _onTextInputKeyUp);
-			_text.addEventListener(flash.events.MouseEvent.CLICK, _onSwatchClicked);
+			_text.addEventListener(KeyboardEvent.KEY_UP, _onTextInputKeyUp);
+			_text.addEventListener(KeyboardEvent.KEY_DOWN, _onPreventTextInputEatingArrowKeys);
+			_text.addEventListener(MouseEvent.CLICK, _onSwatchClicked);
 			
 			_textBorder = addChild(new Sprite()) as Sprite;
 			_textBorder.x = _border.x + SWATCH_SIZE+2 + 6;
 			_drawTextBorder();
 			
-			var tHistoryHitbox = new Sprite(), hitboxSize = SWATCH_SIZE*1.65;
+			var tHistoryHitbox:Sprite = new Sprite(), hitboxSize:Number = SWATCH_SIZE*1.65;
 			tHistoryHitbox.graphics.beginFill(0, 0);
 			tHistoryHitbox.graphics.drawRect(-hitboxSize*0.5, -hitboxSize*0.5, hitboxSize, hitboxSize);
 			tHistoryHitbox.graphics.endFill();
@@ -83,7 +80,7 @@ package app.ui
 			_historyBtn = addChild(new ScaleButton({ x:100, y:SWATCH_SIZE*0.5+1.5, obj:tHistoryHitbox, obj_scale:0.5 })) as ScaleButton;
 			_historyBtn.visible = false;
 			
-			var tLockHitbox = new Sprite(), hitboxSize = SWATCH_SIZE*2;
+			var tLockHitbox:Sprite = new Sprite(); hitboxSize = SWATCH_SIZE*2;
 			tLockHitbox.graphics.beginFill(0, 0);
 			tLockHitbox.graphics.drawRect(-hitboxSize*0.5, -hitboxSize*0.5, hitboxSize, hitboxSize);
 			tLockHitbox.graphics.endFill();
@@ -92,12 +89,20 @@ package app.ui
 			unlock();
 		}
 
-		private function _onTextInputKeyUp(pEvent:KeyboardEvent) : void {
-			if(_text.text != "") {
-				dispatchEvent(new Event(USER_MODIFIED_TEXT));
-			}
-			if(_text.text != "" && pEvent.charCode == 13) {
+		private function _onTextInputKeyUp(e:KeyboardEvent) : void {
+			dispatchEvent(new Event(USER_MODIFIED_TEXT));
+			_drawSwatch(color);
+			
+			if(e.charCode == 13) {
 				dispatchEvent(new Event(ENTER_PRESSED));
+			}
+		}
+		private function _onPreventTextInputEatingArrowKeys(e:KeyboardEvent) : void {
+			// These key events are used to change between different swatches by parent
+			if(e.keyCode == Keyboard.UP || e.keyCode == Keyboard.DOWN) {
+				_text.stage.focus = null;
+				e.stopImmediatePropagation();
+				dispatchEvent(e.clone());
 			}
 		}
 		private function _onSwatchClicked(pEvent:MouseEvent) : void {
@@ -109,23 +114,32 @@ package app.ui
 			if(selected) { return; }
 			
 			selected = true;
-			_border.graphics.clear();
-			_border.graphics.lineStyle(0.5, 0x888888);
-			_border.graphics.drawRoundRect(-1.5, -1.5, SWATCH_SIZE+2+3, SWATCH_SIZE+2+3, 5);
-			_border.graphics.lineStyle(1.5, 0);
-			_border.graphics.drawRoundRect(0, 0, SWATCH_SIZE+2, SWATCH_SIZE+2, 5);
-			
+			_drawBorder();
 			_drawTextBorder();
 		}
 
 		public function unselect() : void
 		{
 			selected = false;
+			_drawBorder();
+			_drawTextBorder();
+		}
+		
+		private function _drawSwatch(pColor:uint) : void {
+			_swatch.graphics.clear();
+			_swatch.graphics.beginFill(pColor);
+			_swatch.graphics.drawRoundRect(1, 1, SWATCH_SIZE, SWATCH_SIZE, 5);
+			_swatch.graphics.endFill();
+		}
+		
+		private function _drawBorder() : void {
 			_border.graphics.clear();
+			if(selected) {
+				_border.graphics.lineStyle(0.5, 0x888888);
+				_border.graphics.drawRoundRect(-1.5, -1.5, SWATCH_SIZE+2+3, SWATCH_SIZE+2+3, 5);
+			}
 			_border.graphics.lineStyle(1.5, 0);
 			_border.graphics.drawRoundRect(0, 0, SWATCH_SIZE+2, SWATCH_SIZE+2, 5);
-			
-			_drawTextBorder();
 		}
 		
 		private function _drawTextBorder() : void {
@@ -138,11 +152,11 @@ package app.ui
 			_textBorder.graphics.drawRoundRect(0, 0, TEXT_WIDTH+2, SWATCH_SIZE+2, 5);
 		}
 		
-		public function showHistoryButton() {
+		public function showHistoryButton() : void {
 			_historyBtn.visible = true;
 		}
 		
-		public function lock() {
+		public function lock() : void {
 			_lockIcon.alpha = 0.7;
 			_lockIcon.setScale(0.65);
 			_lockIcon.x = _swatch.x + SWATCH_SIZE*0.5 + 0.5 + 1;
@@ -150,12 +164,18 @@ package app.ui
 			_locked = true;
 		}
 		
-		public function unlock() {
+		public function unlock() : void {
 			_lockIcon.alpha = 0.5;
 			_lockIcon.setScale(0.5);
 			_lockIcon.x = -1;
 			_lockIcon.y = SWATCH_SIZE*0.5;
 			_locked = false;
+		}
+		
+		public function padCodeIfNeeded() : void {
+			var s:String = _text.text, pad:int = 6;
+			for(;s.length<pad;s='0'+s);
+			_text.text = s;
 		}
 	}
 }

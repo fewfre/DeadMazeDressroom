@@ -3,6 +3,7 @@ package app.ui.panes
 	import app.data.*;
 	import app.ui.*;
 	import app.ui.buttons.*;
+	import app.ui.common.*;
 	import com.fewfre.display.*;
 	import com.fewfre.utils.*;
 	import flash.display.*;
@@ -14,17 +15,18 @@ package app.ui.panes
 	import flash.net.FileReference;
 	import flash.net.FileFilter;
 	import flash.net.URLRequest;
+	import app.ui.panes.base.SidePaneWithInfobar;
+	import app.ui.panes.infobar.Infobar;
 	
-	public class ColorFinderPane extends TabPane
+	public class ColorFinderPane extends SidePaneWithInfobar
 	{
 		// Constants
-		public static const EVENT_SWATCH_CHANGED	: String = "event_swatch_changed";
-		public static const EVENT_DEFAULT_CLICKED	: String = "event_default_clicked";
-		public static const EVENT_COLOR_PICKED		: String = "event_color_picked";
-		public static const EVENT_EXIT				: String = "event_exit";
+		public static const EVENT_ITEM_ICON_CLICKED : String = "event_item_icon_clicked";
 		
 		// Storage
 		private var _tray : MovieClip;
+		private var _scrollbox : FancyScrollbox;
+		
 		private var _stageBitmap : BitmapData;
 		private var _itemCont : MovieClip;
 		private var _itemDragDrop : MovieClip;
@@ -40,18 +42,22 @@ package app.ui.panes
 		private var _ignoreNextColorClick : Boolean = false;
 		private var _dragStartMouseX : Boolean;
 		private var _dragStartMouseY : Boolean;
+		private var _dragBounds : Rectangle;
 		
 		private const _bitmapData:BitmapData = new BitmapData(1, 1);
 		private const _matrix:Matrix = new Matrix();
 		private const _clipRect:Rectangle = new Rectangle(0, 0, 1, 1);
 		
 		// Constructor
-		public function ColorFinderPane(pData:Object)
-		{
+		public function ColorFinderPane(pData:Object) {
 			super();
-			this.addInfoBar( new ShopInfoBar({ showBackButton:true, showRefreshButton:false }) );
-			this.infoBar.colorWheel.addEventListener(MouseEvent.MOUSE_UP, _onBackClicked);
-			this.UpdatePane(false);
+			this.addInfoBar( new Infobar({ showBackButton:true }) )
+				.on(Infobar.BACK_CLICKED, _onBackClicked)
+				.on(Infobar.ITEM_PREVIEW_CLICKED, function(e){ dispatchEvent(new Event(EVENT_ITEM_ICON_CLICKED)); });
+			
+			// Scrollbox used for lazy cropping of dragged around item
+			_scrollbox = new FancyScrollbox(ConstantsApp.PANE_WIDTH, 390-60).setXY(5, 5+60);
+			addChild(_scrollbox);
 			
 			_tray = addChild(new MovieClip()) as MovieClip;
 			_tray.x = ConstantsApp.PANE_WIDTH * 0.5;
@@ -73,24 +79,29 @@ package app.ui.panes
 			// addItem (NOT addChild) adds this to the ScrollPane in the parent class
 			// we then also hijack the scrollpane and turn off the scrollbars
 			// this now lets the image be dragged around without it overflowing out of the container
-			addItem(_itemCont);
-			_scrollPane.horizontalScrollPolicy = "off";
-			_scrollPane.verticalScrollPolicy = "off";
+			_scrollbox.add(_itemCont);
+			_scrollbox.scrollPane.horizontalScrollPolicy = "off";
+			_scrollbox.scrollPane.verticalScrollPolicy = "off";
 			// Also steal the scrollpane's `contentBack` and size it to be full width/height
 			// so we can use it to detect scroll event
-			contentBack.graphics.clear();
-			contentBack.graphics.beginFill(0, 0);
-			contentBack.graphics.drawRect(0, 0, _scrollPane.width, _scrollPane.height);
-			contentBack.graphics.endFill();
+			_scrollbox.contentHitbox.graphics.clear();
+			_scrollbox.contentHitbox.graphics.beginFill(0, 0);
+			_scrollbox.contentHitbox.graphics.drawRect(0, 0, _scrollbox.scrollPane.width, _scrollbox.scrollPane.height);
+			_scrollbox.contentHitbox.graphics.endFill();
 			
+			var bPadding:Number = 8;
+			_dragBounds = new Rectangle(-_itemCont.x - _itemCont.parent.x + bPadding*0.5, -_itemCont.y - _itemCont.parent.y + bPadding*0.5, _scrollbox.scrollPane.width - bPadding, _scrollbox.scrollPane.height - bPadding);
 			_itemDragDrop = _itemCont.addChild(new MovieClip()) as MovieClip;
 			_itemDragDrop.buttonMode = true;
-			_itemDragDrop.addEventListener(MouseEvent.MOUSE_DOWN, function () {
+			_itemDragDrop.addEventListener(MouseEvent.MOUSE_DOWN, function (e:MouseEvent) {
 				_dragging = true;
 				_ignoreNextColorClick = false;
-				_itemDragDrop.startDrag();
+				var bounds:Rectangle = _dragBounds.clone();
+				bounds.x -= e.localX * _itemDragDrop.scaleX;
+				bounds.y -= e.localY * _itemDragDrop.scaleY;
+				_itemDragDrop.startDrag(false, bounds);
 			});
-			_itemDragDrop.addEventListener(MouseEvent.MOUSE_UP, function () { _dragging = false; _itemDragDrop.stopDrag(); });
+			Fewf.stage.addEventListener(MouseEvent.MOUSE_UP, function () { _dragging = false; _itemDragDrop.stopDrag(); });
 			
 			_item = _itemDragDrop.addChild(new MovieClip()) as MovieClip;
 			
@@ -103,9 +114,10 @@ package app.ui.panes
 				.setSliderParams(1, 5, 1)
 				.appendTo(_tray);
 			_scaleSlider.addEventListener(FancySlider.CHANGE, _onSliderChange);
+			
 			// Attach scroll event to back to detect scroll anywhere on pane
 			// and also attach to item since it ignores the other scroll event if mouse over it
-			this.contentBack.addEventListener(MouseEvent.MOUSE_WHEEL, _onMouseWheel);
+			_scrollbox.contentHitbox.addEventListener(MouseEvent.MOUSE_WHEEL, _onMouseWheel);
 			_itemCont.addEventListener(MouseEvent.MOUSE_WHEEL, _onMouseWheel);
 			
 			/********************
@@ -119,8 +131,8 @@ package app.ui.panes
 			*****************************/
 			var tTFWidth:Number = 65, tTFHeight:Number = 18, tTFPaddingX:Number = 5, tTFPaddingY:Number = 5;
 			// So much easier than doing it with those darn native text field options which have no padding.
-			var tTextBackground:RoundedRectangle = _tray.addChild(new RoundedRectangle({ x:15, y:170, width:tTFWidth+tTFPaddingX*2, height:tTFHeight+tTFPaddingY*2, origin:0.5 })) as RoundedRectangle;
-			tTextBackground.draw(0xFFFFFF, 7, 0x444444, 0x444444, 0x444444);
+			var tTextBackground:RoundedRectangle = new RoundedRectangle(tTFWidth+tTFPaddingX*2, tTFHeight+tTFPaddingY*2, { origin:0.5 })
+				.setXY(15, 170).appendTo(_tray).draw(0xFFFFFF, 7, 0x444444);
 			
 			_text = tTextBackground.addChild(new TextField()) as TextField;
 			_text.type = TextFieldType.DYNAMIC;
@@ -132,17 +144,12 @@ package app.ui.panes
 			_text.addEventListener(MouseEvent.CLICK, function(pEvent:Event){ _text.setSelection(0, _text.text.length); });
 			
 			var tSize = tTextBackground.Height;
-			_textColorBox = _tray.addChild(new RoundedRectangle({
-				x:tTextBackground.x - (tTextBackground.Width*0.5) - (tSize*0.5) - 5,
-				y:tTextBackground.y, width: tSize, height: tSize, origin:0.5
-			})) as RoundedRectangle;
+			_textColorBox = new RoundedRectangle(tSize, tSize, { origin:0.5 }).appendTo(_tray)
+				.setXY(tTextBackground.x - (tTextBackground.Width*0.5) - (tSize*0.5) - 5, tTextBackground.y);
 			
-			_hoverColorBox = _tray.addChild(new RoundedRectangle({
-				/*x:ConstantsApp.PANE_WIDTH*0.5-5, y:-122,*/ width:35, height:35, originX:0, originY:1
-			})) as RoundedRectangle;
+			_hoverColorBox = new RoundedRectangle(35, 35, { originX:0, originY:1 }).appendTo(_tray);//.setXY(ConstantsApp.PANE_WIDTH*0.5-5, -122);
 			_hoverColorBox.visible = false;
-			/*var tHoverTextBackground = _hoverColorBox.addChild(new RoundedRectangle({ x:-_hoverColorBox.Width*0.5, y:_hoverColorBox.Height+20,
-				width:_hoverColorBox.Width+8, height:20, originX:0.5, originY:1 }));
+			/*var tHoverTextBackground:RoundedRectangle = new RoundedRectangle(_hoverColorBox.Width+8, 20, { originX:0.5, originY:1 }).setXY(-_hoverColorBox.Width*0.5, _hoverColorBox.Height+20).appendTo(_hoverColorBox);
 			tHoverTextBackground.draw(0xFFFFFF, 5, 0xDDDDDD, 0xDDDDDD, 0xDDDDDD);
 			tHoverTextBackground.alpha = 0.75;
 			_hoverText = _hoverColorBox.addChild(new TextField());
@@ -166,7 +173,7 @@ package app.ui.panes
 			fileRef.addEventListener(Event.SELECT, function(){ fileRef.load(); });
 			fileRef.addEventListener(Event.COMPLETE, _onFileSelect);
 			
-			var selectImageBtn = new ScaleButton({ x:ConstantsApp.PANE_WIDTH*0.5 - 30, y: -_tray.y + 60 + 20, obj:new $Folder(), obj_scale:1 });
+			var selectImageBtn = new ScaleButton({ x:ConstantsApp.PANE_WIDTH*0.5 - 25, y: -_tray.y + 60 + 25, obj:new $Folder(), obj_scale:1 });
 			selectImageBtn.addEventListener(ButtonBase.CLICK, function(){
 				fileRef.browse([new FileFilter("Images", "*.jpg;*.jpeg;*.gif;*.png")]);
 			});
@@ -235,21 +242,21 @@ package app.ui.panes
 		private function _setColorText(pColor:int) : void {
 			if(pColor != -1) {
 				_text.text = FewfUtils.lpad(pColor.toString(16).toUpperCase(), 6, "0");
-				_textColorBox.draw(pColor, 7, 0x444444, 0x444444, 0x444444);
+				_textColorBox.draw(pColor, 7, 0x444444);
 				_recentColorsDisplay.addColor(pColor);
 			} else {
 				_text.text = "000000";
-				_textColorBox.draw(0x000000, 7, 0x444444, 0x444444, 0x444444);
+				_textColorBox.draw(0x000000, 7, 0x444444);
 			}
 		}
 		
 		private function _setHoverColor(pColor:int) : void {
 			if(pColor != -1) {
 				/*_hoverText.text = FewfUtils.lpad(pColor.toString(16).toUpperCase(), 6, "0");*/
-				_hoverColorBox.draw(pColor, 7, 0x444444, 0x444444, 0x444444);
+				_hoverColorBox.draw(pColor, 7, 0x444444);
 			} else {
 				/*_hoverText.text = "000000";*/
-				_hoverColorBox.draw(0x000000, 7, 0x444444, 0x444444, 0x444444);
+				_hoverColorBox.draw(0x000000, 7, 0x444444);
 			}
 		}
 		
@@ -294,17 +301,24 @@ package app.ui.panes
 		}
 		
 		private function _onBackClicked(e:Event) : void {
-			dispatchEvent(new Event(EVENT_EXIT));
+			dispatchEvent(new Event(Event.CLOSE));
+		}
+		
+		private function _clampCoordsToSafeArea() : void {
+			_itemDragDrop.x = Math.max(_dragBounds.x, Math.min(_dragBounds.right, _itemDragDrop.x));
+			_itemDragDrop.y = Math.max(_dragBounds.y, Math.min(_dragBounds.bottom, _itemDragDrop.y));
 		}
 		
 		private function _onSliderChange(e:Event) : void {
 			_itemDragDrop.scaleX = _itemDragDrop.scaleY = _scaleSlider.value;
 			_centerImageOrigin(_item);
+			_clampCoordsToSafeArea();
 		}
 
 		private function _onMouseWheel(pEvent:MouseEvent) : void {
 			_scaleSlider.updateViaMouseWheelDelta(pEvent.delta);
 			_itemDragDrop.scaleX = _itemDragDrop.scaleY = _scaleSlider.value;
+			_clampCoordsToSafeArea();
 		}
 		
 		private function _onFileSelect(e:Event) : void {

@@ -1,10 +1,28 @@
-== V1.15b - 1 May 2023 ==
+## V1.16 - 7 July 2024
+- Moved a bunch of changes from tfm dressroom to here
+	- Added copy to clipboard option
+	- Updated back button arrow to have a larger hit area
+	- [Code] Rewrote grid button logic such that only 1 grid is needed for additional buttons in same cell (such as delete button)
+	- [Code] Color Finder cropping code made a tiny bit clearer
+	- [Code] `ShopInfobar` rewrite (and renamed to `Infobar`)
+		- Moved grid management logic to it's own component
+		- Grid management button groups can now be hidden individually, instead of all or nothing
+		- Hovering over item preview on infobar now properly shows a pointer cursor (to make it more obvious it's clickable)
+	- [Code] Rewrote `RoundedRectangle` to have width/height as normal params
+	- [Code] Renamed `TextBase` to `TextTranslated`, and then a new `TextBase` made (which `TextTranslated` inherits from)
+	- [Misc] Converted changelog into markdown
+	- [Code] Cleaned up `Toolbox` and made it `Event` driven
+	- [Code] `BitmapLoaderManager` updated to correctly use local images when not run in app
+	- [Code] Rewrote the `TabPane` (now `SidePane`) and scrollbox logic
+
+
+## V1.15b - 1 May 2023
 - [Bug] Clicking scale slider will no longer prevent left/right arrow keys from traversing item grid.
 - Scale slider code polished - track hitbox increased & clicking anywhere on track now starts drag.
 - (6 Dec 2023) Fixed bug causing color history to stay in delete mode when it shouldn't.
 
 
-== V1.15 - 6 October 2022 ==
+## V1.15 - 6 October 2022
 - Added randomize color button to item color picker page
 - Undo button added on color picker - clicking it will show colors previously used on the specific color swatch for that specific item.
 - Updated color buttons to look nicer
@@ -18,87 +36,88 @@
 - Recent colors now remembered across dressrooms in the app
 
 
-== V1.14c - 1 May 2021 ==
+## V1.14c - 1 May 2021
 - Randomize button icon changed to dice
 - Lock icon on infobar now disables randomize button to make it's purpose clearer
 
-== V1.14b - 3 February 2021 ==
+
+## V1.14b - 3 February 2021
 - Added missing emotes
 
 
-== V1.14 - 6 January 2021 ==
+## V1.14 - 6 January 2021
 - Added support for being externally loaded by AIR app
 
 
-== V1.13 - 1 January 2019 ==
+## V1.13 - 1 January 2019
 - Updating share links to use ";" instead of "," to better support atelier801 forum
 
 
-== V1.12 - 25 October 2018 ==
+## V1.12 - 25 October 2018
 - Move waitperson pants to "extras" tab since no longer in the game apparently
 - Head items that now have a shirt comment show the shirt part in the button icon
 - Fixed layer ordering, where head item parts on the shirt layer need to be -under- the shirt
 
 
-== V1.11c - 10 October 2018 ==
+## V1.11c - 10 October 2018
 - Added additional clothing dye color
 - Fixed display bug when number of colors on last dye row was not 3
 
 
-== V1.11b - 16 July 2018 ==
+## V1.11b - 16 July 2018
 - Translation ro updated by Sky
 
 
-== V1.11 - 24 June 2018 ==
+## V1.11 - 24 June 2018
 - Missing hair colors added
 - All config colors set to actual in-game values (was still using old colors based on a jpg image of an alpha preview image)
 - Selecting a config color now updates the color picker button (to allow easily tweaking colors on the fly)
 
 
-== V1.10 - 6 June 2018 ==
+## V1.10 - 6 June 2018
 - Async loading added, that preserves load order.
 - [Bug] Items that used underwear coloring didn't show the dye feature.
 
 
-== V1.9b - 8 April 2018 ==
+## V1.9b - 8 April 2018
 - Clothing coloring now lists default dye colors.
 - Various code tweaks
 
 
-== V1.9 - 5 April 2018 ==
+## V1.9 - 5 April 2018
 - Clothing can now be colored.
 
 
-== V1.8 - 10 February 2018 ==
+## V1.8 - 10 February 2018
 - Added a "trash" button to reset look back to default
 - Randomized look button now has a chance to not use an item for each category (fairly high: 35%; pose: 50%; shirt/pants/shoes/weapon: 0%)
 - Make init swf parsing slightly async
 
 
-== V1.7b - 31 January 2018 ==
+## V1.7b - 31 January 2018
 - Fixed bug preventing sex-specific masks showing up.
 - Fixed it so scarves show up as masks. Due to these being a different type behind the scenes, their id is marked as "nk" for "neck".
 - Fixed mask layering order so it appears over shirt.
 
 
-== V1.7 - 23 January 2018 ==
+## V1.7 - 23 January 2018
 - Added new "Belts" type
 - Added "invisible" option for face (for use in mannequin pose)
 - New poses added
 - A few new objects added
 
 
-== V1.6b - 15 January 2018 ==
+## V1.6b - 15 January 2018
 - Adding male/female hair support
 - Grouping survivor items tabs together below normal clothing.
 - Added some cache breaking
 
 
-== V1.6 - 10 January 2018 ==
+## V1.6 - 10 January 2018
 - Shirts and pants now have a "quality" toggle to show torn states.
 
 
-== V1.5 - 6 January 2018 ==
+## V1.5 - 6 January 2018
 - Renamed "Costumes" to "GameAssets" and changed it from a singleton to a static class.
 - Fixed bugs that made objects that are parts of poses not show up.
 - Updated animations (many renamed)
@@ -109,7 +128,7 @@
 - When sex is switched, items will now change to their male/female counterpart; if there is none, it will be removed.
 
 
-== V1.4 - 3 September 2017 ==
+## V1.4 - 3 September 2017
 - Found clothes resource links and updated assets to use them (as well as created an update script)
 - When hair / skin / secondary color is updated, these changes are now reflected on hair/beard/skin/pose tabs.
 - [Bug] Once you selected a custom color on config, you couldn't select new custom color without clicking a default color first.
@@ -144,7 +163,7 @@
 		- Resources are no longer cached.
 
 
-== V1.3 - 3 July 2017 ==
+## V1.3 - 3 July 2017
 - Added new items / poses
 	- Including new item type, "Beards"
 - Sex-specific objects now show/hide based on sex chosen
@@ -157,14 +176,14 @@
 	- Typing in a hex code will update the value without the need to press enter first.
 
 
-== V1.2 - 3 July 2017 ==
+## V1.2 - 3 July 2017
 - Renaming "dressroom" folder to "app"
 - Moving Main from ./src to ./src/app
 - Made Costumes a singleton, made Main.costumes non-static and private, and replace all instances of it to Costumes.instance.
 - Renamed some root level files to more common naming; changelog -> CHANGELOG and todo.txt -> TODO
 
 
-== V1.1 - 24 February 2017 ==
+## V1.1 - 24 February 2017
 - Added alpha 4.6 asset changes
 	- Had to update some code to work with some assets now having a mix of sex-specific and non sex-specific parts.
 - Removing "facing" option (no longer seems to be in game)
@@ -172,7 +191,7 @@
 - Re-added "head item" option (since V4.6 assets include them again)
 
 
-== V1.0 - 14 January 2017 ==
+## V1.0 - 14 January 2017
 - Using version numbers
 - Added localization support.
 	- Uses json file.

@@ -64,6 +64,10 @@ package app.data
 			return sex == SEX.MALE ? "H" : "F"; // Default to female
 		}*/
 
+		public static function get defaultSkin() : ItemData { return skins[defaultSkinIndex]; }
+		public static function get defaultPose() : ItemData { return poses[defaultPoseIndex]; }
+		public static function get defaultFace() : ItemData { return faces[defaultFaceIndex]; }
+
 		public static function init(pCallback:Function) : void {
 			// hairColors = [ 0x211e24, 0xdcb33a, 0xe98537, 0xe0ae5b, 0xf9d28a, 0xc16333, 0xe98537, 0xab6e37, 0x89541c, 0xf5d3ae ];
 			hairColors = [
@@ -107,6 +111,7 @@ package app.data
 				function(){
 					faces = _setupCostumeArray({ base:"M_5", type:ITEM.FACE, pad:3, after:"_", map:tSkinParts, sex:true, numToCheck:_CHECK_MISC });
 					faces.push( new ItemData({ type:ITEM.FACE, classMap:{} }) );
+					faces[faces.length-1].tags.push('invisible');
 				},
 				function(){
 					beards = _setupCostumeArray({ base:"M_7", type:ITEM.BEARD, pad:3, after:"_", map:tSkinParts, sex:true, numToCheck:_CHECK_MISC });
@@ -143,6 +148,7 @@ package app.data
 					}
 					skins.push( new SkinData( "inv", null ) );
 					skins[skins.length-1].classMap = {};
+					skins[skins.length-1].tags.push('invisible');
 					skins[skins.length-1].hair = new ItemData({ type:ITEM.HAIR, classMap:{} });
 					/*defaultSkinIndex = 0;//FewfUtils.getIndexFromArrayWithKeyVal(skins, "id", ConstantsApp.DEFAULT_SKIN_ID);*/
 					//defaultSkinIndexMale = 1;//FewfUtils.getIndexFromArrayWithKeyVal(skins, "id", ConstantsApp.DEFAULT_SKIN_ID);
@@ -527,9 +533,22 @@ package app.data
 			}
 			return null;
 		}
+		
+		public static function getItemDataListByType(pType:String) : Vector.<ItemData> {
+			var myArray:Array = getArrayByType(pType);
+			var myVector:Vector.<ItemData> = new Vector.<ItemData>();
+			for each (var itemData:ItemData in myArray) {
+				myVector.push(itemData);
+			}
+			return myVector;
+		}
 
 		public static function getItemFromTypeID(pType:String, pID:String) : ItemData {
 			return FewfUtils.getFromArrayWithKeyVal(getArrayByType(pType), "id", pID);
+		}
+
+		public static function doesItemDataMatchDefaultOfTypeIfAny(pItemData:ItemData) : Boolean {
+			return GameAssets.defaultSkin.matches(pItemData) || GameAssets.defaultPose.matches(pItemData) || GameAssets.defaultFace.matches(pItemData);
 		}
 
 		/****************************
@@ -716,6 +735,23 @@ package app.data
 			tPose.stopAtLastFrame();
 			
 			return tPose;
+		}
+		
+		/****************************
+		* Misc
+		*****************************/
+		public static function createHorizontalRule(pX:Number, pY:Number, pWidth:Number) : Sprite {
+			var tLine:Sprite = new Sprite(); tLine.x = pX; tLine.y = pY;
+			
+			tLine.graphics.lineStyle(1, 0x11181c, 1, true);
+			tLine.graphics.moveTo(0, 0);
+			tLine.graphics.lineTo(pWidth, 0);
+			
+			tLine.graphics.lineStyle(1, 0x608599, 1, true);
+			tLine.graphics.moveTo(0, 1);
+			tLine.graphics.lineTo(pWidth, 1);
+			
+			return tLine;
 		}
 	}
 }

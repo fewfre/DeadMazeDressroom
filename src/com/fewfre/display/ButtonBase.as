@@ -1,9 +1,10 @@
 package com.fewfre.display
 {
+	import flash.display.Sprite;
+	import flash.events.MouseEvent;
+	import flash.events.Event;
 	import com.fewfre.events.FewfEvent;
-	import flash.display.*;
-	import flash.events.*;
-	
+
 	public class ButtonBase extends Sprite
 	{
 		// Button State
@@ -26,6 +27,7 @@ package com.fewfre.display
 		
 		// Properties
 		public function get data():Object { return _returnData; }
+		public function get enabled():Boolean { return _flagEnabled; }
 		
 		// Constructor
 		// pArgs = { x:Number, y:Number, ?data:* }
@@ -47,6 +49,10 @@ package com.fewfre.display
 			
 			_addEventListeners();
 		}
+		public function setXY(pX:Number, pY:Number) : ButtonBase { x = pX; y = pY; return this; }
+		public function appendTo(target:Sprite): ButtonBase { target.addChild(this); return this; }
+		public function on(type:String, listener:Function, useCapture:Boolean = false): ButtonBase { this.addEventListener(type, listener, useCapture); return this; }
+		public function off(type:String, listener:Function, useCapture:Boolean = false): ButtonBase { this.removeEventListener(type, listener, useCapture); return this; }
 		
 		/****************************
 		* Events
@@ -132,13 +138,19 @@ package com.fewfre.display
 			return this;
 		}
 
-		/**********************************************************
-		@description
-		 **********************************************************/
 		public function disable() : ButtonBase {
 			_flagEnabled = false;
 			_renderDisabled();
 			return this;
+		}
+		
+		/**
+		 * If nothing or "null" is passed in, it will flip the current state - otherwise treats it as a boolean and sets
+		 * current enabled state based on that
+		 */
+		public function enableToggle(pOn:Object=null) : ButtonBase {
+			var newStateOn = pOn == null ? !enabled : Boolean(pOn);
+			return newStateOn ? enable() : disable();
 		}
 	}
 }

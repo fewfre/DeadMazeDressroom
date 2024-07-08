@@ -1,30 +1,27 @@
 package app.ui.screens
 {
-	import com.fewfre.display.*;
-	import com.adobe.images.*;
-	import app.data.*;
-	import app.ui.*;
-	import app.ui.buttons.*;
-	import app.world.data.*;
-	import flash.display.*;
-	import flash.events.*;
-	import flash.geom.*;
-	import flash.net.*;
-	import flash.text.*;
-	import flash.system.System;
+	import app.ui.buttons.ScaleButton;
+	import app.ui.buttons.SpriteButton;
+	import app.ui.common.RoundedRectangle;
+	import com.fewfre.display.ButtonBase;
+	import com.fewfre.display.TextTranslated;
+	import fl.transitions.easing.Elastic;
 	import fl.transitions.Tween;
-	import fl.transitions.easing.*;
+	import flash.display.Sprite;
+	import flash.events.Event;
+	import flash.events.MouseEvent;
+	import flash.system.System;
+	import flash.text.TextField;
+	import flash.text.TextFieldType;
 	
-	public class LinkTray extends MovieClip
+	public class LinkTray extends Sprite
 	{
-		// Constants
-		public static const CLOSE : String= "close_link_tray";
-		
 		// Storage
-		private var _bg				: RoundedRectangle;
-		public var _text			: TextField;
-		public var _textCopiedMessage: TextBase;
-		public var _textCopyTween	: Tween;
+		private var _bg					: RoundedRectangle;
+		
+		public var _text				: TextField;
+		public var _textCopiedMessage	: TextTranslated;
+		public var _textCopyTween		: Tween;
 		
 		// Constructor
 		// pData = { x:Number, y:Number }
@@ -35,7 +32,7 @@ package app.ui.screens
 			/****************************
 			* Click Tray
 			*****************************/
-			var tClickTray = addChild(new Sprite());
+			var tClickTray:Sprite = addChild(new Sprite()) as Sprite;
 			tClickTray.x = -5000;
 			tClickTray.y = -5000;
 			tClickTray.graphics.beginFill(0x000000, 0.2);
@@ -47,54 +44,30 @@ package app.ui.screens
 			* Background
 			*****************************/
 			var tWidth:Number = 500, tHeight:Number = 200;
-			_bg = addChild(new RoundedRectangle({ x:0, y:0, width:tWidth, height:tHeight, origin:0.5 })) as RoundedRectangle;
-			_bg.drawSimpleGradient(ConstantsApp.COLOR_TRAY_GRADIENT, 15, ConstantsApp.COLOR_TRAY_B_1, ConstantsApp.COLOR_TRAY_B_2, ConstantsApp.COLOR_TRAY_B_3);
-			
+			_bg = new RoundedRectangle(tWidth, tHeight, { origin:0.5 }).appendTo(this).drawAsTray();
+
 			/****************************
 			* Header
 			*****************************/
-			addChild(new TextBase({ text:"share_header", size:25, y:-63 }));
+			new TextTranslated("share_header", { size:25, y:-63 }).appendToT(this);
 			
 			/****************************
 			* Selectable text field
 			*****************************/
-			var tTFWidth:Number = tWidth-50, tTFHeight:Number = 18, tTFPaddingX:Number = 5, tTFPaddingY:Number = 5;
-			// So much easier than doing it with those darn native text field options which have no padding.
-			var tTextBackground:RoundedRectangle = addChild(new RoundedRectangle({ x:0, y:0, width:tTFWidth+tTFPaddingX*2, height:tTFHeight+tTFPaddingY*2, origin:0.5 })) as RoundedRectangle;
-			tTextBackground.draw(0xFFFFFF, 7, 0x444444, 0x444444, 0x444444);
-			
-			_text = tTextBackground.addChild(new TextField()) as TextField;
-			_text.type = TextFieldType.DYNAMIC;
-			_text.multiline = false;
-			_text.width = tTFWidth;
-			_text.height = tTFHeight;
-			_text.x = tTFPaddingX - tTextBackground.Width*0.5;
-			_text.y = tTFPaddingY - tTextBackground.Height*0.5;
-			_text.addEventListener(MouseEvent.CLICK, function(pEvent:Event){ _text.setSelection(0, _text.text.length); });
+			_text = _newCopyInput({ x:0, y:0 }, this);
 			
 			/****************************
 			* Copy Button and message
 			*****************************/
-			var tCopyButton:SpriteButton = addChild(new SpriteButton({ x:tWidth*0.5-75+25, y:52, text:"share_copy", width:50, height:25, origin:0.5 })) as SpriteButton;
-			tCopyButton.addEventListener(ButtonBase.CLICK, function(){ _copyToClipboard(); });
+			var tCopyButton:SpriteButton = new SpriteButton({ x:tWidth*0.5-(80/2)-20, y:52, text:"share_copy", width:80, height:25, origin:0.5 }).appendTo(this)
+				.on(ButtonBase.CLICK, function():void{ _copyToClipboard(); }) as SpriteButton;
 			
-			_textCopiedMessage = addChild(new TextBase({ text:"share_link_copied", size:17, originX:1, x:tCopyButton.x - 40, y:tCopyButton.y, alpha:0 })) as TextBase;
+			_textCopiedMessage = new TextTranslated("share_link_copied", { size:17, originX:1, x:tCopyButton.x - tCopyButton.Width/2 - 10, y:tCopyButton.y, alpha:0 }).appendToT(this);
 			
 			/****************************
 			* Close Button
 			*****************************/
-			var tCloseIcon = new MovieClip();
-			var tSize:Number = 10;
-			tCloseIcon.graphics.beginFill(0x000000, 0);
-			tCloseIcon.graphics.drawRect(-tSize*2, -tSize*2, tSize*4, tSize*4);
-			tCloseIcon.graphics.endFill();
-			tCloseIcon.graphics.lineStyle(8, 0xFFFFFF, 1, true);
-			tCloseIcon.graphics.moveTo(-tSize, -tSize);
-			tCloseIcon.graphics.lineTo(tSize, tSize);
-			tCloseIcon.graphics.moveTo(tSize, -tSize);
-			tCloseIcon.graphics.lineTo(-tSize, tSize);
-			
-			var tCloseButton:ScaleButton = addChild(new ScaleButton({ x:tWidth*0.5 - 5, y:-tHeight*0.5 + 5, obj:tCloseIcon })) as ScaleButton;
+			var tCloseButton:ScaleButton = addChild(new ScaleButton({ x:tWidth*0.5 - 5, y:-tHeight*0.5 + 5, obj:new $WhiteX() })) as ScaleButton;
 			tCloseButton.addEventListener(ButtonBase.CLICK, _onCloseClicked);
 		}
 		
@@ -103,15 +76,40 @@ package app.ui.screens
 			_textCopiedMessage.alpha = 0;
 		}
 		
+		private function _clearCopiedMessages() : void {
+			if(_textCopyTween) _textCopyTween.stop();
+			_textCopiedMessage.alpha = 0;
+		}
+		
 		private function _onCloseClicked(pEvent:Event) : void {
-			dispatchEvent(new Event(CLOSE));
+			dispatchEvent(new Event(Event.CLOSE));
 		}
 		
 		private function _copyToClipboard() : void {
+			_clearCopiedMessages();
 			_text.setSelection(0, _text.text.length)
 			System.setClipboard(_text.text);
 			_textCopiedMessage.alpha = 0;
 			if(_textCopyTween) _textCopyTween.start(); else _textCopyTween = new Tween(_textCopiedMessage, "alpha", Elastic.easeOut, 0, 1, 1, true);
+		}
+		
+		private function _newCopyInput(pData:Object, pParent:Sprite) : TextField {
+			var tTFWidth:Number = _bg.width-50, tTFHeight:Number = 18, tTFPaddingX:Number = 5, tTFPaddingY:Number = 5;
+			var tTextBackground:RoundedRectangle = new RoundedRectangle(tTFWidth+tTFPaddingX*2, tTFHeight+tTFPaddingY*2, { origin:0.5 }).setXY(pData.x, pData.y)
+				.appendTo(pParent).draw(0xFFFFFF, 7, 0x444444);
+			
+			var tTextField:TextField = tTextBackground.addChild(new TextField()) as TextField;
+			tTextField.type = TextFieldType.DYNAMIC;
+			tTextField.multiline = false;
+			tTextField.width = tTFWidth;
+			tTextField.height = tTFHeight;
+			tTextField.x = tTFPaddingX - tTextBackground.Width*0.5;
+			tTextField.y = tTFPaddingY - tTextBackground.Height*0.5;
+			tTextField.addEventListener(MouseEvent.CLICK, function(pEvent:Event):void{
+				_clearCopiedMessages();
+				tTextField.setSelection(0, tTextField.text.length);
+			});
+			return tTextField;
 		}
 	}
 }

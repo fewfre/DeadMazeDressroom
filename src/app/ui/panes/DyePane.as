@@ -11,15 +11,22 @@ package app.ui.panes
 	import flash.display.*;
 	import flash.text.*;
 	import flash.events.*;
+	import app.ui.panes.base.SidePane;
+	import app.ui.panes.infobar.Infobar;
+	import app.ui.panes.base.SidePaneWithInfobar;
 
-	public class DyePane extends TabPane
+	public class DyePane extends SidePaneWithInfobar
 	{
+		// Constants
+		public static const EVENT_COLOR_PICKED     : String = "event_color_picked"; // DataEvent
+		public static const EVENT_OPEN_COLORPICKER : String= "open_colorpicker";
+		
 		private static const BUTTON_SCALE:Number = 1.6;
 		private static const MINI_BOX_SIZE:Number = 12*BUTTON_SCALE;
 
 		// Storage
-		public var character:Character;
-		public var _colors:Array;
+		// private var _character : Character;
+		private var _colors    : Array;
 
 		public var colorButtons:Array;
 
@@ -27,19 +34,17 @@ package app.ui.panes
 		public var colorPickerButtonBox:Sprite;
 
 		// Constructor
-		public function DyePane(pData:Object)
-		{
+		public function DyePane() {
 			super();
-			this.addInfoBar( new ShopInfoBar({ showBackButton:true, showRefreshButton:false }) );
-			this.infoBar.colorWheel.addEventListener(MouseEvent.MOUSE_UP, _onColorPickerBackClicked);
-			this.UpdatePane(false);
+			this.addInfoBar( new Infobar({ showBackButton:true, showRefreshButton:false }) )
+				.on(Infobar.BACK_CLICKED, _onColorPickerBackClicked)
+				.on(Infobar.ITEM_PREVIEW_CLICKED, function(e){ dispatchEvent(new Event(Infobar.ITEM_PREVIEW_CLICKED)); });
 
-			character = pData.character;
+			// _character = pCharacter;
 			_colors = Fewf.assets.getData("config").colors.dye.concat();
 
-			var defaults_btn:SpriteButton;
-			defaults_btn = this.addItem( new SpriteButton({ x:ConstantsApp.PANE_WIDTH*0.5, y:15, width:100, height:22, text:"btn_color_defaults", obj:new MovieClip(), origin:0.5 }) ) as SpriteButton;
-			defaults_btn.addEventListener(ButtonBase.CLICK, _onDefaultButtonClicked);
+			new SpriteButton({ x:ConstantsApp.PANE_WIDTH*0.5-5, y:80, width:100, height:22, text:"btn_color_defaults", obj:new MovieClip(), origin:0.5 }).appendTo(this)
+				.on(ButtonBase.CLICK, _onDefaultButtonClicked);
 
 			var i, xx:Number, yy:Number, spacing:Number, sizex:Number, sizey:Number, clr:int, tIndex:int, columns:int=7, columnI:int=0;
 			i = 0; spacing = 34*BUTTON_SCALE; sizex = sizey = 30*BUTTON_SCALE;
@@ -59,7 +64,8 @@ package app.ui.panes
 				btn.addEventListener(ButtonBase.CLICK, _onDyeButtonClicked);
 				columnI++;
 			}
-			colorButtons.push( addChild( colorPickerButton = new PushButton({ x:xx + (spacing*columnI), y:yy, width:sizex, height:sizey, origin:0.5, obj:new $ColorWheel(), obj_scale:0.7*BUTTON_SCALE, id:-2 }) ) );
+			colorButtons.push( colorPickerButton = new PushButton({ x:xx + (spacing*columnI), y:yy, width:sizex, height:sizey, origin:0.5, obj:new $ColorWheel(), obj_scale:0.7*BUTTON_SCALE, id:-2 }).appendTo(this) as PushButton );
+			colorPickerButton.on(ButtonBase.CLICK, function(e):void{ dispatchEvent(new Event(EVENT_OPEN_COLORPICKER)) });
 			colorPickerButtonBox = colorPickerButton.addChild(_colorSpriteBox({ color:colorPickerButton.id, size:MINI_BOX_SIZE })) as Sprite;
 			colorPickerButtonBox.addEventListener(PushButton.STATE_CHANGED_BEFORE, _onColorPickerButtonClicked);
 		}
@@ -112,7 +118,10 @@ package app.ui.panes
 		}
 
 		private function _untoggle(pList:Array, pButton:ButtonBase=null) : void {
-			if (pButton != null && (pButton is PushButton ? pButton.pushed : pButton.selected)) { return; }
+			if (pButton != null && (
+				pButton is PushButton && (pButton as PushButton).pushed || 
+				pButton is ColorButton && (pButton as ColorButton).selected
+			)) { return; }
 
 			for(var i:int = 0; i < pList.length; i++) {
 				if(pList[i] is PushButton) {
@@ -131,23 +140,17 @@ package app.ui.panes
 			// GameAssets.hairColor = tColor;
 			colorPickerButton.id = tColor;
 			_colorSpriteBox({ color:tColor, box:colorPickerButtonBox, size:MINI_BOX_SIZE });
-			// character.updatePose();
+			// _character.updatePose();
 			
-			// dispatchEvent(new FewfEvent("color_changed", { type:pType }));
-			dispatchEvent(new DataEvent(ColorPickerTabPane.EVENT_COLOR_PICKED, false, false, String(tColor)));
+			// dispatchEvent(new FewfEvent(ConfigTabPane.EVENT_COLOR_CHANGE, { type:pType }));
+			dispatchEvent(new DataEvent(EVENT_COLOR_PICKED, false, false, String(tColor)));
 		}
 		
 		/****************************
 		* Events
 		*****************************/
-		private function _onColorPickChanged(pEvent:DataEvent) : void {
-			// _colorSwatches[_selectedSwatch].value = uint(pEvent.data);
-			// dispatchEvent(new DataEvent(ColorPickerTabPane.EVENT_COLOR_PICKED, false, false, pEvent.data));
-			updateCustomColor(int(pEvent.data));
-		}
-		
 		private function _onColorPickerBackClicked(pEvent:Event) : void {
-			dispatchEvent(new Event(ColorPickerTabPane.EVENT_EXIT));
+			dispatchEvent(new Event(Event.CLOSE));
 		}
 	}
 }

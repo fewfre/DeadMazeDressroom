@@ -1,4 +1,4 @@
-package app.data
+package com.fewfre.utils
 {
 	import com.adobe.images.PNGEncoder;
 	import com.fewfre.utils.Fewf;

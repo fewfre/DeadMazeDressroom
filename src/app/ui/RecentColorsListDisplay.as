@@ -5,11 +5,11 @@ package app.ui
 	import com.fewfre.events.FewfEvent;
 	import app.data.ConstantsApp;
 	import app.ui.buttons.*;
+	import app.ui.common.*;
 	import flash.display.*;
-	import flash.events.*;
 	import ext.ParentApp;
 	
-	public class RecentColorsListDisplay extends MovieClip
+	public class RecentColorsListDisplay extends Sprite
 	{
 		// Constants
 		public static const EVENT_COLOR_PICKED		: String = "event_color_picked";
@@ -18,12 +18,12 @@ package app.ui
 		public static var RECENTS					: Array = null;
 		
 		// Storage
-		private var _recentColorButtons	: Array;
+		private var _recentColorButtons	: Vector.<ColorButton>;
 		private var _deleteToggleButton	: DeleteButton;
 		private var _bg : RoundedRectangle;
 		private var _verticalRule : Shape;
 		
-		public function get isDeleteModeOn() { return _deleteToggleButton.pushed; }
+		public function get isDeleteModeOn():Boolean { return _deleteToggleButton.pushed; }
 		
 		// Constructor
 		public function RecentColorsListDisplay(pData:Object)
@@ -38,18 +38,18 @@ package app.ui
 			this.x = pData.x;
 			this.y = pData.y;
 			
-			_recentColorButtons = new Array();
+			_recentColorButtons = new Vector.<ColorButton>();
 			
-			var deleteWidth = 50;
-			var bgWidth = ConstantsApp.PANE_WIDTH - 20 - deleteWidth, bgHeight = 24;
+			var deleteWidth:Number = 50;
+			var bgWidth:Number = ConstantsApp.PANE_WIDTH - 20 - deleteWidth, bgHeight = 24;
 			
 			_deleteToggleButton = new DeleteButton({ x:bgWidth*0.5-25-2, width:deleteWidth, height:bgHeight, obj:new $Trash(), obj_scale:0.85 });;
 			_deleteToggleButton.y += -_deleteToggleButton.Height * 0.5;
-			_deleteToggleButton.addEventListener(PushButton.STATE_CHANGED_AFTER, function(){ render(); });
+			_deleteToggleButton.addEventListener(PushButton.STATE_CHANGED_AFTER, function():void{ render(); });
 			addChild(_deleteToggleButton);
 			
 			// Add BG
-			_bg = new RoundedRectangle({ x:-deleteWidth*0.5+2, width:bgWidth, height:bgHeight, origin:0.5 });
+			_bg = new RoundedRectangle(bgWidth, bgHeight, { x:-deleteWidth*0.5+2, origin:0.5 });
 			addChild(_bg);
 			
 			_verticalRule = new Shape();
@@ -73,14 +73,12 @@ package app.ui
 		
 		public function render() : void {
 			// Clear old buttons
-			for each(var btn:ColorButton in _recentColorButtons) {
-				removeChild(btn);
-			}
-			_recentColorButtons = [];
+			_recentColorButtons.forEach(function(o:*,i:int,a:*):void{ removeChild(o); });
+			_recentColorButtons = new Vector.<ColorButton>();
 			
 			this.visible = RECENTS.length > 0;
 			var bgBorderColor = isDeleteModeOn ? 0x780f11 : 0;//0x0f474f;
-			_bg.draw(0x6f6b64, 5, bgBorderColor, bgBorderColor, bgBorderColor);
+			_bg.draw(0x6f6b64, 5, bgBorderColor);
 			
 			_verticalRule.graphics.clear();
 			_verticalRule.graphics.lineStyle(5, bgBorderColor, 1, false, "normal", "square");
@@ -121,7 +119,7 @@ package app.ui
 		*****************************/
 		
 		private function _dispatchColorChange(color:uint) {
-			dispatchEvent(new DataEvent(EVENT_COLOR_PICKED, false, false, color.toString()));
+			dispatchEvent(new FewfEvent(EVENT_COLOR_PICKED, color));
 		}
 		
 		private function _deleteRecentColor(color:int) {
@@ -163,9 +161,9 @@ class DeleteButton extends PushButton
 		*****************************/
 		override protected function _renderUp() : void {
 			if (this.pushed == false) {
-				_bg.draw(0xeb9d9e, 5, 0xFF0000, 0xFF0000, 0xFF0000);
+				_bg.draw(0xeb9d9e, 5, 0xFF0000);
 			} else {
-				_bg.draw(0xFF0000, 5, 0x780f11, 0x780f11, 0x780f11);
+				_bg.draw(0xFF0000, 5, 0x780f11);
 			}
 		}
 		
@@ -175,9 +173,9 @@ class DeleteButton extends PushButton
 		
 		override protected function _renderOver() : void {
 			if (this.pushed == false) {
-				_bg.draw(0xf57375, 5, 0xFF0000, 0xFF0000, 0xFF0000);
+				_bg.draw(0xf57375, 5, 0xFF0000);
 			} else {
-				_bg.draw(0xDD0000, 5, 0x780f11, 0x780f11, 0x780f11);
+				_bg.draw(0xDD0000, 5, 0x780f11);
 			}
 		}
 		
@@ -190,6 +188,6 @@ class DeleteButton extends PushButton
 		}
 
 		override protected function _renderPressed() : void {
-			_bg.draw(0xFF0000, 5, 0x780f11, 0x780f11, 0x780f11);
+			_bg.draw(0xFF0000, 5, 0x780f11);
 		}
 }

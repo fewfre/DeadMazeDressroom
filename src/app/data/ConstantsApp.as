@@ -12,8 +12,9 @@ package app.data
 		/****************************
 		* General
 		*****************************/
-		public static const VERSION					: String = "1.15b";
-		public static const SOURCE_URL				: String = "https://github.com/fewfre/DeadMazeDressroom/blob/master/changelog";
+		public static const VERSION					: String = "1.16";
+		public static const SOURCE_URL				: String = "https://github.com/fewfre/DeadMazeDressroom/blob/master/CHANGELOG.md";
+		public static const DISCORD_URL				: String = "https://discord.gg/DREPH9GqWw";
 
 		public static const DEFAULT_SKIN_ID			: int = 0;
 		public static const DEFAULT_POSE_ID			: int = 0;
@@ -21,6 +22,14 @@ package app.data
 		public static const NUM_ITEMS_PER_ROW		: int = 7;
 
 		public static const ITEM_SAVE_SCALE			: int = 8; // Power of two is probably best
+		
+		public static const SHARED_OBJECT_KEY_GLOBAL_LANG: String = 'lang';
+		public static const SHARED_OBJECT_KEY_OUTFITS: String = 'saved-outfits';
+		
+		/****************************
+		* Global Events
+		*****************************/
+		public static const DOWNLOAD_ITEM_DATA_IMAGE : String = "download_item_data_image"; // FewfEvent<ItemData>
 
 		/****************************
 		* Colors

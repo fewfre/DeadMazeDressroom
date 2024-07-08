@@ -19,37 +19,43 @@ package app.ui.buttons
 		public var id:int;
 		public var pushed:Boolean;
 		public var allowToggleOff:Boolean; // Only controls the behavior on internal click controls.
-		public var Text:TextBase;
+		public var Text:TextTranslated;
 		public var Image:DisplayObject;
 		
 		// Constructor
-		// pArgs = { x:Number, y:Number, width:Number, height:Number, ?obj:DisplayObject, ?obj_scale:Number, ?text:String, ?id:int, ?allowToggleOff:Boolean=true }
+		// pArgs = { x:Number, y:Number, (width:Number, height:Number OR size:Number), ?obj:DisplayObject, ?obj_scale:Number, ?text:String, ?id:int, ?allowToggleOff:Boolean=true }
 		public function PushButton(pArgs:Object)
 		{
 			super(pArgs);
 			if(pArgs.id) { id = pArgs.id; }
 			
 			if(pArgs.text) {
-				this.Text = addChild(new TextBase({ text:pArgs.text, x:pArgs.width*(0.5 - _bg.originX), y:pArgs.height*(0.5 - _bg.originY) })) as TextBase;
+				this.Text = new TextTranslated(pArgs.text, { x:pArgs.width*(0.5 - _bg.originX), y:pArgs.height*(0.5 - _bg.originY) }).appendToT(this);
 			}
 			
 			if(pArgs.obj) {
-				var tBounds:Rectangle = pArgs.obj.getBounds(pArgs.obj);
-				var tOffset:Point = tBounds.topLeft;
-				
-				var tScale:Number = pArgs.obj_scale ? pArgs.obj_scale : 1;
-				this.Image = pArgs.obj;
-				FewfDisplayUtils.fitWithinBounds(this.Image, pArgs.width * 0.9, pArgs.height * 0.9, pArgs.width * 0.5, pArgs.height * 0.5);
-				this.Image.x = pArgs.width / 2 - (tBounds.width / 2 + tOffset.x)*tScale * this.Image.scaleX - Width*_bg.originX;
-				this.Image.y = pArgs.height / 2 - (tBounds.height / 2 + tOffset.y)*tScale * this.Image.scaleY - Height*_bg.originY;
-				this.Image.scaleX *= tScale;
-				this.Image.scaleY *= tScale;
-				addChild(this.Image);
+				ChangeImage(pArgs.obj, pArgs.obj_scale || -1);
 			}
 			
-			this.allowToggleOff = pArgs.allowToggleOff == null ? true : pArgs.allowToggleOffs;
+			this.allowToggleOff = pArgs.allowToggleOff == null ? true : pArgs.allowToggleOff;
 			this.pushed = false;
 			_renderUnpressed();
+		}
+
+		public function ChangeImage(pMC:DisplayObject, pScale:Number=-1) : void
+		{
+			if(this.Image != null) { removeChild(this.Image); }
+			pScale = pScale >= 0 ? pScale : 1;
+			
+			var tBounds:Rectangle = pMC.getBounds(pMC);
+			var tOffset:Point = tBounds.topLeft;
+			
+			FewfDisplayUtils.fitWithinBounds(pMC, this.Width * 0.9, this.Height * 0.9, this.Width * 0.5, this.Height * 0.5);
+			pMC.x = this.Width * (0.5 - _bg.originX) - (tBounds.width / 2 + tOffset.x)*pScale * pMC.scaleX;
+			pMC.y = this.Height * (0.5 - _bg.originY) - (tBounds.height / 2 + tOffset.y)*pScale * pMC.scaleY;
+			pMC.scaleX *= pScale;
+			pMC.scaleY *= pScale;
+			addChild(this.Image = pMC);
 		}
 		
 		protected function _renderUnpressed() : void
@@ -64,7 +70,7 @@ package app.ui.buttons
 			if(this.Text) { this.Text.color = 0xFFD800; }
 		}
 
-		public function toggle(pOn=null, pFireEvent:Boolean=true) : void
+		public function toggle(pOn:*=null, pFireEvent:Boolean=true) : void
 		{
 			if(pFireEvent) _dispatch(STATE_CHANGED_BEFORE);
 			
@@ -87,8 +93,11 @@ package app.ui.buttons
 		}
 		
 		override protected function _onMouseUp(pEvent:MouseEvent) : void {
-			if(!_flagEnabled || (!this.allowToggleOff && this.pushed)) { return; }
-			toggle();
+			if(!_flagEnabled) { return; }
+			var pOn = null;
+			// if toggle off enabled, then still allow clicking the button again to refire event
+			if(!this.allowToggleOff && this.pushed) { pOn = true; }
+			toggle(pOn);
 			super._onMouseUp(pEvent);
 		}
 		

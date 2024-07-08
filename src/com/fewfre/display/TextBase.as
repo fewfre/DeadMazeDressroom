@@ -1,10 +1,15 @@
 package com.fewfre.display
 {
-	import com.fewfre.events.*;
-	import com.fewfre.utils.*;
-	import flash.display.*;
-	import flash.text.*;
-	
+	import com.fewfre.events.FewfEvent;
+	import com.fewfre.utils.Fewf;
+	import com.fewfre.utils.FewfUtils;
+	import com.fewfre.utils.I18n;
+	import flash.display.Sprite;
+	import flash.text.TextField;
+	import flash.text.TextFieldAutoSize;
+	import flash.text.TextFormat;
+	import flash.text.TextFormatAlign;
+
 	public class TextBase extends Sprite
 	{
 		// Constants
@@ -12,20 +17,20 @@ package com.fewfre.display
 		public static const DEFAULT_COLOR : int = 0xC2C2DA;
 
 		// Storage
-		protected var _text			: String;
-		protected var _i18n			: String;
-		protected var _values		: Array; // Values used in i18n if {0} variables exist.
+		protected var _text       : String;
+		protected var _field      : TextField;
 		
-		protected var _field		: TextField;
+		protected var _originX    : Number;
+		protected var _originY    : Number;
 		
-		protected var _originX		: Number;
-		protected var _originY		: Number;
+		protected var _color      : int;
+		protected var _size       : Number;
+		protected var _font       : String;
+		protected var _scale      : Number;
+		protected var _align      : String;
 		
-		protected var _color		: int;
-		protected var _size			: Number;
-		protected var _font			: String;
-		protected var _scale		: Number;
-		protected var _align		: String;
+		protected var _bold       : Boolean;
+		protected var _italic     : Boolean;
 
 		// Properties
 		public function get text() : String { return _field.text; }
@@ -38,99 +43,67 @@ package com.fewfre.display
 		public function set font(pVal:String) : void { _font = pVal; _render(); }
 
 		// Constructor
-		// pArgs = { x:Number, y:Number, ?text:String, ?font:String, ?size:Number, ?color:int, ?origin:Number=0.5,
-		//			?originX:Number=0.5, ?originY:Number=0.5, ?alpha:Number=1, ?values:*|Array }
-		public function TextBase(pArgs:Object) {
+		/**
+		 * pArgs:
+		 *   ?x:Number, ?y:Number, ?text:String,
+		 *   ?origin:Number=0.5, ?originX:Number=0.5, ?originY:Number=0.5, ?alpha:Number=1,
+		 *   ?font:String, ?size:Number, ?color:int,
+		 */
+		public function TextBase(pText:String, params:Object=null) {
+			params = params || {};
 			super();
-			this.x = pArgs.x != null ? pArgs.x : 0;
-			this.y = pArgs.y != null ? pArgs.y : 0;
+			this.x = params.x != null ? params.x : 0;
+			this.y = params.y != null ? params.y : 0;
 			
-			_color = pArgs.color != null ? pArgs.color : DEFAULT_COLOR;
-			_size = pArgs.size != null ? pArgs.size : DEFAULT_SIZE;
-			_font = pArgs.font != null ? pArgs.font : Fewf.i18n.defaultFont;
+			_color = params.color != null ? params.color : DEFAULT_COLOR;
+			_size = params.size != null ? params.size : DEFAULT_SIZE;
+			_font = params.font != null ? params.font : Fewf.i18n.defaultFont;
 			_scale = 1;
-			_align = pArgs.align != null ? pArgs.align : TextFormatAlign.CENTER;
+			_align = params.align != null ? params.align : TextFormatAlign.CENTER;
 			
-			_i18n = "";
-			_text = "";
-			_values = pArgs.values != null ? (pArgs.values is Array ? pArgs.values : [pArgs.values]) : null;
-			if(pArgs.text) {
-				_setI18nData(pArgs.text);
-			}
+			_bold = params.bold != null ? params.bold : false;
+			_italic = params.italic != null ? params.italic : false;
+			
+			_text = pText;
 			
 			_originX = 0.5;
 			_originY = 0.5;
-			if(pArgs.origin != null) { _originX = _originY = pArgs.origin; }
-			if(pArgs.originX != null) { _originX = pArgs.originX; }
-			if(pArgs.originY != null) { _originY = pArgs.originY; }
-			// originX = _originX;
-			// originY = _originY;
+			if(params.origin != null) { _originX = _originY = params.origin; }
+			if(params.originX != null) { _originX = params.originX; }
+			if(params.originY != null) { _originY = params.originY; }
 			
-			alpha = pArgs.alpha != null ? pArgs.alpha : 1;
+			alpha = params.alpha != null ? params.alpha : 1;
 			
 			_field = addChild(new TextField()) as TextField;
 			_render();
-			
-			_addEventListeners();
 		}
+		public function setXY(pX:Number, pY:Number) : TextBase { x = pX; y = pY; return this; }
+		public function appendTo(target:Sprite): TextBase { target.addChild(this); return this; }
 
 		/****************************
 		* Render
 		*****************************/
 		protected function _render() : void {
-			_field.defaultTextFormat = new TextFormat(_font, _size * _scale, _color, null, null, null, null, null, _align);
+			_field.defaultTextFormat = new TextFormat(_font, _size * _scale, _color, _bold, _italic, null, null, null, _align);
 			_field.autoSize = TextFieldAutoSize.CENTER;
-			_field.text = _values != null ? FewfUtils.stringSubstitute(_text, _values) : _text;
+			_field.text = _getRenderText();
 			_field.x = -_field.textWidth * _originX - 2;
 			_field.y = -_field.textHeight * _originY - 2;
 		}
 
 		/****************************
-		* Events
-		*****************************/
-		protected function _addEventListeners() : void {
-			Fewf.dispatcher.addEventListener(I18n.FILE_UPDATED, _onFileUpdated);
-		}
-		
-		// Refresh text to new value.
-		protected function _onFileUpdated(e:FewfEvent) : void {
-			_setI18nData(_i18n);
-			_render();
-		}
-
-		/****************************
 		* Public
 		*****************************/
-		public function setText(pKey:String, ...pValues) : void {
-			_setI18nData(pKey != null ? pKey : "");
-			_values = pValues[0] is Array ? pValues[0] : pValues;
-			_render();
-		}
-		
-		public function setUntranslatedText(pText:String) : void {
-			_i18n = "";
+		public function setText(pText:String) : void {
 			_text = pText;
-			_render();
-		}
-		
-		public function setValues(...pValues) : void {
-			_values = pValues[0] is Array ? pValues[0] : pValues;
 			_render();
 		}
 		
 		/****************************
 		* Helper
 		*****************************/
-		private function _setI18nData(pKey:String) : void {
-			_i18n = pKey;
-			var tI18nData = Fewf.i18n.getData(pKey);
-			if(tI18nData != null) {
-				_text = tI18nData.text;
-				_scale = tI18nData.scale != null ? tI18nData.scale : 1;
-				_font = tI18nData.font != null ? tI18nData.font : Fewf.i18n.defaultFont;
-			} else {
-				_text = "<"+pKey+">";
-			}
+		protected function _getRenderText() : String {
+			return _text;
 		}
 	}
 }

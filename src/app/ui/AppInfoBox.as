@@ -39,10 +39,10 @@ package app.ui
 			_textTray = addChild(new MovieClip()) as MovieClip;
 			_textTray.x = 25*0.5 + 4;
 			if(Fewf.i18n.lang == "en" || !Fewf.i18n.getText("translated_by")) {
-				_textTray.addChild(new TextBase({ text:"version", originX:0, values:ConstantsApp.VERSION }));
+				_textTray.addChild(new TextTranslated("version", { originX:0, values:ConstantsApp.VERSION }));
 			} else {
-				_textTray.addChild(new TextBase({ text:"version", y:-6, size:10, originX:0, values:ConstantsApp.VERSION }));
-				_textTray.addChild(new TextBase({ text:"translated_by", y:6, size:10, originX:0, values:ConstantsApp.VERSION }));
+				_textTray.addChild(new TextTranslated("version", { y:-6, size:10, originX:0, values:ConstantsApp.VERSION }));
+				_textTray.addChild(new TextTranslated("translated_by", { y:6, size:10, originX:0, values:ConstantsApp.VERSION }));
 			}
 		}
 		

@@ -1,21 +1,23 @@
 package com.fewfre.utils
 {
 	import com.fewfre.events.FewfEvent;
-	import flash.display.Loader;
-	import flash.display.MovieClip;
-	import flash.display.Sprite;
+	import com.fewfre.loaders.*;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	import flash.events.ProgressEvent;
-	import flash.external.ExternalInterface;
+	import flash.events.ErrorEvent;
+	import flash.events.EventDispatcher;
 	import flash.net.*;
-	import flash.system.ApplicationDomain;
-	import flash.system.LoaderContext;
+	import flash.display.Loader;
+	import flash.display.MovieClip;
+	import flash.display.Bitmap;
+	import flash.display.LoaderInfo;
+	import flash.display.BitmapData;
 	import flash.utils.Dictionary;
 	import flash.utils.setTimeout;
-	import flash.net.URLLoader;
+	import flash.external.ExternalInterface;
 	
-	public class AssetManager extends Sprite
+	public class AssetManager extends EventDispatcher
 	{
 		// Constants
 		public static const LOADING_FINISHED:String = "asset_loading_finished";
@@ -44,6 +46,20 @@ package com.fewfre.utils
 		/****************************
 		* Loading
 		*****************************/
+			// options ?= { cacheBreaker?:Boolean }
+			public function loadWithCallback(pURLs:Array, pCallback:Function, options:Object=null) : void {
+				options = options || {};
+				load(pURLs, options.cacheBreaker);
+				addEventListener(AssetManager.LOADING_FINISHED, function fDone(event:Event){
+					removeEventListener(AssetManager.LOADING_FINISHED, fDone);
+					pCallback(null);
+				});
+				addEventListener(ErrorEvent.ERROR, function fDone(event:ErrorEvent){
+					removeEventListener(AssetManager.LOADING_FINISHED, fDone);
+					pCallback("error");
+				});
+			}
+			
 			public function load(pURLs:Array, pCacheBreaker:String=null) : void {
 				_urlsToLoad = pURLs;
 				_itemsLeftToLoad = _urlsToLoad.length;
@@ -67,31 +83,25 @@ package com.fewfre.utils
 			
 			private function _newLoader(pIndex:int, pUrl:String, pOptions:Object=null) : void {
 				var tUrlParts:Array = pUrl.split("/").pop().split("."), tName:String = tUrlParts[0], tType:String = tUrlParts[1];
-				if(_cacheBreaker && (Fewf.isExternallyLoaded ? true : ExternalInterface.call("eval", "window.location.href"))) {
+				if(_cacheBreaker && (Fewf.isExternallyLoaded ? true : ExternalInterface.available ? ExternalInterface.call("eval", "window.location.href") : false)) {
 					pUrl += "?cb="+_cacheBreaker;
 				}
-				if(pOptions && pOptions.type) {
-					tType = pOptions.type;
-				}
+				pOptions = pOptions || {};
+				if(pOptions.type) { tType = pOptions.type; }
+				if(pOptions.name) { tName = pOptions.name; }
 				switch(tType) {
 					case "swf":
 					case "swc":
-						var tLoader:Loader = new Loader();
-						tLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(e:Event):void{ _onAssetsLoaded(pIndex, e, arguments.callee); });//, _onAssetsLoaded);
-						tLoader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, function(e:Event):void{ _onLoadError(e as IOErrorEvent, arguments.callee); });//, _onLoadError);
-						tLoader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS, _onProgress);
-						var tRequest:URLRequest = new URLRequest(pUrl);
-						tRequest.requestHeaders.push(new URLRequestHeader("pragma", "no-cache"));
-						if(pOptions && pOptions.useCurrentDomain) {
-							var tLoaderContext:LoaderContext = new LoaderContext(false, ApplicationDomain.currentDomain);
-							tLoader.load(tRequest, tLoaderContext);
-						} else {
-							tLoader.load(tRequest);
-						}
+						var tLoader = new AssetManagerBinaryLoader();
+						tLoader.load(pUrl, pOptions.useCurrentDomain);
+						tLoader.addEventListener(Event.COMPLETE, function(e:Event):void{ _onAssetsLoaded(pIndex, tLoader, arguments.callee); });
+						tLoader.addEventListener(IOErrorEvent.IO_ERROR, _onLoadError);
+						tLoader.addEventListener(ProgressEvent.PROGRESS, _onProgress);
 						break;
+					case "txt":
 					case "json":
 						var tUrlLoader:URLLoader = new URLLoader();
-						tUrlLoader.addEventListener(Event.COMPLETE, function(e:Event):void{ _onJsonLoaded(pIndex, e, tName, arguments.callee); });
+						tUrlLoader.addEventListener(Event.COMPLETE, function(e:Event):void{ _onTextLoaded(pIndex, e, tName, tType, arguments.callee); });
 						tUrlLoader.addEventListener(IOErrorEvent.IO_ERROR, function(e:Event):void{ _onURLLoadError(e as IOErrorEvent, pUrl, arguments.callee); });
 						tUrlLoader.addEventListener(ProgressEvent.PROGRESS, _onProgress);
 						var tRequest2:URLRequest = new URLRequest(pUrl);
@@ -116,31 +126,36 @@ package com.fewfre.utils
 				pLoader.removeEventListener(ProgressEvent.PROGRESS, _onProgress);
 			}
 			
-			private function _onAssetsLoaded(pIndex:int, e:Event, pOnComplete) : void {
-				_loadedStuffCallbacks[pIndex] = function(){
-					_applicationDomains.push( MovieClip(e.target.content).loaderInfo.applicationDomain );
-					_destroyAssetLoader(e.target.loader, pOnComplete);
+			private function _onAssetsLoaded(pIndex:int, l:AssetManagerBinaryLoader, pOnComplete) : void {
+				_loadedStuffCallbacks[pIndex] = function():void{
+					_applicationDomains.push( l.applicationDomain );
+					l.destroy();
 				};
 				_checkIfLoadingDone();
 			}
 			
-			private function _onJsonLoaded(pIndex:int, e:Event, pKey:String, pOnComplete) : void {
-				_loadedStuffCallbacks[pIndex] = function(){
-					_loadedData[pKey] = JSON.parse(e.target.data);
+			private function _onTextLoaded(pIndex:int, e:Event, pKey:String, pType:String, pOnComplete) : void {
+				_loadedStuffCallbacks[pIndex] = function():void{
+					_loadedData[pKey] = pType === "json" ? JSON.parse(e.target.data) : e.target.data;
 					_destroyURLLoader(e.target as URLLoader, pOnComplete);
 				};
 				_checkIfLoadingDone();
 			}
 			
-			private function _onLoadError(e:IOErrorEvent, pOnComplete) : void {
-				trace("[AssetManager](_onLoadError) ERROR("+e.errorID+"): Was not able to load url: "+e.target.url);
-				_destroyAssetLoader(e.target.loader, pOnComplete);
+			private function _onLoadError(e:ErrorEvent) : void {
+				try {
+					trace("[AssetManager](_onLoadError) ERROR("+e.errorID+"): Was not able to load url: "+e.target.url);
+					Fewf.dispatcher.dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, "["+e.type+":"+e.errorID+"] "+e.text));
+				} catch(err:Error) {}
+				// _destroyAssetLoader(e.target.loader, pOnComplete);
 				_checkIfLoadingDone();
 			}
 			
 			private function _onURLLoadError(e:IOErrorEvent, pUrl:String, pOnComplete) : void {
-				trace("[AssetManager](_onLoadError) ERROR("+e.errorID+"): Was not able to load url: "+pUrl);
-				_destroyURLLoader(e.target as URLLoader, pOnComplete);
+				try {
+					trace("[AssetManager](_onLoadError) ERROR("+e.errorID+"): Was not able to load url: "+pUrl);
+					_destroyURLLoader(e.target as URLLoader, pOnComplete);
+				} catch(err:Error) {}
 				_checkIfLoadingDone();
 			}
 			
@@ -156,7 +171,7 @@ package com.fewfre.utils
 					// _loadNextItem();
 				} else {
 					trace("[AssetManager](_checkIfLoadingDone) All resources loaded.");
-					for each(var pCallback in _loadedStuffCallbacks) {
+					for each(var pCallback:Function in _loadedStuffCallbacks) {
 						if(pCallback != null) { pCallback(); }
 					}
 					_loadedStuffCallbacks = null;
@@ -168,24 +183,32 @@ package com.fewfre.utils
 		/****************************
 		* Access Assets
 		*****************************/
-			public function getData(pKey:String) : * {
-				return _loadedData[pKey];
+		public function getData(pKey:String) : * {
+			return _loadedData[pKey];
+		}
+		
+		public function getLoadedClass(pName:String, pTrace:Boolean=false) : Class {
+			for(var i:int = 0; i < _applicationDomains.length; i++) {
+				if(_applicationDomains[i].hasDefinition(pName)) {
+					return _applicationDomains[i].getDefinition( pName ) as Class;
+				}
 			}
-			
-			public function getLoadedClass(pName:String, pTrace:Boolean=false) : Class {
-				for(var i:int = 0; i < _applicationDomains.length; i++) {
-					if(_applicationDomains[i].hasDefinition(pName)) {
-						return _applicationDomains[i].getDefinition( pName ) as Class;
-					}
-				}
-				if(pTrace) { trace("[AssetManager](getLoadedClass) ERROR: No Linkage by name: "+pName); }
-				try {
-					return flash.utils.getDefinitionByName(pName);
-				}
-				catch(err:Error) {
-					return null;
-				}
-				return null;
-			}
+			if(pTrace) { trace("[AssetManager](getLoadedClass) ERROR: No Linkage by name: "+pName); }
+			return null;
+		}
+		public function getLoadedMovieClip(pName:String, pDontReturnNull:Boolean=false, pTrace:Boolean=false) : MovieClip {
+			var tClass:Class = getLoadedClass(pName, pTrace);
+			return tClass ? new tClass() : (pDontReturnNull ? new MovieClip() : null);
+		}
+		
+		/****************************
+		* Bitmap Loader
+		*****************************/
+		private const _bitmapLoaderManager:BitmapLoaderManager = new BitmapLoaderManager();
+		
+		public function lazyLoadImageUrlAsBitmap(pFilePath:String) : Bitmap {
+			return _bitmapLoaderManager.lazyLoad(pFilePath);
+		}
+		
 	}
 }

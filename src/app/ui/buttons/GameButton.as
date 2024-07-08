@@ -1,12 +1,8 @@
 package app.ui.buttons
 {
 	import com.fewfre.display.ButtonBase;
-	import app.data.*;
-	import app.ui.*;
-	import flash.display.*;
-	import flash.events.MouseEvent;
-	import flash.text.*;
-	import flash.geom.*;
+	import app.data.ConstantsApp;
+	import app.ui.common.RoundedRectangle;
 	
 	public class GameButton extends ButtonBase
 	{
@@ -18,10 +14,9 @@ package app.ui.buttons
 		public function get Height():Number { return _bg.Height; }
 		
 		// Constructor
-		// pData = { x:Number, y:Number, width:Number, height:Number, ?origin:Number, ?originX:Number, ?originY:Number }
-		public function GameButton(pData:Object)
-		{
-			_bg = addChild(new RoundedRectangle({ x:0, y:0, width:pData.width, height:pData.height, origin:pData.origin, originX:pData.originX, originY:pData.originY })) as RoundedRectangle;
+		// pData = { x:Number, y:Number, (width:Number, height:Number OR size:Number), ?origin:Number, ?originX:Number, ?originY:Number }
+		public function GameButton(pData:Object) {
+			_bg = new RoundedRectangle(pData.size || pData.width, pData.size || pData.height, { origin:pData.origin, originX:pData.originX, originY:pData.originY }).appendTo(this);
 			super(pData);
 		}
 
