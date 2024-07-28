@@ -1,3 +1,8 @@
+## V1.16b - 28 July 2024
+- Redesign for "copy share code" text fields / copy button to make it feel more polished
+- [Code] Some code tweaks, including polish for popup screens
+
+
 ## V1.16 - 7 July 2024
 - Moved a bunch of changes from tfm dressroom to here
 	- Added copy to clipboard option

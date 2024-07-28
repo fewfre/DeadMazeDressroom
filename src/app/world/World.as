@@ -44,7 +44,7 @@ package app.world
 		private var shopTabs           : ShopTabList;
 		private var _toolbox           : Toolbox;
 		
-		private var _shareScreen       : LinkTray;
+		private var _shareScreen       : ShareScreen;
 		private var trashConfirmScreen : TrashConfirmScreen;
 		private var _langScreen        : LangScreen;
 		private var _aboutScreen       : AboutScreen;
@@ -70,9 +70,9 @@ package app.world
 		private function _buildWorld(pStage:Stage) : void {
 			/* GameAssets.init(); */
 
-			/****************************
-			* Create Character
-			*****************************/
+			/////////////////////////////
+			// Create Character
+			/////////////////////////////
 			var parms:flash.net.URLVariables = null;
 			if(!Fewf.isExternallyLoaded) {
 				try {
@@ -93,9 +93,9 @@ package app.world
 				scale:2.5
 			})) as Character;
 
-			/****************************
-			* Setup UI
-			*****************************/
+			/////////////////////////////
+			// Setup UI
+			/////////////////////////////
 			var tShop:RoundedRectangle = new RoundedRectangle(ConstantsApp.SHOP_WIDTH, ConstantsApp.APP_HEIGHT).setXY(450, 10)
 				.appendTo(this).drawAsTray();
 			_paneManager = tShop.addChild(new PaneManager()) as PaneManager;
@@ -131,25 +131,20 @@ package app.world
 					.on(ButtonBase.CLICK, function():void{ ParentApp.reopenSelectionLauncher()(); });
 			}
 			
-			/****************************
-			* Screens
-			*****************************/
-			_shareScreen = new LinkTray({ x:pStage.stageWidth * 0.5, y:pStage.stageHeight * 0.5 });
-			_shareScreen.addEventListener(Event.CLOSE, _onShareTrayClosed);
+			/////////////////////////////
+			// Screens
+			/////////////////////////////
+			_shareScreen = new ShareScreen().on(Event.CLOSE, _onShareScreenClosed);
+			_langScreen = new LangScreen().on(Event.CLOSE, _onLangScreenClosed);
+			_aboutScreen = new AboutScreen().on(Event.CLOSE, _onAboutScreenClosed);
 			
-			trashConfirmScreen = new TrashConfirmScreen({ x:337, y:65 });
-			trashConfirmScreen.addEventListener(TrashConfirmScreen.CONFIRM, _onTrashConfirmScreenConfirm);
-			trashConfirmScreen.addEventListener(Event.CLOSE, _onTrashConfirmScreenClosed);
-			
-			_langScreen = new LangScreen({  });
-			_langScreen.addEventListener(Event.CLOSE, _onLangScreenClosed);
-			
-			_aboutScreen = new AboutScreen();
-			_aboutScreen.addEventListener(Event.CLOSE, _onAboutScreenClosed);
+			trashConfirmScreen = new TrashConfirmScreen().setXY(337, 65)
+				.on(TrashConfirmScreen.CONFIRM, _onTrashConfirmScreenConfirm)
+				.on(Event.CLOSE, _onTrashConfirmScreenClosed);
 
-			/****************************
-			* Static Panes
-			*****************************/
+			/////////////////////////////
+			// Static Panes
+			/////////////////////////////
 			// Item color picker
 			_paneManager.addPane(COLOR_PANE_ID, new ColorPickerTabPane({ hide_default:true }))
 				.on(ColorPickerTabPane.EVENT_COLOR_PICKED, _onColorPickChanged)
@@ -193,9 +188,9 @@ package app.world
 					_removeItem(getColorFinderPane().infoBar.itemData.type);
 				});
 
-			/****************************
-			* Create item panes
-			*****************************/
+			/////////////////////////////
+			// Create item panes
+			/////////////////////////////
 			for each(var tType:ItemType in ItemType.TYPES_WITH_SHOP_PANES) {
 				_paneManager.addPane(tType.toString(), _setupItemPane(tType));
 				// _setupDirtyPanePopulation(tType);
@@ -492,7 +487,7 @@ package app.world
 			addChild(_shareScreen);
 		}
 
-		private function _onShareTrayClosed(pEvent:Event) : void {
+		private function _onShareScreenClosed(pEvent:Event) : void {
 			removeChild(_shareScreen);
 		}
 

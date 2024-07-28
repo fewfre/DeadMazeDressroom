@@ -58,6 +58,17 @@ package app.ui.common
 			return this;
 		}
 		
+		public function drawThin(pRadius:Number, pColor:uint, pLineColor:uint) : RoundedRectangle {
+			var xx:Number = -(Width * originX), yy:Number = -(Height * originY);
+			
+			graphics.clear();
+			graphics.lineStyle(1, pLineColor, 1, true);
+			graphics.beginFill(pColor);
+			graphics.drawRoundRect(xx, yy, Width, Height, pRadius, pRadius);
+			graphics.endFill();
+			return this;
+		}
+		
 		public function drawSimpleGradient(pColors:Array, pRadius:Number, pLineColor1:uint, pLineColor2:uint, pLineColor3:uint) : RoundedRectangle {
 			var tX:Number = 0 - (Width * originX);
 			var tY:Number = 0 - (Height * originY);

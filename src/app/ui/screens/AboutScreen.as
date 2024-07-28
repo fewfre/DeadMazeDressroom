@@ -15,6 +15,7 @@ package app.ui.screens
 	import com.fewfre.utils.I18n;
 	import com.fewfre.events.FewfEvent;
 	import flash.display.Bitmap;
+	import app.data.GameAssets;
 
 	public class AboutScreen extends Sprite
 	{
@@ -27,7 +28,7 @@ package app.ui.screens
 			this.x = Fewf.stage.stageWidth * 0.5;
 			this.y = Fewf.stage.stageHeight * 0.5;
 			
-			addChild(_newScreenBacking()).addEventListener(MouseEvent.CLICK, _onCloseClicked);
+			GameAssets.createScreenBackdrop().appendTo(this).on(MouseEvent.CLICK, _onCloseClicked);
 			var bg:RoundedRectangle = new RoundedRectangle(400, 200, { origin:0.5 }).drawAsTray().appendTo(this);
 
 			var xx:Number = 0, yy:Number = 0;
@@ -60,19 +61,10 @@ package app.ui.screens
 			///////////////////////
 			// Close Button
 			///////////////////////
-			new ScaleButton({ x:bg.Width*0.5 - 5, y:-bg.Height*0.5 + 5, obj:new $WhiteX() }).appendTo(this)
-				.on(ButtonBase.CLICK, _onCloseClicked);
+			ScaleButton.withObject(new $WhiteX()).setXY(bg.Width/2 - 5, -bg.Height/2 + 5).appendTo(this).on(ButtonBase.CLICK, _onCloseClicked);
 		}
-		
-		private function _newScreenBacking() : Sprite {
-			var backing:Sprite = new Sprite(), size:Number = 10000;
-			backing.x = -size/2;
-			backing.y = -size/2;
-			backing.graphics.beginFill(0x000000, 0.2);
-			backing.graphics.drawRect(0, 0, size, size);
-			backing.graphics.endFill();
-			return backing;
-		}
+		public function on(type:String, listener:Function): AboutScreen { this.addEventListener(type, listener); return this; }
+		public function off(type:String, listener:Function): AboutScreen { this.removeEventListener(type, listener); return this; }
 		
 		///////////////////////
 		// Public
