@@ -23,9 +23,8 @@ function getFileLastModifiedDateTime($file) {
 	return $timestamp ? new \DateTime("@$timestamp") : null;
 }
 function fetchUrlMetaData($url) {
-	usleep(0.01 * 1000000); // hardcode a slight delay to prevent making requests to fast
 	$h = fetchHeadersOnly($url);
-	$statusCode = $h && isset($h[0]) ? explode(" ", $h[0])[1] : 0;
+	$statusCode = $h ? explode(" ", $h)[1] : 0;
 	return [
 		'exists' => $statusCode == 200 || $statusCode == 300,
 		'statusCode' => $statusCode,
