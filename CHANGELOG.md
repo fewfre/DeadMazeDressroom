@@ -1,3 +1,7 @@
+## V1.17 - ?????
+- [Bug] Changed code using stage width/height to use a new constant to avoid an issue where things would be placed offscreen.
+
+
 ## V1.16b - 28 July 2024
 - Redesign for "copy share code" text fields / copy button to make it feel more polished
 - [Code] Some code tweaks, including polish for popup screens

@@ -96,11 +96,11 @@ package app.world
 			/////////////////////////////
 			// Setup UI
 			/////////////////////////////
-			var tShop:RoundedRectangle = new RoundedRectangle(ConstantsApp.SHOP_WIDTH, ConstantsApp.APP_HEIGHT).setXY(450, 10)
+			var tShop:RoundedRectangle = new RoundedRectangle(ConstantsApp.SHOP_WIDTH, ConstantsApp.SHOP_HEIGHT).setXY(450, 10)
 				.appendTo(this).drawAsTray();
 			_paneManager = tShop.addChild(new PaneManager()) as PaneManager;
 			
-			this.shopTabs = new ShopTabList(70, ConstantsApp.APP_HEIGHT).setXY(375, 10).appendTo(this);
+			this.shopTabs = new ShopTabList(70, ConstantsApp.SHOP_HEIGHT).setXY(375, 10).appendTo(this);
 			this.shopTabs.addEventListener(ShopTabList.TAB_CLICKED, _onTabClicked);
 			_populateShopTabs();
 
@@ -116,18 +116,18 @@ package app.world
 				.on(Toolbox.RANDOM_CLICKED, _onRandomizeDesignClicked)
 				.on(Toolbox.TRASH_CLICKED, _onTrashButtonClicked);
 			
-			var tLangButton = addChild(new LangButton({ x:22, y:pStage.stageHeight-17, width:30, height:25, origin:0.5 }));
+			var tLangButton = addChild(new LangButton({ x:22, y:ConstantsApp.APP_HEIGHT-17, width:30, height:25, origin:0.5 }));
 			tLangButton.addEventListener(ButtonBase.CLICK, _onLangButtonClicked);
 			
 			// About Screen Button
 			var aboutButton:SpriteButton = new SpriteButton({ size:25, origin:0.5 }).appendTo(this)
-				.setXY(tLangButton.x+(tLangButton.Width/2)+2+(25/2), pStage.stageHeight - 17)
+				.setXY(tLangButton.x+(tLangButton.Width/2)+2+(25/2), ConstantsApp.APP_HEIGHT - 17)
 				.on(ButtonBase.CLICK, _onAboutButtonClicked) as SpriteButton;
 			new TextBase("?", { size:22, color:0xFFFFFF, bold:true, origin:0.5 }).setXY(0, -1).appendTo(aboutButton)
 			
 			if(!!(ParentApp.reopenSelectionLauncher())) {
 				new ScaleButton({ obj:new $BackArrow(), obj_scale:0.5, origin:0.5 }).appendTo(this)
-				.setXY(22, pStage.stageHeight-17-28)
+				.setXY(22, ConstantsApp.APP_HEIGHT-17-28)
 					.on(ButtonBase.CLICK, function():void{ ParentApp.reopenSelectionLauncher()(); });
 			}
 			

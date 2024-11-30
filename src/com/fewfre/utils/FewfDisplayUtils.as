@@ -14,6 +14,7 @@ package com.fewfre.utils
 	import flash.desktop.Clipboard;
 	import flash.desktop.ClipboardFormats;
 	import flash.utils.setTimeout;
+	import app.data.ConstantsApp;
 	// import flash.media.CameraRoll;
 	// import flash.events.PermissionEvent;
 	// import flash.permissions.PermissionStatus;
@@ -85,7 +86,7 @@ package com.fewfre.utils
 		}
 		
 		public static function handleErrorMessage(e:Error) : void {
-			var text:TextBase = new TextBase("["+e.name+":"+e.errorID+"] "+e.message, { color:0xFF0000, x:Fewf.stage.stageWidth*0.25, y:Fewf.stage.stageHeight-25 });
+			var text:TextBase = new TextBase("["+e.name+":"+e.errorID+"] "+e.message, { color:0xFF0000, x:ConstantsApp.APP_WIDTH*0.25, y:ConstantsApp.APP_HEIGHT-25 });
 			Fewf.stage.addChild(text);
 			// Fewf.dispatcher.dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, "["+e.name+":"+e.errorID+"] "+e.message));
 		}
