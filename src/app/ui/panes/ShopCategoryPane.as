@@ -33,7 +33,6 @@ package app.ui.panes
 		private var _type: ItemType;
 		private var _itemDataVector: Vector.<ItemData>;
 		private var _character : Character;
-		public var selectedButtonIndex : int;
 		
 		private var _flagWaveInput: FancyInput;
 		public function get flagWaveInput() : FancyInput { return _flagWaveInput; }
@@ -53,7 +52,6 @@ package app.ui.panes
 			// don't reverse by default for DeadMaze
 			// grid.reverse();
 			
-			selectedButtonIndex = -1;
 			this.addInfobar( new Infobar({ showEyeDropper:_type!=ItemType.POSE, showQualityButton:pType==ItemType.SHIRT||pType==ItemType.PANTS, gridManagement:true }) );
 			
 			// We don't want data added right away, add when pane opened
@@ -115,6 +113,13 @@ package app.ui.panes
 			var btn:PushButton = _findPushButtonInCell(cell);
 			btn.toggleOn();
 			if(_flagOpen) scrollItemIntoView(cell);
+		}
+		
+		public function refreshButtonImage(pItemData:ItemData) : void {
+			if(!pItemData || pItemData.type == ItemType.POSE) { return; }
+			
+			var btn:PushButton = this.getButtonWithItemData(pItemData);
+			btn.ChangeImage(GameAssets.getColoredItemImage(pItemData));
 		}
 		
 		/****************************

@@ -379,8 +379,6 @@ package app.world
 			var tButton:PushButton = tPane.getButtonWithItemData(tItemData);
 			// If clicked button is toggled on, equip it. Otherwise remove it.
 			if(tButton.pushed) {
-				tPane.selectedButtonIndex = tButton.id;
-				
 				this.character.setItemData(tItemData);
 				tInfobar.addInfo( tItemData, GameAssets.getColoredItemImage(tItemData) );
 				tInfobar.showColorWheel(tItemData.colorable);
@@ -390,20 +388,21 @@ package app.world
 		}
 
 		private function _removeItem(pType:ItemType) : void {
-			var tTabPane:ShopCategoryPane = getShopPane(pType);
-			if(!tTabPane) { return; }
+			var tPane:ShopCategoryPane = getShopPane(pType);
+			if(!tPane) { return; }
 
 			// If item has a default value, toggle it on. otherwise remove item.
 			if(pType == ItemType.SKIN || pType == ItemType.POSE || pType == ItemType.FACE) {
-				if(tTabPane.infobar.hasData) {
+				if(tPane.infobar.hasData) {
 					var tDefaultIndex = 0;//(pType == ItemType.POSE ? GameAssets.defaultPoseIndex : GameAssets.defaultSkinIndex);
-					if(tTabPane.buttons[tDefaultIndex]) tTabPane.buttons[tDefaultIndex].toggleOn();
+					if(tPane.buttons[tDefaultIndex]) tPane.buttons[tDefaultIndex].toggleOn();
 				}
 			} else {
+				var tOldData:ItemData = this.character.getItemData(pType);
 				this.character.removeItem(pType);
-				if(tTabPane.infobar.hasData) {
-					tTabPane.infobar.removeInfo();
-					tTabPane.buttons[ tTabPane.selectedButtonIndex ].toggleOff();
+				if(tPane.infobar.hasData) {
+					tPane.infobar.removeInfo();
+					if(tOldData) tPane.getButtonWithItemData(tOldData).toggleOff();
 				}
 			}
 		}
@@ -584,17 +583,18 @@ package app.world
 				
 				var tPane:ShopCategoryPane = getShopPane(pType);
 				var tItemData:ItemData = this.character.getItemData(pType);
-				if(pType != ItemType.SKIN && !pForceReplace) {
-					var tItem:MovieClip = GameAssets.getColoredItemImage(tItemData);
-					GameAssets.copyColor(tItem, tPane.buttons[ tPane.selectedButtonIndex ].Image as MovieClip );
-					GameAssets.copyColor(tItem, tPane.infobar.Image );
-					GameAssets.copyColor(tItem, _panes.colorPickerPane.infobar.Image);
-				} else {
-					_replaceImageWithNewImage(tPane.buttons[ tPane.selectedButtonIndex ], GameAssets.getColoredItemImage(tItemData));
-					/*_replaceImageWithNewImage(tPane.infobar, GameAssets.getColoredItemImage(tItemData));*/
-					tPane.infobar.ChangeImage(GameAssets.getColoredItemImage(tItemData));
-					_replaceImageWithNewImage(_panes.colorPickerPane.infobar, GameAssets.getColoredItemImage(tItemData));
-				}
+				if(!tItemData) { return; }
+				
+				_refreshButtonCustomizationForItemData(tItemData);
+				tPane.infobar.refreshItemImageUsingCurrentItemData();
+				_panes.colorPickerPane.infobar.refreshItemImageUsingCurrentItemData();
+				_panes.dyePane.infobar.refreshItemImageUsingCurrentItemData();
+			}
+			
+			private function _refreshButtonCustomizationForItemData(pItemData:ItemData) : void {
+				if(!pItemData) { return; }
+				var tPane:ShopCategoryPane = getShopPane(pItemData.type);
+				tPane.refreshButtonImage(pItemData);
 			}
 
 			private function _colorButtonClicked(pType:ItemType) : void {

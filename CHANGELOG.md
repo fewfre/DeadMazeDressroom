@@ -1,7 +1,14 @@
 ## V1.17 - ?????
 - [Bug] Changed code using stage width/height to use a new constant to avoid an issue where things would be placed offscreen.
 - Moved a bunch of code updates from TFM dressroom
+- Imgur feature overhaul
+	- Now works in air app (only worked on browser before)
+	- Moved button from being on main toolbar to being on the share screen
+	- Instead of forcing the user to open the link for the uploaded file, the imgur link now appears in a "copy" input
 - [Code] `RoundedRectangle` rewritten + renamed to `RoundRectangle` and moved to `com.fewfre.display`
+- [Code] Some small `I18n` and `fewfre` lib tweaks
+- [Code] `WorldPaneManager` added, and some tweaks to logic in `World`
+- [Code] Rewrote MovieClip color update logic for when using color picker
 
 
 ## V1.16b - 28 July 2024
