@@ -8,12 +8,17 @@ package app.world.elements
 	import flash.geom.*;
 	import flash.net.*;
 	import app.world.data.PoseData;
+	import com.fewfre.utils.FewfUtils;
+	import com.fewfre.utils.Fewf;
 
 	public class Character extends Sprite
 	{
 		// Storage
 		public var outfit:Pose;
 		public var animatePose:Boolean;
+		
+		private var _dragging:Boolean = false;
+		private var _dragBounds:Rectangle;
 
 		private var _itemDataMap:Object;
 
@@ -31,12 +36,16 @@ package app.world.elements
 			if(pData.y) this.y = pData.y;
 
 			this.buttonMode = true;
-			this.addEventListener(MouseEvent.MOUSE_DOWN, function () { startDrag(); });
-			this.addEventListener(MouseEvent.MOUSE_UP, function () { stopDrag(); });
+			this.addEventListener(MouseEvent.MOUSE_DOWN, function (e:MouseEvent) {
+				_dragging = true;
+				var bounds:Rectangle = _dragBounds.clone();
+				bounds.x -= e.localX * scaleX;
+				bounds.y -= e.localY * scaleY;
+				startDrag(false, bounds);
+			});
+			Fewf.stage.addEventListener(MouseEvent.MOUSE_UP, function () { if(_dragging) { _dragging = false; stopDrag(); } });
 
-			/****************************
-			* Store Data
-			*****************************/
+			// Store Data
 			_itemDataMap = {};
 			_itemDataMap[ItemType.SKIN] = pData.skin;
 			_itemDataMap[ItemType.FACE] = pData.face;
@@ -59,7 +68,7 @@ package app.world.elements
 		}
 		public function move(pX:Number, pY:Number) : Character { x = pX; y = pY; return this; }
 		public function appendTo(pParent:Sprite): Character { pParent.addChild(this); return this; }
-		
+		// public function copy() : Character { return new Character(null, getParams(), true); }
 
 		public function updatePose(pScale:Number=-1) {
 			var tScale = pScale;
@@ -92,7 +101,35 @@ package app.world.elements
 			});
 			if(animatePose) outfit.play(); else outfit.stopAtLastFrame();
 		}
+		
+		public function setDragBounds(pX:Number, pY:Number, pWidth:Number, pHeight:Number): Character {
+			_dragBounds = new Rectangle(pX, pY, pWidth, pHeight); return this;
+		}
+		public function clampCoordsToDragBounds() : void {
+			this.x = Math.max(_dragBounds.x, Math.min(_dragBounds.right, this.x));
+			this.y = Math.max(_dragBounds.y, Math.min(_dragBounds.bottom, this.y));
+		}
+		
+		/////////////////////////////
+		// Item Data
+		/////////////////////////////
+		public function getItemData(pType:ItemType) : ItemData {
+			return _itemDataMap[pType];
+		}
 
+		public function setItemData(pItem:ItemData) : void {
+			_itemDataMap[pItem.type] = pItem;
+			updatePose();
+		}
+
+		public function removeItem(pType:ItemType) : void {
+			_itemDataMap[pType] = null;
+			updatePose();
+		}
+
+		/////////////////////////////
+		// Share Code
+		/////////////////////////////
 		public function parseParams(pParams:URLVariables) : void {
 			trace(pParams.toString());
 			GameAssets.showAll = pParams.xtr == "1";
@@ -128,12 +165,9 @@ package app.world.elements
 				var tColors = _splitOnUrlColorSeperator(tID); // Get a list of all the colors (ID is first); ex: 5;ffffff;abcdef;169742
 				tID = tColors.splice(0, 1)[0]; // Remove first item and store it as the ID.
 				tData = GameAssets.getItemFromTypeID(pType, tID);
-				if(tColors.length > 0) { tData.color = _hexToInt(tColors[0]); }
+				if(tColors.length > 0) { tData.color = FewfUtils.colorHexStringToInt(tColors[0]); }
 			}
 			_itemDataMap[pType] = pAllowNull ? tData : ( tData == null ? _itemDataMap[pType] : tData );
-		}
-		private function _hexToInt(pVal:String) : int {
-			return parseInt(pVal, 16);
 		}
 		private function _splitOnUrlColorSeperator(pVal:String) : Array {
 			// Used to be , but changed to ; (for atelier801 forum support)
@@ -192,30 +226,10 @@ package app.world.elements
 			if(tData) {
 				pParams[pParam] = tData.id;
 				if(tData.color > -1) {
-					pParams[pParam] += ";"+_intToHex(tData.color);
+					pParams[pParam] += ";"+FewfUtils.colorIntToHexString(tData.color);
 				}
 			}
 			/*else { pParams[pParam] = ''; }*/
-		}
-		private function _intToHex(pVal:int) : String {
-			return pVal.toString(16).toUpperCase();
-		}
-
-		/****************************
-		* Update Data
-		*****************************/
-		public function getItemData(pType:ItemType) : ItemData {
-			return _itemDataMap[pType];
-		}
-
-		public function setItemData(pItem:ItemData) : void {
-			_itemDataMap[pItem.type] = pItem;
-			updatePose();
-		}
-
-		public function removeItem(pType:ItemType) : void {
-			_itemDataMap[pType] = null;
-			updatePose();
 		}
 	}
 }

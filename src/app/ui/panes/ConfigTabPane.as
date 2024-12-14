@@ -38,8 +38,7 @@ package app.ui.panes
 		public var secondaryColorPickerButton:ColorButton;
 
 		// Constructor
-		public function ConfigTabPane(pCharacter:Character)
-		{
+		public function ConfigTabPane(pCharacter:Character) {
 			super();
 			character = pCharacter;
 			

@@ -5,7 +5,6 @@ package app.world
 	import app.ui.buttons.*;
 	import app.ui.common.RoundedRectangle;
 	import app.ui.panes.*;
-	import app.ui.panes.base.PaneManager;
 	import app.ui.panes.base.SidePane;
 	import app.ui.panes.ColorFinderPane;
 	import app.ui.panes.colorpicker.ColorPickerTabPane;
@@ -35,8 +34,8 @@ package app.world
 	public class World extends Sprite
 	{
 		// Storage
-		private var character    : Character;
-		private var _paneManager : PaneManager;
+		private var character          : Character;
+		private var _panes             : WorldPaneManager;
 
 		private var shopTabs           : ShopTabList;
 		private var _toolbox           : Toolbox;
@@ -48,13 +47,6 @@ package app.world
 
 		private var currentlyColoringType:ItemType=null;
 		private var configCurrentlyColoringType:String;
-		
-		// Constants
-		public static const COLOR_PANE_ID:String = "colorPane";
-		public static const CONFIG_PANE_ID:String = "configPane";
-		public static const CONFIG_COLOR_PANE_ID:String = "configColorPane";
-		public static const COLOR_FINDER_PANE_ID:String = "colorFinderPane";
-		public static const DYE_PANE_ID:String = "colorDyePane";
 		
 		// Constructor
 		public function World(pStage:Stage) {
@@ -87,14 +79,14 @@ package app.world
 				face:GameAssets.faces[GameAssets.defaultFaceIndex],
 				params:parms,
 				scale:2.5
-			}).move(180, 375).appendTo(this);
+			}).move(180, 375).setDragBounds(18, 73+15, 375-18-10, ConstantsApp.APP_HEIGHT-(73+15)-25).appendTo(this);
 
 			/////////////////////////////
 			// Setup UI
 			/////////////////////////////
 			var tShop:RoundRectangle = new RoundRectangle(ConstantsApp.SHOP_WIDTH, ConstantsApp.SHOP_HEIGHT).move(450, 10)
 				.appendTo(this).drawAsTray();
-			_paneManager = new PaneManager().appendTo(tShop.root);
+			_panes = new WorldPaneManager().appendTo(tShop.root) as WorldPaneManager;
 			
 			this.shopTabs = new ShopTabList(70, ConstantsApp.SHOP_HEIGHT).move(375, 10).appendTo(this);
 			this.shopTabs.addEventListener(ShopTabList.TAB_CLICKED, _onTabClicked);
@@ -148,7 +140,7 @@ package app.world
 			// Static Panes
 			/////////////////////////////
 			// Item color picker
-			_paneManager.addPane(COLOR_PANE_ID, new ColorPickerTabPane({ hide_default:true }))
+			_panes.addPane(WorldPaneManager.COLOR_PANE, new ColorPickerTabPane({ hide_default:true }))
 				.on(ColorPickerTabPane.EVENT_COLOR_PICKED, _onColorPickChanged)
 				// .on(ColorPickerTabPane.EVENT_DEFAULT_CLICKED, _onDefaultsButtonClicked)
 				.on(Event.CLOSE, _onColorPickerBackClicked)
@@ -156,21 +148,21 @@ package app.world
 					_onColorPickerBackClicked(e);
 					// If item removed we want to fully backout of all color panes
 					_onDyeBackClicked(e);
-					_removeItem(getColorPickerPane().infobar.itemData.type);
+					_removeItem(_panes.colorPickerPane.infobar.itemData.type);
 				});
 			
 			// Dye Picker Pane
-			_paneManager.addPane(DYE_PANE_ID, new DyePane())
+			_panes.addPane(WorldPaneManager.DYE_PANE, new DyePane())
 				.on(DyePane.EVENT_COLOR_PICKED, _onDyeChanged)
 				.on(Event.CLOSE, _onDyeBackClicked)
 				.on(Infobar.ITEM_PREVIEW_CLICKED, function(e){
 					_onDyeBackClicked(e);
-					_removeItem(getDyePane().infobar.itemData.type);
+					_removeItem(_panes.dyePane.infobar.itemData.type);
 				})
 				.on(DyePane.EVENT_OPEN_COLORPICKER, _onDyeCustomPickerClicked);
 			
 			// Config Pane
-			_paneManager.addPane(CONFIG_PANE_ID, new ConfigTabPane(character))
+			_panes.addPane(WorldPaneManager.CONFIG_PANE, new ConfigTabPane(character))
 				.on(ConfigTabPane.EVENT_OPEN_COLORPICKER, function(e:FewfEvent):void{ _configColorButtonClicked(e.data.type, e.data.color); })
 				.on(ConfigTabPane.EVENT_SEX_CHANGE, _onSexChanged)
 				.on(ConfigTabPane.EVENT_FACING_CHANGE, _onFacingChanged)
@@ -178,23 +170,23 @@ package app.world
 				.on(ConfigTabPane.EVENT_SHOW_EXTRA, _onShowExtraToggled);
 
 			// Config color picker
-			_paneManager.addPane(CONFIG_COLOR_PANE_ID, new ColorPickerTabPane({ hide_default:true, hideItemPreview:true }))
+			_panes.addPane(WorldPaneManager.CONFIG_COLOR_PANE, new ColorPickerTabPane({ hide_default:true, hideItemPreview:true }))
 				.on(ColorPickerTabPane.EVENT_COLOR_PICKED, _onConfigColorPickChanged)
-				.on(Event.CLOSE, function(e:Event):void{ _paneManager.openPane(CONFIG_PANE_ID); });
+				.on(Event.CLOSE, function(e:Event):void{ _panes.openPane(WorldPaneManager.CONFIG_PANE); });
 			
 			// Color Finder Pane
-			_paneManager.addPane(COLOR_FINDER_PANE_ID, new ColorFinderPane({ }))
+			_panes.addPane(WorldPaneManager.COLOR_FINDER_PANE, new ColorFinderPane())
 				.on(Event.CLOSE, _onColorFinderBackClicked)
 				.on(ColorFinderPane.EVENT_ITEM_ICON_CLICKED, function(e){
 					_onColorFinderBackClicked(e);
-					_removeItem(getColorFinderPane().infobar.itemData.type);
+					_removeItem(_panes.colorFinderPane.infobar.itemData.type);
 				});
 
 			/////////////////////////////
 			// Create item panes
 			/////////////////////////////
 			for each(var tType:ItemType in ItemType.TYPES_WITH_SHOP_PANES) {
-				_paneManager.addPane(tType.toString(), _setupItemPane(tType));
+				_panes.addPane(WorldPaneManager.itemTypeToId(tType), _setupItemPane(tType));
 				// _setupDirtyPanePopulation(tType);
 			}
 			Fewf.dispatcher.addEventListener(ConstantsApp.DOWNLOAD_ITEM_DATA_IMAGE, _onSaveItemDataAsImage);
@@ -204,11 +196,11 @@ package app.world
 		}
 		
 		// private function _setupDirtyPanePopulation(tType:String) : void {
-		// 	_paneManager.getPane(tType).populateFunction = function():void{
-		// 		_setupPaneButtons(_paneManager.getPane(tType), GameAssets.getItemDataListByType(tType));
+		// 	_panes.getPane(tType).populateFunction = function():void{
+		// 		_setupPaneButtons(_panes.getPane(tType), GameAssets.getItemDataListByType(tType));
 		// 		//_removeItem(tType);
 				
-		// 		var tPane = _paneManager.getPane(tType);
+		// 		var tPane = _panes.getPane(tType);
 		// 		var tData = character.getItemData(tType);
 		// 		if(tData) {
 		// 			for(var b = 0; b < tPane.buttons.length; b++) {
@@ -248,10 +240,11 @@ package app.world
 			// }
 			return tPane;
 		}
-		
+		private function getShopPane(pType:ItemType) : ShopCategoryPane { return _panes.getShopPane(pType); }
+
 		private function _populateShopTabs() : void {
 			var tTabs:Vector.<Object> = new <Object>[
-				{ text:"tab_config", event:CONFIG_PANE_ID },
+				{ text:"tab_config", event:WorldPaneManager.CONFIG_PANE },
 				{ text:"tab_skins", event:ItemType.SKIN.toString() },
 				{ text:"tab_face", event:ItemType.FACE.toString() },
 				{ text:"tab_hair", event:ItemType.HAIR.toString() },
@@ -283,12 +276,13 @@ package app.world
 			if(this.mouseX < this.shopTabs.x) {
 				_toolbox.scaleSlider.updateViaMouseWheelDelta(pEvent.delta);
 				character.scale = _toolbox.scaleSlider.value;
+				character.clampCoordsToDragBounds();
 			}
 		}
 
 		private function _onKeyDownListener(e:KeyboardEvent) : void {
 			if (e.keyCode == Keyboard.RIGHT || e.keyCode == Keyboard.LEFT || e.keyCode == Keyboard.UP || e.keyCode == Keyboard.DOWN){
-				var pane:SidePane = _paneManager.getOpenPane();
+				var pane:SidePane = _panes.getOpenPane();
 				if(pane && pane is ButtonGridSidePane) {
 					(pane as ButtonGridSidePane).handleKeyboardDirectionalInput(e.keyCode);
 				}
@@ -302,6 +296,7 @@ package app.world
 
 		private function _onScaleSliderChange(pEvent:Event):void {
 			character.scale = _toolbox.scaleSlider.value;
+			character.clampCoordsToDragBounds();
 		}
 
 		private function _onShareCodeEntered(pCode:String, pProgressCallback:Function):void {
@@ -325,7 +320,7 @@ package app.world
 				// now update the infobars
 				_populateShopTabs();
 				_updateUIBasedOnCharacter();
-				getConfigPane().updateButtonsBasedOnCurrentData();
+				_panes.configPane.updateButtonsBasedOnCurrentData();
 				
 				// Now tell code box that we are done
 				pProgressCallback("success");
@@ -414,7 +409,7 @@ package app.world
 		}
 		
 		private function _onTabClicked(pEvent:FewfEvent) : void {
-			_paneManager.openPane(pEvent.data.toString());
+			_panes.openPane(pEvent.data.toString());
 		}
 
 		private function _onRandomizeDesignClicked(pEvent:Event) : void {
@@ -502,15 +497,6 @@ package app.world
 		private function _onAboutScreenClosed(e:Event) : void {
 			removeChild(_aboutScreen);
 		}
-
-		//{REGION PaneManager helpers
-			private function getShopPane(pType:ItemType) : ShopCategoryPane { return _paneManager.getPane(pType.toString()) as ShopCategoryPane; }
-			private function getColorPickerPane() : ColorPickerTabPane { return _paneManager.getPane(COLOR_PANE_ID) as ColorPickerTabPane; }
-			private function getConfigColorPickerPane() : ColorPickerTabPane { return _paneManager.getPane(CONFIG_COLOR_PANE_ID) as ColorPickerTabPane; }
-			private function getColorFinderPane() : ColorFinderPane { return _paneManager.getPane(COLOR_FINDER_PANE_ID) as ColorFinderPane; }
-			private function getDyePane() : DyePane { return _paneManager.getPane(DYE_PANE_ID) as DyePane; }
-			private function getConfigPane() : ConfigTabPane { return _paneManager.getPane(CONFIG_PANE_ID) as ConfigTabPane; }
-		//}END PaneManager helpers
 			
 		private function _replaceImageWithNewImage(pOldSource:Object, pNew:MovieClip) : void {
 			pNew.x = pOldSource.Image.x;
@@ -530,14 +516,14 @@ package app.world
 				var tData:ItemData = getShopPane(pType).infobar.itemData;
 				var tItem:MovieClip = GameAssets.getColoredItemImage(tData);
 				var tItem2:MovieClip = GameAssets.getColoredItemImage(tData);
-				getColorFinderPane().infobar.addInfo( tData, tItem );
+				_panes.colorFinderPane.infobar.addInfo( tData, tItem );
 				this.currentlyColoringType = pType;
-				getColorFinderPane().setItem(tItem2);
-				_paneManager.openPane(COLOR_FINDER_PANE_ID);
+				_panes.colorFinderPane.setItem(tItem2);
+				_panes.openPane(WorldPaneManager.COLOR_FINDER_PANE);
 			}
 
 			private function _onColorFinderBackClicked(pEvent:Event):void {
-				_paneManager.openPane(getColorFinderPane().infobar.itemData.type.toString());
+				_panes.openPane(_panes.colorFinderPane.infobar.itemData.type.toString());
 			}
 		//}END Color Finder Tab
 
@@ -546,10 +532,10 @@ package app.world
 				if(this.character.getItemData(pType) == null) { return; }
 
 				var tData:ItemData = getShopPane(pType).infobar.itemData;
-				getDyePane().infobar.addInfo( tData, GameAssets.getItemImage(tData) );
+				_panes.dyePane.infobar.addInfo( tData, GameAssets.getItemImage(tData) );
 				this.currentlyColoringType = pType;
-				getDyePane().setColor(tData.color);
-				_paneManager.openPane(DYE_PANE_ID);
+				_panes.dyePane.setColor(tData.color);
+				_panes.openPane(WorldPaneManager.DYE_PANE);
 			}
 			
 			private function _onDyeChanged(pEvent:DataEvent):void {
@@ -559,15 +545,15 @@ package app.world
 			}
 			
 			private function _onDyeColorPickChanged(pEvent:DataEvent):void {
-				getDyePane().setColor( uint(pEvent.data) );
+				_panes.dyePane.setColor( uint(pEvent.data) );
 			}
 			
 			private function _onDyeCustomPickerClicked(pEvent:Event):void {
-				_colorButtonClicked(getDyePane().infobar.itemData.type);
+				_colorButtonClicked(_panes.dyePane.infobar.itemData.type);
 			}
 			
 			private function _onDyeBackClicked(pEvent:Event):void {
-				_paneManager.openPane(getDyePane().infobar.itemData.type.toString());
+				_panes.openPane(_panes.dyePane.infobar.itemData.type.toString());
 			}
 		//}END Dye Tab
 
@@ -579,7 +565,7 @@ package app.world
 					var tColor:uint = uint(e.data.color);
 					// this.character.getItemData(this.currentlyColoringType).colors[e.data.colorIndex] = uint(e.data.color);
 					this.character.getItemData(this.currentlyColoringType).color = tColor;
-					getDyePane().setColor(tColor);
+					_panes.dyePane.setColor(tColor);
 				// }
 				_refreshSelectedItemColor(this.currentlyColoringType);
 			}
@@ -590,7 +576,7 @@ package app.world
 			// 	this.character.getItemData(this.currentlyColoringType).color = -1;
 			// 	_refreshSelectedItemColor(this.currentlyColoringType);
 			// 	/* getColorPickerPane().setupSwatches( this.character.getColors(this.currentlyColoringType) ); */
-			// 	_paneManager.openPane(getColorPickerPane().infoBar.data.type);
+			// 	_panes.openPane(getColorPickerPane().infoBar.data.type);
 			// }
 			
 			private function _refreshSelectedItemColor(pType:ItemType, pForceReplace:Boolean=false) : void {
@@ -602,12 +588,12 @@ package app.world
 					var tItem:MovieClip = GameAssets.getColoredItemImage(tItemData);
 					GameAssets.copyColor(tItem, tPane.buttons[ tPane.selectedButtonIndex ].Image as MovieClip );
 					GameAssets.copyColor(tItem, tPane.infobar.Image );
-					GameAssets.copyColor(tItem, getColorPickerPane().infobar.Image);
+					GameAssets.copyColor(tItem, _panes.colorPickerPane.infobar.Image);
 				} else {
 					_replaceImageWithNewImage(tPane.buttons[ tPane.selectedButtonIndex ], GameAssets.getColoredItemImage(tItemData));
 					/*_replaceImageWithNewImage(tPane.infobar, GameAssets.getColoredItemImage(tItemData));*/
 					tPane.infobar.ChangeImage(GameAssets.getColoredItemImage(tItemData));
-					_replaceImageWithNewImage(getColorPickerPane().infobar, GameAssets.getColoredItemImage(tItemData));
+					_replaceImageWithNewImage(_panes.colorPickerPane.infobar, GameAssets.getColoredItemImage(tItemData));
 				}
 			}
 
@@ -615,23 +601,23 @@ package app.world
 				if(this.character.getItemData(pType) == null) { return; }
 
 				var tData:ItemData = getShopPane(pType).infobar.itemData;
-				getColorPickerPane().infobar.addInfo( tData, GameAssets.getItemImage(tData) );
+				_panes.colorPickerPane.infobar.addInfo( tData, GameAssets.getItemImage(tData) );
 				this.currentlyColoringType = pType;
-				getColorPickerPane().init( tData.uniqId(), new <uint>[ tData.color ], null );
-				_paneManager.openPane(COLOR_PANE_ID);
+				_panes.colorPickerPane.init( tData.uniqId(), new <uint>[ tData.color ], null );
+				_panes.openPane(WorldPaneManager.COLOR_PANE);
 				_refreshSelectedItemColor(pType);
 			}
 
 			private function _onColorPickerBackClicked(pEvent:Event):void {
-				// _paneManager.openPane(getColorPickerPane().infobar.itemData.type.toString());
-				_paneManager.openPane(DYE_PANE_ID);
+				// _panes.openPane(getColorPickerPane().infobar.itemData.type.toString());
+				_panes.openPane(WorldPaneManager.DYE_PANE);
 			}
 		//}END Color Tab
 
 		//{REGION Config Tab
 			private function _onConfigColorPickChanged(pEvent:FewfEvent):void {
 				var tVal:uint = uint(pEvent.data.color);
-				getConfigPane().updateCustomColor(configCurrentlyColoringType, tVal);
+				_panes.configPane.updateCustomColor(configCurrentlyColoringType, tVal);
 			}
 			
 			// When any color type changes, be it via color picker or just button.
@@ -653,8 +639,8 @@ package app.world
 
 			private function _configColorButtonClicked(pConfigType:String, pColor:int) : void {
 				this.configCurrentlyColoringType = pConfigType;
-				getConfigColorPickerPane().init( "config-"+pConfigType, new <uint>[ pColor ], null );
-				_paneManager.openPane(CONFIG_COLOR_PANE_ID);
+				_panes.configColorPickerPane.init( "config-"+pConfigType, new <uint>[ pColor ], null );
+				_panes.openPane(WorldPaneManager.CONFIG_COLOR_PANE);
 			}
 				
 
@@ -671,10 +657,10 @@ package app.world
 							tData = GameAssets.getItemFromTypeID(tType, tData.id.slice(0, -1)+(tNewSexIsMale ? "M" : "F"));
 							if(tData) { character.setItemData(tData); }
 						}
-						/* _setupPaneButtons(_paneManager.getPane(tType), GameAssets.getItemDataListByType(tType)); */
+						/* _setupPaneButtons(_panes.getPane(tType), GameAssets.getItemDataListByType(tType)); */
 					}
 				}
-				_paneManager.dirtyAllPanes();
+				_panes.dirtyAllPanes();
 				character.updatePose();
 				_populateShopTabs();
 			}
@@ -691,12 +677,12 @@ package app.world
 					for(var i in tTypes) { tType = tTypes[i];
 						if(getShopPane(tType)) {
 							if(!character.getItemData(tType) || character.getItemData(tType).tags.indexOf("extra") != -1) _removeItem(tType);
-							/* _setupPaneButtons(_paneManager.getPane(tType), GameAssets.getItemDataListByType(tType)); */
+							/* _setupPaneButtons(_panes.getPane(tType), GameAssets.getItemDataListByType(tType)); */
 						}
 					}
 				}
 				
-				_paneManager.dirtyAllPanes();
+				_panes.dirtyAllPanes();
 				character.updatePose();
 				_populateShopTabs();
 			}

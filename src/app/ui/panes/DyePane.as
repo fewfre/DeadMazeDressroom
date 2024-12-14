@@ -12,6 +12,7 @@ package app.ui.panes
 	import flash.display.Sprite;
 	import flash.events.DataEvent;
 	import flash.events.Event;
+	import com.fewfre.display.ButtonBase;
 
 	public class DyePane extends SidePaneWithInfobar
 	{
@@ -115,7 +116,7 @@ package app.ui.panes
 			updateCustomColor(-1);
 		}
 
-		private function _untoggle(pList:Vector.<Object>, pButton:PushButton=null) : void {
+		private function _untoggle(pList:Vector.<Object>, pButton:ButtonBase=null) : void {
 			if (pButton != null && (
 				pButton is PushButton && (pButton as PushButton).pushed || 
 				pButton is ColorButton && (pButton as ColorButton).selected
