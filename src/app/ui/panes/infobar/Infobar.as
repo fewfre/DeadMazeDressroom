@@ -9,7 +9,6 @@ package app.ui.panes.infobar
 	import app.ui.common.RoundedRectangle;
 	import app.ui.panes.infobar.GridManagementWidget;
 	import app.world.data.ItemData;
-	import com.fewfre.display.ButtonBase;
 	import com.fewfre.display.TextTranslated;
 	import com.fewfre.events.FewfEvent;
 	import com.fewfre.utils.Fewf;
@@ -113,7 +112,7 @@ package app.ui.panes.infobar
 			if(!pData.showBackButton) {
 				_colorWheel = new ScaleButton({ x:80, y:24, obj:new $ColorWheel() }).appendTo(this) as ScaleButton;
 				_colorWheel.move(_imageCont.x + _imageCont.width + _colorWheel.Image.width*0.5 + 10, 25)
-					.on(ButtonBase.CLICK, dispatchEventHandler(COLOR_WHEEL_CLICKED));
+					.onButtonClick(dispatchEventHandler(COLOR_WHEEL_CLICKED));
 				showColorWheel(false);
 			} else {
 				_backButton = new ScaleButton({ x:80, y:24, obj:new $BackArrow() }).appendTo(this) as ScaleButton;
@@ -136,13 +135,13 @@ package app.ui.panes.infobar
 			if(pData.showEyeDropper) {
 				_eyeDropperButton = new SpriteButton({ size:BTN_SIZE, obj_scale:0.45, obj:new $EyeDropper() })
 					.move(0, BTN_Y).appendTo(_leftButtonsTray) as SpriteButton;
-				_eyeDropperButton.on(ButtonBase.CLICK, dispatchEventHandler(EYE_DROPPER_CLICKED));
+				_eyeDropperButton.onButtonClick(dispatchEventHandler(EYE_DROPPER_CLICKED));
 				_eyeDropperButton.disable().alpha = 0;
 			}
 			if(pData.showFavorites) {
 				_favoriteButton = new SpriteButton({ size:BTN_SIZE, obj:new $HeartEmpty(), data:{ pushed:false } });
 				_favoriteButton.move(pData.showEyeDropper ? BTN_SIZE+3 : 0, BTN_Y).appendTo(_leftButtonsTray)
-					.on(ButtonBase.CLICK, function(e):void{
+					.onButtonClick(function(e):void{
 						_updateFavoriteButton(!_favoriteButton.data.pushed);
 						dispatchEvent(new FewfEvent(FAVORITE_CLICKED, { pushed:_favoriteButton.data.pushed }));
 					});
@@ -166,12 +165,12 @@ package app.ui.panes.infobar
 			* Right Side Buttons
 			*********************/
 			_downloadButton = new SpriteButton({ width:BTN_SIZE, height:BTN_SIZE, obj_scale:0.45, obj:new $SimpleDownload() }).move(this.Width-BTN_SIZE, BTN_Y).appendTo(this) as SpriteButton;
-			_downloadButton.addEventListener(ButtonBase.CLICK, _onDownloadClicked);
+			_downloadButton.onButtonClick(_onDownloadClicked);
 			_downloadButton.disable().alpha = 0;
 			
 			if(pData.showQualityButton) {
 				_qualityButton = new PushButton({ x:_downloadButton.x - 43, y:(50-37)*0.5, size:37, obj:new $PoorQualityIcon() }).appendTo(this) as PushButton;
-				_qualityButton.on(ButtonBase.CLICK, function(e):void{ dispatchEvent(new FewfEvent(QUALITY_CLICKED, { pushed:_qualityButton.pushed })); });
+				_qualityButton.onButtonClick(function(e):void{ dispatchEvent(new FewfEvent(QUALITY_CLICKED, { pushed:_qualityButton.pushed })); });
 				_qualityButton.disable().alpha = 0;
 			}
 			

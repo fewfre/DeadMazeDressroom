@@ -11,7 +11,6 @@ package app.ui.panes
 	import app.ui.panes.base.ButtonGridSidePane;
 	import app.ui.panes.infobar.Infobar;
 	import app.world.data.ItemData;
-	import com.fewfre.display.ButtonBase;
 	import com.fewfre.display.Grid;
 	import com.fewfre.display.TextTranslated;
 	import com.fewfre.events.FewfEvent;
@@ -161,8 +160,8 @@ package app.ui.panes
 			if(_type != ItemType.OBJECT) { return; }
 			if(!GameAssets.getItemFromTypeID(ItemType.OBJECT, "41").matches(itemData)) { return; }
 			
-			new ScaleButton({ x:50, y:12, obj:new $PlayButton(), obj_scale:0.5 }).appendTo(cell)
-			.on(ButtonBase.CLICK, function():void{
+			new ScaleButton({ obj:new $PlayButton(), obj_scale:0.5 }).move(50, 12).appendTo(cell)
+			.onButtonClick(function():void{
 				// Mod over total frame (note that frame go to 1 -> max frames, not 0 -> max frames-1)
 				itemData.stopFrame++;
 				itemData.stopFrame %= ((parentButton.Image as MovieClip).totalFrames+1);

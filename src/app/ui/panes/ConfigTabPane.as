@@ -78,7 +78,7 @@ package app.ui.panes
 			}
 			hairColorButtons.push( hairColorPickerButton = _newColorPickerButton(GameAssets.hairColor, xx+cbo + (spacing*10), yy+cbo-(spacing*0.5), sizex).appendTo(this) as ColorButton );
 			_registerClickHandler(hairColorButtons, ButtonBase.CLICK, _onHairColorButtonClicked);
-			hairColorPickerButton.on(ButtonBase.CLICK, function(pEvent:Event):void{ dispatchEvent(new FewfEvent(EVENT_OPEN_COLORPICKER, { type:"hair", color:pEvent.target.color })); });
+			hairColorPickerButton.onButtonClick(function(pEvent:Event):void{ dispatchEvent(new FewfEvent(EVENT_OPEN_COLORPICKER, { type:"hair", color:pEvent.target.color })); });
 			tIndex = GameAssets.hairColors.indexOf(GameAssets.hairColor);
 			hairColorButtons[tIndex > -1 ? tIndex : (hairColorButtons.length-1)].selected = true;
 
@@ -91,7 +91,7 @@ package app.ui.panes
 			}
 			skinColorButtons.push( skinColorPickerButton = _newColorPickerButton(GameAssets.skinColor, xx+cbo + (spacing*i), yy+cbo, sizex).appendTo(this) as ColorButton );
 			_registerClickHandler(skinColorButtons, ButtonBase.CLICK, _onSkinColorButtonClicked);
-			skinColorPickerButton.on(ButtonBase.CLICK, function(pEvent:Event):void{ dispatchEvent(new FewfEvent(EVENT_OPEN_COLORPICKER, { type:"skin", color:pEvent.target.color })); });
+			skinColorPickerButton.onButtonClick(function(pEvent:Event):void{ dispatchEvent(new FewfEvent(EVENT_OPEN_COLORPICKER, { type:"skin", color:pEvent.target.color })); });
 			tIndex = GameAssets.skinColors.indexOf(GameAssets.skinColor);
 			skinColorButtons[tIndex > -1 ? tIndex : (skinColorButtons.length-1)].selected = true;
 
@@ -104,7 +104,7 @@ package app.ui.panes
 			}
 			secondaryColorButtons.push( secondaryColorPickerButton = _newColorPickerButton(GameAssets.secondaryColor, xx+cbo + (spacing*i), yy+cbo, sizex).appendTo(this) as ColorButton );
 			_registerClickHandler(secondaryColorButtons, ButtonBase.CLICK, _onSecondaryColorButtonClicked);
-			secondaryColorPickerButton.on(ButtonBase.CLICK, function(pEvent:Event):void{ dispatchEvent(new FewfEvent(EVENT_OPEN_COLORPICKER, { type:"secondary", color:pEvent.target.color })); });
+			secondaryColorPickerButton.onButtonClick(function(pEvent:Event):void{ dispatchEvent(new FewfEvent(EVENT_OPEN_COLORPICKER, { type:"secondary", color:pEvent.target.color })); });
 			tIndex = GameAssets.secondaryColors.indexOf(GameAssets.secondaryColor);
 			secondaryColorButtons[tIndex > -1 ? tIndex : (secondaryColorButtons.length-1)].selected = true;
 			

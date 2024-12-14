@@ -1,15 +1,13 @@
 package app
 {
-	import app.data.*;
+	import app.data.ConstantsApp;
+	import app.data.GameAssets;
+	import app.ui.screens.ErrorScreen;
 	import app.ui.screens.LoaderDisplay;
 	import app.world.World;
-	
 	import com.fewfre.utils.*;
-
 	import flash.display.*;
 	import flash.events.*;
-	import flash.system.Capabilities;
-	import app.ui.screens.ErrorScreen;
 
 	[SWF(backgroundColor="0x6A7495" , width="900" , height="425")]
 	public class Main extends MovieClip
@@ -57,7 +55,7 @@ package app
 		
 		private function _onPreloadComplete() : void {
 			_config = Fewf.assets.getData("config");
-			_defaultLang = _getDefaultLang(_config.languages["default"]);
+			_defaultLang = Fewf.i18n.getDefaultLang();
 			
 			// Some slight analytics
 			Fewf.assets.lazyLoadImageUrlAsBitmap("https://fewfre.com/images/avatar.jpg?tag=dmdress-swf&pref="+encodeURIComponent(JSON.stringify({
@@ -123,26 +121,6 @@ package app
 				tFunc = null; pCallback = null;
 			};
 			Fewf.assets.addEventListener(AssetManager.LOADING_FINISHED, tFunc);
-		}
-		
-		private function _getDefaultLang(pConfigLang:String) : String {
-			// If user manually picked a language previously, override system check
-			var detectedLang = Fewf.sharedObject.getData("lang") || Capabilities.language;
-			
-			var tFlagDefaultLangExists:Boolean = false;
-			// http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/system/Capabilities.html#language
-			if(detectedLang) {
-				var tLanguages:Array = _config.languages.list;
-				for(var i:Object in tLanguages) {
-					if(detectedLang == tLanguages[i].code || detectedLang == tLanguages[i].code.split("-")[0]) {
-						return tLanguages[i].code;
-					}
-					if(pConfigLang == tLanguages[i].code) {
-						tFlagDefaultLangExists = true;
-					}
-				}
-			}
-			return tFlagDefaultLangExists ? pConfigLang : "en";
 		}
 	}
 }

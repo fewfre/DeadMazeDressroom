@@ -18,24 +18,20 @@ package app.world
 	import app.world.data.*;
 	import app.world.elements.*;
 	
-	import com.adobe.images.*;
 	import com.fewfre.display.*;
-	import com.fewfre.events.*;
+	import com.fewfre.events.FewfEvent;
 	import com.fewfre.utils.*;
-	import com.piterwilson.utils.*;
+	import flash.external.ExternalInterface;
 	
 	import flash.display.*;
 	import flash.events.*
-	import flash.external.*;
-	import flash.geom.*;
-	import flash.net.*;
-	import flash.text.*;
-	import flash.utils.*;
 	import flash.ui.Keyboard;
 	import app.ui.panes.base.ButtonGridSidePane;
 	import ext.ParentApp;
+	import flash.utils.setTimeout;
+	import flash.net.URLVariables;
 	
-	public class World extends MovieClip
+	public class World extends Sprite
 	{
 		// Storage
 		private var character    : Character;
@@ -73,13 +69,13 @@ package app.world
 			/////////////////////////////
 			// Create Character
 			/////////////////////////////
-			var parms:flash.net.URLVariables = null;
+			var parms:URLVariables = null;
 			if(!Fewf.isExternallyLoaded) {
 				try {
 					var urlPath:String = ExternalInterface.call("eval", "window.location.href");
 					if(urlPath && urlPath.indexOf("?") > 0) {
 						urlPath = urlPath.substr(urlPath.indexOf("?") + 1, urlPath.length);
-						parms = new flash.net.URLVariables();
+						parms = new URLVariables();
 						parms.decode(urlPath);
 					}
 				} catch (error:Error) { };
@@ -103,7 +99,9 @@ package app.world
 			this.shopTabs.addEventListener(ShopTabList.TAB_CLICKED, _onTabClicked);
 			_populateShopTabs();
 
-			// Toolbox
+			/////////////////////////////
+			// Top Area
+			/////////////////////////////
 			_toolbox = new Toolbox(character, _onShareCodeEntered).move(188, 28).appendTo(this)
 				.on(Toolbox.SAVE_CLICKED, _onSaveClicked)
 				.on(Toolbox.SHARE_CLICKED, _onShareButtonClicked)
@@ -115,19 +113,23 @@ package app.world
 				.on(Toolbox.RANDOM_CLICKED, _onRandomizeDesignClicked)
 				.on(Toolbox.TRASH_CLICKED, _onTrashButtonClicked);
 			
-			var tLangButton = addChild(new LangButton({ x:22, y:ConstantsApp.APP_HEIGHT-17, width:30, height:25, origin:0.5 }));
-			tLangButton.addEventListener(ButtonBase.CLICK, _onLangButtonClicked);
+			/////////////////////////////
+			// Bottom Left Area
+			/////////////////////////////
+			var tLangButton:SpriteButton = LangScreen.createLangButton({ width:30, height:25, origin:0.5 })
+				.move(22, pStage.stageHeight-17).appendTo(this)
+				.onButtonClick(_onLangButtonClicked) as SpriteButton;
 			
 			// About Screen Button
 			var aboutButton:SpriteButton = new SpriteButton({ size:25, origin:0.5 }).appendTo(this)
 				.move(tLangButton.x+(tLangButton.Width/2)+2+(25/2), ConstantsApp.APP_HEIGHT - 17)
-				.on(ButtonBase.CLICK, _onAboutButtonClicked) as SpriteButton;
+				.onButtonClick(_onAboutButtonClicked) as SpriteButton;
 			new TextBase("?", { size:22, color:0xFFFFFF, bold:true, origin:0.5 }).move(0, -1).appendTo(aboutButton)
 			
 			if(!!(ParentApp.reopenSelectionLauncher())) {
 				new ScaleButton({ obj:new $BackArrow(), obj_scale:0.5, origin:0.5 }).appendTo(this)
-				.move(22, ConstantsApp.APP_HEIGHT-17-28)
-					.on(ButtonBase.CLICK, function():void{ ParentApp.reopenSelectionLauncher()(); });
+					.move(22, ConstantsApp.APP_HEIGHT-17-28)
+					.onButtonClick(function():void{ ParentApp.reopenSelectionLauncher()(); });
 			}
 			
 			/////////////////////////////

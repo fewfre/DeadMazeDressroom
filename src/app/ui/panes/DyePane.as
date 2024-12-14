@@ -1,19 +1,17 @@
 package app.ui.panes
 {
-	import com.fewfre.events.FewfEvent;
-	import com.fewfre.display.*;
-	import com.fewfre.utils.Fewf;
-	import app.data.*;
-	import app.ui.*;
-	import app.ui.buttons.*;
-	import app.world.elements.*;
-	import fl.containers.*;
-	import flash.display.*;
-	import flash.text.*;
-	import flash.events.*;
+	import app.data.ConstantsApp;
+	import app.ui.buttons.ColorButton;
+	import app.ui.buttons.PushButton;
+	import app.ui.buttons.SpriteButton;
 	import app.ui.panes.base.SidePane;
-	import app.ui.panes.infobar.Infobar;
 	import app.ui.panes.base.SidePaneWithInfobar;
+	import app.ui.panes.infobar.Infobar;
+	import com.fewfre.events.FewfEvent;
+	import com.fewfre.utils.Fewf;
+	import flash.display.Sprite;
+	import flash.events.DataEvent;
+	import flash.events.Event;
 
 	public class DyePane extends SidePaneWithInfobar
 	{
@@ -43,8 +41,8 @@ package app.ui.panes
 			// _character = pCharacter;
 			_colors = Fewf.assets.getData("config").colors.dye.concat();
 
-			new SpriteButton({ x:ConstantsApp.PANE_WIDTH*0.5-5, y:80, width:100, height:22, text:"btn_color_defaults", obj:new MovieClip(), origin:0.5 }).appendTo(this)
-				.on(ButtonBase.CLICK, _onDefaultButtonClicked);
+			new SpriteButton({ x:ConstantsApp.PANE_WIDTH*0.5-5, y:80, width:100, height:22, text:"btn_color_defaults", obj:new Sprite(), origin:0.5 }).appendTo(this)
+				.onButtonClick(_onDefaultButtonClicked);
 
 			var i, xx:Number, yy:Number, spacing:Number, sizex:Number, sizey:Number, clr:int, tIndex:int, columns:int=7, columnI:int=0;
 			i = 0; spacing = 34*BUTTON_SCALE; sizex = sizey = 30*BUTTON_SCALE;
@@ -61,11 +59,11 @@ package app.ui.panes
 				}
 				clr = _colors[i] = parseInt(_colors[i]);
 				colorButtons.push( addChild( btn = new ColorButton({ color:clr, x:xx + (spacing*columnI), y:yy, width:sizex, height:sizey }) ) );
-				btn.addEventListener(ButtonBase.CLICK, _onDyeButtonClicked);
+				btn.onButtonClick(_onDyeButtonClicked);
 				columnI++;
 			}
 			colorButtons.push( colorPickerButton = new PushButton({ x:xx + (spacing*columnI), y:yy, width:sizex, height:sizey, origin:0.5, obj:new $ColorWheel(), obj_scale:0.7*BUTTON_SCALE, id:-2 }).appendTo(this) as PushButton );
-			colorPickerButton.on(ButtonBase.CLICK, function(e):void{ dispatchEvent(new Event(EVENT_OPEN_COLORPICKER)) });
+			colorPickerButton.onButtonClick(function(e):void{ dispatchEvent(new Event(EVENT_OPEN_COLORPICKER)) });
 			colorPickerButtonBox = colorPickerButton.addChild(_colorSpriteBox({ color:colorPickerButton.id, size:MINI_BOX_SIZE })) as Sprite;
 			colorPickerButtonBox.addEventListener(PushButton.TOGGLE, _onColorPickerButtonClicked);
 		}
@@ -117,7 +115,7 @@ package app.ui.panes
 			updateCustomColor(-1);
 		}
 
-		private function _untoggle(pList:Vector.<Object>, pButton:ButtonBase=null) : void {
+		private function _untoggle(pList:Vector.<Object>, pButton:PushButton=null) : void {
 			if (pButton != null && (
 				pButton is PushButton && (pButton as PushButton).pushed || 
 				pButton is ColorButton && (pButton as ColorButton).selected
