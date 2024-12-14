@@ -18,7 +18,9 @@
 			{ "code":"lv", "name":"latviešu valoda", "flags_swf_linkage":"$LV" }
 		]
 	},
-	"cachebreaker": null,
+	
+	"upload2imgur_url": "https://projects.fewfre.com/a801/transformice/dressroom/resources/scripts/imgur/upload2imgur.php",
+	
 	"packs": {
 		"outfit": [
 			"Accessoires_visage_01.swf",
