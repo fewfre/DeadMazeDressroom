@@ -85,18 +85,17 @@ package app.world
 				} catch (error:Error) { };
 			}
 
-			this.character = addChild(new Character({ x:180, y:375,
-				skin:GameAssets.skins[GameAssets.defaultSkinIndex],
+			this.character = new Character({ skin:GameAssets.skins[GameAssets.defaultSkinIndex],
 				pose:GameAssets.poses[GameAssets.defaultPoseIndex],
 				face:GameAssets.faces[GameAssets.defaultFaceIndex],
 				params:parms,
 				scale:2.5
-			})) as Character;
+			}).setXY(180, 375).appendTo(this);
 
 			/////////////////////////////
 			// Setup UI
 			/////////////////////////////
-			var tShop:RoundRectangle = new RoundRectangle(ConstantsApp.SHOP_WIDTH, ConstantsApp.APP_HEIGHT).move(450, 10)
+			var tShop:RoundRectangle = new RoundRectangle(ConstantsApp.SHOP_WIDTH, ConstantsApp.SHOP_HEIGHT).move(450, 10)
 				.appendTo(this).drawAsTray();
 			_paneManager = new PaneManager().appendTo(tShop.root);
 			

@@ -27,8 +27,8 @@ package app.world.elements
 			super();
 			animatePose = true;
 
-			this.x = pData.x;
-			this.y = pData.y;
+			if(pData.x) this.x = pData.x;
+			if(pData.y) this.y = pData.y;
 
 			this.buttonMode = true;
 			this.addEventListener(MouseEvent.MOUSE_DOWN, function () { startDrag(); });
@@ -57,6 +57,9 @@ package app.world.elements
 
 			updatePose(pData.scale);
 		}
+		public function setXY(pX:Number, pY:Number) : Character { x = pX; y = pY; return this; }
+		public function appendTo(pParent:Sprite): Character { pParent.addChild(this); return this; }
+		
 
 		public function updatePose(pScale:Number=-1) {
 			var tScale = pScale;
