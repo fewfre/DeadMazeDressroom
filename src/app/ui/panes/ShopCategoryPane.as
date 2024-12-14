@@ -54,7 +54,7 @@ package app.ui.panes
 			// grid.reverse();
 			
 			selectedButtonIndex = -1;
-			this.addInfoBar( new Infobar({ showEyeDropper:_type!=ItemType.POSE, showQualityButton:pType==ItemType.SHIRT||pType==ItemType.PANTS, gridManagement:true }) );
+			this.addInfobar( new Infobar({ showEyeDropper:_type!=ItemType.POSE, showQualityButton:pType==ItemType.SHIRT||pType==ItemType.PANTS, gridManagement:true }) );
 			
 			// We don't want data added right away, add when pane opened
 			// _setupGrid(GameAssets.getItemDataListByType(_type));

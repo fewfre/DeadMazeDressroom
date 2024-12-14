@@ -36,7 +36,7 @@ package app.ui.panes
 		// Constructor
 		public function DyePane() {
 			super();
-			this.addInfoBar( new Infobar({ showBackButton:true, showRefreshButton:false }) )
+			this.addInfobar( new Infobar({ showBackButton:true, showRefreshButton:false }) )
 				.on(Infobar.BACK_CLICKED, _onColorPickerBackClicked)
 				.on(Infobar.ITEM_PREVIEW_CLICKED, function(e){ dispatchEvent(new Event(Infobar.ITEM_PREVIEW_CLICKED)); });
 
