@@ -84,13 +84,12 @@ package app.world
 			/////////////////////////////
 			// Setup UI
 			/////////////////////////////
+			this.shopTabs = new ShopTabList(70, ConstantsApp.SHOP_HEIGHT).move(375, 10).appendTo(this).on(ShopTabList.TAB_CLICKED, _onTabClicked);
+			_populateShopTabs();
+			
 			var tShop:RoundRectangle = new RoundRectangle(ConstantsApp.SHOP_WIDTH, ConstantsApp.SHOP_HEIGHT).move(450, 10)
 				.appendTo(this).drawAsTray();
 			_panes = new WorldPaneManager().appendTo(tShop.root) as WorldPaneManager;
-			
-			this.shopTabs = new ShopTabList(70, ConstantsApp.SHOP_HEIGHT).move(375, 10).appendTo(this);
-			this.shopTabs.addEventListener(ShopTabList.TAB_CLICKED, _onTabClicked);
-			_populateShopTabs();
 
 			/////////////////////////////
 			// Top Area
@@ -223,6 +222,10 @@ package app.world
 			tPane.infobar.on(Infobar.ITEM_PREVIEW_CLICKED, function(){ _removeItem(pType); });
 			tPane.infobar.on(Infobar.EYE_DROPPER_CLICKED, function(){ _eyeDropButtonClicked(pType); });
 			tPane.infobar.on(GridManagementWidget.RANDOMIZE_CLICKED, function(){ _randomItemOfType(pType); });
+			tPane.infobar.on(GridManagementWidget.RANDOMIZE_LOCK_CLICKED, function(e:FewfEvent){
+				character.setItemTypeLock(pType, e.data.locked);
+				shopTabs.getTabButton(WorldPaneManager.itemTypeToId(pType)).setLocked(e.data.locked);
+			});
 			tPane.infobar.on(Infobar.QUALITY_CLICKED, function(e:FewfEvent):void{ _qualityButtonClicked(pType, e.data.pushed); });
 			tPane.infobar.updateQualityButton();
 			
@@ -243,33 +246,20 @@ package app.world
 		private function getShopPane(pType:ItemType) : ShopCategoryPane { return _panes.getShopPane(pType); }
 
 		private function _populateShopTabs() : void {
-			var tTabs:Vector.<Object> = new <Object>[
-				{ text:"tab_config", event:WorldPaneManager.CONFIG_PANE },
-				{ text:"tab_skins", event:ItemType.SKIN.toString() },
-				{ text:"tab_face", event:ItemType.FACE.toString() },
-				{ text:"tab_hair", event:ItemType.HAIR.toString() },
-				{ text:"tab_beards", event:ItemType.BEARD.toString() },
-				{ text:"tab_head", event:ItemType.HEAD.toString() },
-				{ text:"tab_shirts", event:ItemType.SHIRT.toString() },
-				{ text:"tab_pants", event:ItemType.PANTS.toString() },
-				{ text:"tab_shoes", event:ItemType.SHOES.toString() },
-				{ text:"tab_mask", event:ItemType.MASK.toString() },
-				{ text:"tab_belt", event:ItemType.BELT.toString() },
-				{ text:"tab_gloves", event:ItemType.GLOVES.toString() },
-				{ text:"tab_bag", event:ItemType.BAG.toString() },
-				{ text:"tab_objects", event:ItemType.OBJECT.toString() },
-				{ text:"tab_poses", event:ItemType.POSE.toString() }
-			];
-			// Remove extra tabs
-			for(var i:int=tTabs.length-1; i >= 0; i--) {
-				if(!GameAssets.showAll && (tTabs[i].event == ItemType.SKIN || tTabs[i].event == ItemType.FACE)) {
-					tTabs.splice(i, 1);
-				}
-				else if(GameAssets.sex == Sex.FEMALE && tTabs[i].event == ItemType.BEARD) {
-					tTabs.splice(i, 1);
-				}
+			shopTabs.reset(); // Reset so we start with an empty list
+			
+			var tHideTypeMap:Object = {};
+			tHideTypeMap[ItemType.SKIN] = !GameAssets.showAll;
+			tHideTypeMap[ItemType.FACE] = !GameAssets.showAll;
+			tHideTypeMap[ItemType.BEARD] = GameAssets.sex == Sex.FEMALE;
+			
+			shopTabs.addTab("tab_config", WorldPaneManager.CONFIG_PANE);
+			for each(var type:ItemType in ItemType.TYPES_WITH_SHOP_PANES) {
+				if(tHideTypeMap[type]) continue;
+				var tPluralI18n : Boolean = [ItemType.POSE, ItemType.SKIN, ItemType.BEARD, ItemType.SHIRT, ItemType.OBJECT].indexOf(type) > -1;
+				var i18nStr : String = type.toString() + (tPluralI18n ? "s" : "");
+				shopTabs.addTab("tab_"+i18nStr, WorldPaneManager.itemTypeToId(type)).setLocked(character.isItemTypeLocked(type));
 			}
-			this.shopTabs.populate(tTabs);
 		}
 
 		private function _onMouseWheel(pEvent:MouseEvent) : void {
@@ -310,7 +300,9 @@ package app.world
 				params.decode(pCode);
 				
 				// First remove old stuff to prevent conflicts
-				for each(var tItem:ItemType in ItemType.LAYERING) { _removeItem(tItem); }
+				for each(var tItem:ItemType in ItemType.LAYERING) {
+					if(!character.isItemTypeLocked((tItem))) _removeItem(tItem);
+				}
 				_removeItem(ItemType.POSE);
 				
 				// Now update pose
@@ -426,7 +418,7 @@ package app.world
 
 		private function _randomItemOfType(pType:ItemType, pSetToDefault:Boolean=false) : void {
 			var pane:ShopCategoryPane = getShopPane(pType);
-			if(pane.infobar.isRefreshLocked || !pane.buttons.length) { return; }
+			if(character.isItemTypeLocked(pType) || !pane.buttons.length) { return; }
 			
 			if(!pSetToDefault) {
 				pane.chooseRandomItem();
@@ -472,6 +464,12 @@ package app.world
 		private function _onTrashConfirmScreenConfirm(pEvent:Event) : void {
 			for each(var tItem:ItemType in ItemType.LAYERING) { _removeItem(tItem); }
 			_removeItem(ItemType.POSE);
+			
+			// Refresh panes
+			for each(var tType:ItemType in ItemType.TYPES_WITH_SHOP_PANES) {
+				var pane:ShopCategoryPane = getShopPane(tType);
+				pane.infobar.unlockRandomizeButton(); // this will also update `character.setItemTypeLock()`
+			}
 		}
 
 		private function _onTrashConfirmScreenClosed(pEvent:Event) : void {
@@ -521,7 +519,7 @@ package app.world
 			}
 
 			private function _onColorFinderBackClicked(pEvent:Event):void {
-				_panes.openPane(_panes.colorFinderPane.infobar.itemData.type.toString());
+				_panes.openPane(WorldPaneManager.itemTypeToId(_panes.colorFinderPane.infobar.itemData.type));
 			}
 		//}END Color Finder Tab
 
@@ -551,7 +549,7 @@ package app.world
 			}
 			
 			private function _onDyeBackClicked(pEvent:Event):void {
-				_panes.openPane(_panes.dyePane.infobar.itemData.type.toString());
+				_panes.openPane(WorldPaneManager.itemTypeToId(_panes.dyePane.infobar.itemData.type));
 			}
 		//}END Dye Tab
 
@@ -608,7 +606,7 @@ package app.world
 			}
 
 			private function _onColorPickerBackClicked(pEvent:Event):void {
-				// _panes.openPane(getColorPickerPane().infobar.itemData.type.toString());
+				// _panes.openPane(WorldPaneManager.itemTypeToId(getColorPickerPane().infobar.itemData.type));
 				_panes.openPane(WorldPaneManager.DYE_PANE);
 			}
 		//}END Color Tab

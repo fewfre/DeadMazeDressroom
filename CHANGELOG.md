@@ -1,4 +1,6 @@
-## V1.17 - ?????
+## V1.17 - 14 December 2024
+- Locked item categories now show a lock icon on their respective tab button
+- [Code] Rewrote `ShopTabList` to be more dynamic
 - [Bug] Changed code using stage width/height to use a new constant to avoid an issue where things would be placed offscreen.
 - Moved a bunch of code updates from TFM dressroom
 	- Imgur feature overhaul

@@ -10,6 +10,7 @@ package app.world.elements
 	import app.world.data.PoseData;
 	import com.fewfre.utils.FewfUtils;
 	import com.fewfre.utils.Fewf;
+	import flash.utils.Dictionary;
 
 	public class Character extends Sprite
 	{
@@ -20,7 +21,8 @@ package app.world.elements
 		private var _dragging:Boolean = false;
 		private var _dragBounds:Rectangle;
 
-		private var _itemDataMap:Object;
+		private var _itemDataMap:Dictionary; // { [ItemType]: ItemData }
+		private var _itemLockMap:Dictionary; // { [ItemType]: Boolean }
 
 		// Properties
 		public function set scale(pVal:Number) : void { outfit.scaleX = outfit.scaleY = pVal; }
@@ -46,7 +48,7 @@ package app.world.elements
 			Fewf.stage.addEventListener(MouseEvent.MOUSE_UP, function () { if(_dragging) { _dragging = false; stopDrag(); } });
 
 			// Store Data
-			_itemDataMap = {};
+			_itemDataMap = new Dictionary();
 			_itemDataMap[ItemType.SKIN] = pData.skin;
 			_itemDataMap[ItemType.FACE] = pData.face;
 			_itemDataMap[ItemType.HAIR] = pData.hair;
@@ -61,6 +63,8 @@ package app.world.elements
 			_itemDataMap[ItemType.BAG] = pData.bag;
 			_itemDataMap[ItemType.OBJECT] = pData.object;
 			_itemDataMap[ItemType.POSE] = pData.pose;
+			
+			_itemLockMap = new Dictionary();
 
 			if(pData.params) parseParams(pData.params);
 
@@ -128,6 +132,18 @@ package app.world.elements
 		}
 
 		/////////////////////////////
+		// ItemType Locked
+		/////////////////////////////
+		public function isItemTypeLocked(pType:ItemType) : Boolean {
+			return !!_itemLockMap[pType];
+		}
+		
+		public function setItemTypeLock(pType:ItemType, pLocked:Boolean) : void {
+			_itemLockMap[pType] = pLocked;
+			// no need to update pose as this has no direct effect on character, only controlling what changes can be made to it
+		}
+
+		/////////////////////////////
 		// Share Code
 		/////////////////////////////
 		public function parseParams(pParams:URLVariables) : void {
@@ -160,6 +176,7 @@ package app.world.elements
 			/*if(pParams.ff) { GameAssets.facingForward = pParams.ff != "0"; }*/
 		}
 		private function _setParamToType(pParams:URLVariables, pType:ItemType, pParam:String, pAllowNull:Boolean=true) {
+			if(isItemTypeLocked(pType)) return;
 			var tData:ItemData = null, tID = pParams[pParam];
 			if(tID != null && tID != "") {
 				var tColors = _splitOnUrlColorSeperator(tID); // Get a list of all the colors (ID is first); ex: 5;ffffff;abcdef;169742

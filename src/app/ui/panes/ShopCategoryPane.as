@@ -38,6 +38,7 @@ package app.ui.panes
 		public function get flagWaveInput() : FancyInput { return _flagWaveInput; }
 		
 		public function get type():ItemType { return _type; }
+		public function get isItemTypeLocked():Boolean { return _infobar.isRefreshLocked; }
 		
 		public static const ITEM_TOGGLED : String = 'ITEM_TOGGLED'; // ItemDataEvent
 		
