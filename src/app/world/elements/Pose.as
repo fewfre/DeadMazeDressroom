@@ -23,6 +23,8 @@ package app.world.elements
 			
 			//_createPoseFromData();
 		}
+		public function setXY(pX:Number, pY:Number) : Pose { x = pX; y = pY; return this; }
+		public function appendTo(pParent:Sprite): Pose { pParent.addChild(this); return this; }
 		
 		private function _createPoseFromData(pData:Object=null) : void {
 			var tClass:Class = _poseData.getClass(pData);

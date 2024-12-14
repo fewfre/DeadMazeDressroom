@@ -9,15 +9,17 @@ package app
 	import flash.display.*;
 	import flash.events.*;
 	import flash.system.Capabilities;
+	import app.ui.screens.ErrorScreen;
 
 	[SWF(backgroundColor="0x6A7495" , width="900" , height="425")]
 	public class Main extends MovieClip
 	{
 		// Storage
-		private var _loaderDisplay	: LoaderDisplay;
-		private var _world			: World;
-		private var _config			: Object;
-		private var _defaultLang	: String;
+		private var _loaderDisplay : LoaderDisplay;
+		private var _errorScreen   : ErrorScreen;
+		private var _world         : World;
+		private var _config        : Object;
+		private var _defaultLang   : String;
 
 		// Constructor
 		public function Main() {
@@ -39,7 +41,10 @@ package app
 			
 			BrowserMouseWheelPrevention.init(stage);
 
-			_loaderDisplay = addChild( new LoaderDisplay({ x:ConstantsApp.CENTER_X, y:ConstantsApp.CENTER_Y }) ) as LoaderDisplay;
+			_loaderDisplay = addChild( new LoaderDisplay(ConstantsApp.CENTER_X, ConstantsApp.CENTER_Y) ) as LoaderDisplay;
+			
+			_errorScreen = new ErrorScreen().on(Event.CLOSE, function(e){ removeChild(_errorScreen); });
+			Fewf.dispatcher.addEventListener(ErrorEvent.ERROR, function(e:ErrorEvent){ addChild(_errorScreen); _errorScreen.open(e.text || 'Unknown Error'); });
 			
 			_startPreload();
 		}

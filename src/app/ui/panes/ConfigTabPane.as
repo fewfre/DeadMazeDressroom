@@ -52,7 +52,7 @@ package app.ui.panes
 				new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"btn_male", allowToggleOff:false, data:{ id:Sex.MALE } }).appendTo(this) as PushButton
 				//new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"All", allowToggleOff:false }).appendTo(this) as PushButton
 			];
-			_registerClickHandler(sexButtons, PushButton.STATE_CHANGED_BEFORE, _onSexButtonClicked);
+			_registerClickHandler(sexButtons, PushButton.TOGGLE, _onSexButtonClicked);
 			sexButtons[ GameAssets.sex == Sex.MALE ? 1 : 0].toggleOn();
 			
 			/*i = 0; xx = 285;
@@ -114,7 +114,7 @@ package app.ui.panes
 			advancedButton = new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"btn_extras" }).appendTo(this) as PushButton;
 			advancedButton.Text.size = 11;
 			advancedButton.toggle(GameAssets.showAll);
-			advancedButton.addEventListener(PushButton.STATE_CHANGED_BEFORE, function(pEvent:Event){
+			advancedButton.addEventListener(PushButton.TOGGLE, function(pEvent:Event){
 				dispatchEvent(new Event(EVENT_SHOW_EXTRA));
 			});
 		}
@@ -195,8 +195,6 @@ package app.ui.panes
 		}
 
 		private function _untoggle(pList:Vector.<PushButton>, pButton:PushButton=null) : void {
-			if (pButton != null && pButton.pushed) { return; }
-
 			for(var i:int = 0; i < pList.length; i++) {
 				if (pList[i].pushed && pList[i] != pButton) {
 					pList[i].toggleOff();

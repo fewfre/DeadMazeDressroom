@@ -61,7 +61,7 @@ package app.world.elements
 		public function updatePose(pScale:Number=-1) {
 			var tScale = pScale;
 			if(outfit != null) { tScale = outfit.scaleX; removeChild(outfit); }
-			outfit = addChild(new Pose(getItemData(ItemType.POSE) as PoseData)) as Pose;
+			outfit = new Pose(getItemData(ItemType.POSE) as PoseData).appendTo(this);
 			outfit.scaleX = outfit.scaleY = tScale;
 			// Don't let the pose eat mouse input
 			outfit.mouseChildren = false;

@@ -1,5 +1,7 @@
 ## V1.17 - ?????
 - [Bug] Changed code using stage width/height to use a new constant to avoid an issue where things would be placed offscreen.
+- Moved a bunch of code updates from TFM dressroom
+- [Code] `RoundedRectangle` rewritten + renamed to `RoundRectangle` and moved to `com.fewfre.display`
 
 
 ## V1.16b - 28 July 2024

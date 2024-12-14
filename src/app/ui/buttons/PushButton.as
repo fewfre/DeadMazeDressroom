@@ -1,19 +1,18 @@
 package app.ui.buttons
-{
-	import com.fewfre.display.*;
-	import com.fewfre.utils.*;
-	import app.data.*;
-	import app.ui.*;
-	import flash.display.*;
+{	
+	import app.data.ConstantsApp;
+	import com.fewfre.display.TextTranslated;
+	import com.fewfre.utils.FewfDisplayUtils;
+	import flash.display.DisplayObject;
 	import flash.events.MouseEvent;
-	import flash.text.*;
-	import flash.geom.*;
-	
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
+
 	public class PushButton extends GameButton
 	{
 		// Constants
-		public static const STATE_CHANGED_BEFORE:String="state_changed_before";
-		public static const STATE_CHANGED_AFTER:String="state_changed_after";
+		public static const BEFORE_TOGGLE:String="state_changed_before";
+		public static const TOGGLE:String="state_changed_after";
 		
 		// Storage
 		public var id:int;
@@ -24,8 +23,7 @@ package app.ui.buttons
 		
 		// Constructor
 		// pArgs = { x:Number, y:Number, (width:Number, height:Number OR size:Number), ?obj:DisplayObject, ?obj_scale:Number, ?text:String, ?id:int, ?allowToggleOff:Boolean=true }
-		public function PushButton(pArgs:Object)
-		{
+		public function PushButton(pArgs:Object) {
 			super(pArgs);
 			if(pArgs.id) { id = pArgs.id; }
 			
@@ -66,13 +64,13 @@ package app.ui.buttons
 
 		protected function _renderPressed() : void
 		{
-			_bg.draw(ConstantsApp.COLOR_BUTTON_MOUSE_DOWN, 7, 0x5D7A91, 0x5D7A91, 0x6C8DA8);
+			_bg.draw3d(ConstantsApp.COLOR_BUTTON_MOUSE_DOWN, 0x5D7A91, 0x5D7A91, 0x6C8DA8);
 			if(this.Text) { this.Text.color = 0xFFD800; }
 		}
 
 		public function toggle(pOn:*=null, pFireEvent:Boolean=true) : void
 		{
-			if(pFireEvent) _dispatch(STATE_CHANGED_BEFORE);
+			if(pFireEvent) _dispatch(BEFORE_TOGGLE);
 			
 			this.pushed = pOn != null ? pOn : !this.pushed;
 			if(this.pushed) {
@@ -81,7 +79,7 @@ package app.ui.buttons
 				_renderUnpressed();
 			}
 			
-			if(pFireEvent) _dispatch(STATE_CHANGED_AFTER);
+			if(pFireEvent) _dispatch(TOGGLE);
 		}
 		
 		public function toggleOn(pFireEvent:Boolean=true) : void {
@@ -126,6 +124,16 @@ package app.ui.buttons
 				if(this.Text) this.Text.color = 0xC2C2DA;
 				super._renderOut();
 			}
+		}
+		
+		/////////////////////////////
+		// Static
+		/////////////////////////////
+		public static function withObject(pObj:DisplayObject, pScale:Object=null, pData:Object=null) : PushButton {
+			pData = pData || {};
+			pData.obj = pObj;
+			pData.obj_scale = pScale;
+			return new PushButton(pData);
 		}
 	}
 }

@@ -96,9 +96,9 @@ package app.world
 			/////////////////////////////
 			// Setup UI
 			/////////////////////////////
-			var tShop:RoundedRectangle = new RoundedRectangle(ConstantsApp.SHOP_WIDTH, ConstantsApp.SHOP_HEIGHT).setXY(450, 10)
+			var tShop:RoundRectangle = new RoundRectangle(ConstantsApp.SHOP_WIDTH, ConstantsApp.APP_HEIGHT).move(450, 10)
 				.appendTo(this).drawAsTray();
-			_paneManager = tShop.addChild(new PaneManager()) as PaneManager;
+			_paneManager = new PaneManager().appendTo(tShop.root);
 			
 			this.shopTabs = new ShopTabList(70, ConstantsApp.SHOP_HEIGHT).setXY(375, 10).appendTo(this);
 			this.shopTabs.addEventListener(ShopTabList.TAB_CLICKED, _onTabClicked);
@@ -178,7 +178,7 @@ package app.world
 			// Config color picker
 			_paneManager.addPane(CONFIG_COLOR_PANE_ID, new ColorPickerTabPane({ hide_default:true, hideItemPreview:true }))
 				.on(ColorPickerTabPane.EVENT_COLOR_PICKED, _onConfigColorPickChanged)
-				.on(Event.CLOSE, function(pEvent:Event):void{ _paneManager.openPane(CONFIG_PANE_ID); });
+				.on(Event.CLOSE, function(e:Event):void{ _paneManager.openPane(CONFIG_PANE_ID); });
 			
 			// Color Finder Pane
 			_paneManager.addPane(COLOR_FINDER_PANE_ID, new ColorFinderPane({ }))

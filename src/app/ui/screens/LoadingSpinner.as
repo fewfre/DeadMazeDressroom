@@ -1,6 +1,6 @@
 package app.ui.screens
 {
-	
+	import com.fewfre.display.DisplayWrapper;
 	import flash.display.Sprite;
 	import flash.events.Event;
 
@@ -13,16 +13,13 @@ package app.ui.screens
 			pData = pData || {};
 			if(pData.x) { this.x = pData.x; }
 			if(pData.y) { this.y = pData.y; }
-			var scale:Number = pData.scale ? pData.scale : 2;
 			
-			_loadingSpinner = addChild( new $Loader() ) as Sprite;
-			_loadingSpinner.scaleX = scale;
-			_loadingSpinner.scaleY = scale;
+			_loadingSpinner = DisplayWrapper.wrap(new $Loader(), this).toScale(pData.scale || 2).asSprite;
 			
 			addEventListener(Event.ENTER_FRAME, update);
 		}
 		public function setXY(pX:Number, pY:Number) : LoadingSpinner { x = pX; y = pY; return this; }
-		public function appendTo(target:Sprite): LoadingSpinner { target.addChild(this); return this; }
+		public function appendTo(pParent:Sprite): LoadingSpinner { pParent.addChild(this); return this; }
 		
 		public function destroy():void {
 			removeEventListener(Event.ENTER_FRAME, update);

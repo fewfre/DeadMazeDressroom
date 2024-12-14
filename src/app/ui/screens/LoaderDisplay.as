@@ -1,13 +1,14 @@
 package app.ui.screens
 {
-	import app.ui.common.RoundedRectangle;
+	import com.fewfre.display.RoundRectangle;
 	import com.fewfre.display.TextTranslated;
 	import com.fewfre.events.FewfEvent;
 	import com.fewfre.utils.AssetManager;
 	import com.fewfre.utils.Fewf;
+	import flash.display.Sprite;
 	import flash.events.ProgressEvent;
 
-	public class LoaderDisplay extends RoundedRectangle
+	public class LoaderDisplay extends Sprite
 	{
 		private var _loadingSpinner	: LoadingSpinner;
 		private var _leftToLoadText	: TextTranslated;
@@ -15,16 +16,15 @@ package app.ui.screens
 		
 		// Constructor
 		// pData = { x:Number, y:Number }
-		public function LoaderDisplay(pData:Object=null) {
-			pData = pData || {};
-			pData.origin = 0.5;
-			super(500, 200, pData);
-			this.drawAsTray();
+		public function LoaderDisplay(pX:Number=0, pY:Number=0) {
+			super(); this.x = pX; this.y = pY;
+			
+			new RoundRectangle(500, 200).toOrigin(0.5).drawAsTray().appendTo(this);
 			
 			Fewf.assets.addEventListener(ProgressEvent.PROGRESS, _onLoadProgress);
 			Fewf.assets.addEventListener(AssetManager.PACK_LOADED, _onPackLoaded);
 			
-			_loadingSpinner = addChild(new LoadingSpinner({ y:-45, scale:2 })) as LoadingSpinner;
+			_loadingSpinner = new LoadingSpinner({ y:-45, scale:2 }).appendTo(this);
 			
 			_leftToLoadText = new TextTranslated("loading", { values:"", size:18, x:0, y:10 }).appendToT(this);
 			_loadProgressText = new TextTranslated("loading_progress", { values:"", size:18, x:0, y:35 }).appendToT(this);

@@ -75,9 +75,8 @@ package app.ui.panes.colorpicker
 			_randomizeButton = this.addItem(new SpriteButton({ x:ConstantsApp.PANE_WIDTH - 24 - 11, y:14, width:24, height:24, obj_scale:0.8, obj:new $Dice() })) as SpriteButton;
 			_randomizeButton.addEventListener(ButtonBase.CLICK, function(){ _randomizeAllColors(); });
 			
-			_recentColorsDisplay = new RecentColorsListDisplay({ x:ConstantsApp.PANE_WIDTH/2, y:316+60+17 });
-			_recentColorsDisplay.addEventListener(RecentColorsListDisplay.EVENT_COLOR_PICKED, _onRecentColorBtnClicked);
-			addChild(_recentColorsDisplay);
+			_recentColorsDisplay = new RecentColorsListDisplay().setXY(ConstantsApp.PANE_WIDTH/2, 316+60+18).appendTo(this)
+				.on(RecentColorsListDisplay.EVENT_COLOR_PICKED, _onRecentColorBtnClicked);
 			
 			var historySize = 270;
 			_colorHistory = new ColorHistoryOverlay(historySize);

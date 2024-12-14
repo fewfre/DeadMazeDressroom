@@ -67,7 +67,7 @@ package app.ui.panes
 			colorButtons.push( colorPickerButton = new PushButton({ x:xx + (spacing*columnI), y:yy, width:sizex, height:sizey, origin:0.5, obj:new $ColorWheel(), obj_scale:0.7*BUTTON_SCALE, id:-2 }).appendTo(this) as PushButton );
 			colorPickerButton.on(ButtonBase.CLICK, function(e):void{ dispatchEvent(new Event(EVENT_OPEN_COLORPICKER)) });
 			colorPickerButtonBox = colorPickerButton.addChild(_colorSpriteBox({ color:colorPickerButton.id, size:MINI_BOX_SIZE })) as Sprite;
-			colorPickerButtonBox.addEventListener(PushButton.STATE_CHANGED_BEFORE, _onColorPickerButtonClicked);
+			colorPickerButtonBox.addEventListener(PushButton.TOGGLE, _onColorPickerButtonClicked);
 		}
 
 		// pData = { color:int, box:Sprite[optional], size:Number=20, x:Number[optional], y:Number[optional] }
