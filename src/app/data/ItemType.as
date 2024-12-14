@@ -31,7 +31,7 @@ package app.data
 		
 		// Which ones have panes, and the order the tabs appear in
 		public static const TYPES_WITH_SHOP_PANES : Vector.<ItemType> = new <ItemType>[
-			OBJECT, SKIN, FACE, BEARD, HAIR, HEAD, SHIRT, PANTS, SHOES, MASK, BELT, GLOVES, BAG, POSE ];
+			SKIN, FACE, HAIR, BEARD, HEAD, SHIRT, PANTS, SHOES, MASK, BELT, GLOVES, BAG, OBJECT, POSE ];
 		
 		// Enum Storage + Constructor
 		private var _value: String;

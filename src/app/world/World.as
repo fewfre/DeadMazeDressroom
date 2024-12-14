@@ -436,74 +436,45 @@ package app.world
 			character.updatePose();
 		}
 
-		private function _onShareButtonClicked(pEvent:Event) : void {
-			var tURL = "";
-			try {
-				if(Fewf.isExternallyLoaded) {
-					tURL = this.character.getParams();
-				} else {
-					tURL = ExternalInterface.call("eval", "window.location.origin+window.location.pathname");
-					tURL += "?"+this.character.getParams();
-				}
-			} catch (error:Error) {
-				tURL = "<error creating link>";
-			};
+		//{REGION Screen Logic
+			private function _onShareButtonClicked(e:Event) : void {
+				var tURL = "";
+				try {
+					if(Fewf.isExternallyLoaded) {
+						tURL = this.character.getParams();
+					} else {
+						tURL = ExternalInterface.call("eval", "window.location.origin+window.location.pathname");
+						tURL += "?"+this.character.getParams();
+					}
+				} catch (error:Error) {
+					tURL = "<error creating link>";
+				};
 
-			_shareScreen.open(tURL, character);
-			addChild(_shareScreen);
-		}
-
-		private function _onShareScreenClosed(pEvent:Event) : void {
-			removeChild(_shareScreen);
-		}
-
-		private function _onTrashButtonClicked(pEvent:Event) : void {
-			addChild(trashConfirmScreen);
-		}
-
-		private function _onTrashConfirmScreenConfirm(pEvent:Event) : void {
-			for each(var tItem:ItemType in ItemType.LAYERING) { _removeItem(tItem); }
-			_removeItem(ItemType.POSE);
-			
-			// Refresh panes
-			for each(var tType:ItemType in ItemType.TYPES_WITH_SHOP_PANES) {
-				var pane:ShopCategoryPane = getShopPane(tType);
-				pane.infobar.unlockRandomizeButton(); // this will also update `character.setItemTypeLock()`
+				_shareScreen.open(tURL, character);
+				addChild(_shareScreen);
 			}
-		}
+			private function _onShareScreenClosed(e:Event) : void { removeChild(_shareScreen); }
 
-		private function _onTrashConfirmScreenClosed(pEvent:Event) : void {
-			removeChild(trashConfirmScreen);
-		}
+			private function _onTrashButtonClicked(e:Event) : void { addChild(trashConfirmScreen); }
+			private function _onTrashConfirmScreenClosed(e:Event) : void { removeChild(trashConfirmScreen); }
 
-		private function _onLangButtonClicked(pEvent:Event) : void {
-			_langScreen.open();
-			addChild(_langScreen);
-		}
+			private function _onLangButtonClicked(e:Event) : void { _langScreen.open(); addChild(_langScreen); }
+			private function _onLangScreenClosed(e:Event) : void { removeChild(_langScreen); }
 
-		private function _onLangScreenClosed(pEvent:Event) : void {
-			removeChild(_langScreen);
-		}
+			private function _onAboutButtonClicked(e:Event) : void { _aboutScreen.open(); addChild(_aboutScreen); }
+			private function _onAboutScreenClosed(e:Event) : void { removeChild(_aboutScreen); }
 
-		private function _onAboutButtonClicked(e:Event) : void {
-			_aboutScreen.open();
-			addChild(_aboutScreen);
-		}
-
-		private function _onAboutScreenClosed(e:Event) : void {
-			removeChild(_aboutScreen);
-		}
-			
-		private function _replaceImageWithNewImage(pOldSource:Object, pNew:MovieClip) : void {
-			pNew.x = pOldSource.Image.x;
-			pNew.y = pOldSource.Image.y;
-			pNew.scaleX = pOldSource.Image.scaleX;
-			pNew.scaleY = pOldSource.Image.scaleY;
-			pOldSource.Image.parent.addChild(pNew);
-			pOldSource.Image.parent.removeChild(pOldSource.Image);
-			pOldSource.Image = null;
-			pOldSource.Image = pNew;
-		}
+			private function _onTrashConfirmScreenConfirm(e:Event) : void {
+				for each(var tItem:ItemType in ItemType.LAYERING) { _removeItem(tItem); }
+				_removeItem(ItemType.POSE);
+				
+				// Refresh panes
+				for each(var tType:ItemType in ItemType.TYPES_WITH_SHOP_PANES) {
+					var pane:ShopCategoryPane = getShopPane(tType);
+					pane.infobar.unlockRandomizeButton(); // this will also update `character.setItemTypeLock()`
+				}
+			}
+		//}END Screen Logic
 
 		//{REGION Color Finder Tab
 			private function _eyeDropButtonClicked(pType:ItemType) : void {
