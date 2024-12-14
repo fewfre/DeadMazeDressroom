@@ -119,7 +119,7 @@ package app.ui.panes
 			if(!pItemData || pItemData.type == ItemType.POSE) { return; }
 			
 			var btn:PushButton = this.getButtonWithItemData(pItemData);
-			btn.ChangeImage(GameAssets.getColoredItemImage(pItemData));
+			btn.setImage(GameAssets.getColoredItemImage(pItemData));
 		}
 		
 		/****************************

@@ -47,11 +47,15 @@ package app.ui.panes
 			i = 0; xx = 70; yy = 30; spacing = 95; sizex = 80; sizey = 35;
 			new TextTranslated("label_sex", { x:35, y:yy+3, size:17, originY:0 }).appendToT(this);
 			sexButtons = new <PushButton>[
-				new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"btn_female", allowToggleOff:false, data:{ id:Sex.FEMALE } }).appendTo(this) as PushButton,
-				new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"btn_male", allowToggleOff:false, data:{ id:Sex.MALE } }).appendTo(this) as PushButton
-				//new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"All", allowToggleOff:false }).appendTo(this) as PushButton
+				PushButton.rect(sizex, sizey).setAllowToggleOff(false).setText("btn_female").setData({ id:Sex.FEMALE }).appendTo(this) as PushButton,
+				PushButton.rect(sizex, sizey).setAllowToggleOff(false).setText("btn_male").setData({ id:Sex.MALE }).appendTo(this) as PushButton,
+				// PushButton.rect(sizex, sizey).setAllowToggleOff(false).setText("All").setData({ id:Sex.MALE }).appendTo(this) as PushButton,
 			];
-			_registerClickHandler(sexButtons, PushButton.TOGGLE, _onSexButtonClicked);
+			for each(var btn:PushButton in sexButtons) {
+				btn.move(xx, yy);
+				xx += spacing;
+				btn.onToggle(_onSexButtonClicked);
+			}
 			sexButtons[ GameAssets.sex == Sex.MALE ? 1 : 0].toggleOn();
 			
 			/*i = 0; xx = 285;
@@ -109,11 +113,11 @@ package app.ui.panes
 			
 			// Advanced
 			i = 0; spacing = 39; xx = 90; yy = yy+50; sizex = 80; sizey = 25;
-			new TextTranslated("label_advanced", { x:45, y:yy+3, size:12, originY:0 }).appendToT(this);
-			advancedButton = new PushButton({ x:xx + (spacing*i++), y:yy, width:sizex, height:sizey, text:"btn_extras" }).appendTo(this) as PushButton;
+			new TextTranslated("label_advanced", { size:12, originY:0 }).move(45, yy+3).appendTo(this);
+			advancedButton = PushButton.rect(sizex, sizey).setText("btn_female").move(xx + (spacing*i++), yy).appendTo(this) as PushButton;
 			advancedButton.Text.size = 11;
 			advancedButton.toggle(GameAssets.showAll);
-			advancedButton.addEventListener(PushButton.TOGGLE, function(pEvent:Event){
+			advancedButton.onToggle(function(pEvent:Event){
 				dispatchEvent(new Event(EVENT_SHOW_EXTRA));
 			});
 		}

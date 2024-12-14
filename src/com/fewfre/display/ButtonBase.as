@@ -54,7 +54,8 @@ package com.fewfre.display
 		public function on(type:String, listener:Function, useCapture:Boolean = false): ButtonBase { this.addEventListener(type, listener, useCapture); return this; }
 		public function onButtonClick(listener:Function, useCapture:Boolean = false): ButtonBase { this.addEventListener(ButtonBase.CLICK, listener, useCapture); return this; }
 		public function off(type:String, listener:Function, useCapture:Boolean = false): ButtonBase { this.removeEventListener(type, listener, useCapture); return this; }
-		
+		public function setData(pData:Object): ButtonBase { _returnData = pData; return this; }
+
 		/****************************
 		* Events
 		*****************************/

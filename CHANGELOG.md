@@ -12,6 +12,7 @@
 	- Grid buttons now properly center in empty area on all panes with custom buttons on right side of infobar
 	- Folder button in color finder moved onto infobar
 	- [Code] `ShopTabList` and (some) `PushButton` polish
+	- [Code] `GameButton` updated to have the text and image display logic that Push/Sprite buttons shared moved into it, and added more helper and convenience methods for adding data without using props
 
 
 ## V1.16b - 28 July 2024
