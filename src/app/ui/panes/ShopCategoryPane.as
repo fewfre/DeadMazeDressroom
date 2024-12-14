@@ -153,7 +153,7 @@ package app.ui.panes
 			}
 			var cell:Sprite = new Sprite();
 
-			var shopItemButton:PushButton = new PushButton({ width:grid.cellSize, height:grid.cellSize, obj:shopItem, id:i, data:{ type:_type, id:i, itemID:itemData.id, data:itemData, itemData:itemData, index:buttons.length } }).appendTo(cell) as PushButton;
+			var shopItemButton:PushButton = new PushButton({ width:grid.cellSize, height:grid.cellSize, obj:shopItem, data:{ type:_type, itemID:itemData.id, data:itemData, itemData:itemData, index:buttons.length } }).appendTo(cell) as PushButton;
 			// shopItemButton.addEventListener(PushButton.STATE_CHANGED_AFTER, _onItemToggled);
 			
 			_addGuitarFrameStepperIfNeeded(itemData, cell, shopItemButton);

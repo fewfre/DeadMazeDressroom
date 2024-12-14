@@ -63,9 +63,9 @@ package app.ui.panes
 				btn.onButtonClick(_onDyeButtonClicked);
 				columnI++;
 			}
-			colorButtons.push( colorPickerButton = new PushButton({ x:xx + (spacing*columnI), y:yy, width:sizex, height:sizey, origin:0.5, obj:new $ColorWheel(), obj_scale:0.7*BUTTON_SCALE, id:-2 }).appendTo(this) as PushButton );
+			colorButtons.push( colorPickerButton = new PushButton({ x:xx + (spacing*columnI), y:yy, width:sizex, height:sizey, data:{ color:-2 }, origin:0.5, obj:new $ColorWheel(), obj_scale:0.7*BUTTON_SCALE }).appendTo(this) as PushButton );
 			colorPickerButton.onButtonClick(function(e):void{ dispatchEvent(new Event(EVENT_OPEN_COLORPICKER)) });
-			colorPickerButtonBox = colorPickerButton.addChild(_colorSpriteBox({ color:colorPickerButton.id, size:MINI_BOX_SIZE })) as Sprite;
+			colorPickerButtonBox = colorPickerButton.addChild(_colorSpriteBox({ color:colorPickerButton.data.color, size:MINI_BOX_SIZE })) as Sprite;
 			colorPickerButtonBox.addEventListener(PushButton.TOGGLE, _onColorPickerButtonClicked);
 		}
 
@@ -92,7 +92,7 @@ package app.ui.panes
 			} else {
 				// No dye set
 			}
-			colorPickerButton.id = pColor;
+			colorPickerButton.data.color = pColor;
 			_colorSpriteBox({ color:pColor, box:colorPickerButtonBox, size:MINI_BOX_SIZE });
 		}
 
@@ -137,7 +137,7 @@ package app.ui.panes
 
 		public function updateCustomColor(tColor:int) {
 			// GameAssets.hairColor = tColor;
-			colorPickerButton.id = tColor;
+			colorPickerButton.data.color = tColor;
 			_colorSpriteBox({ color:tColor, box:colorPickerButtonBox, size:MINI_BOX_SIZE });
 			// _character.updatePose();
 			

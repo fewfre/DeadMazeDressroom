@@ -470,7 +470,6 @@ package app.world
 		}
 
 		private function _onTrashConfirmScreenConfirm(pEvent:Event) : void {
-			removeChild(trashConfirmScreen);
 			for each(var tItem:ItemType in ItemType.LAYERING) { _removeItem(tItem); }
 			_removeItem(ItemType.POSE);
 		}
