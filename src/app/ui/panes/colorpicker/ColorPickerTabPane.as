@@ -46,7 +46,7 @@ package app.ui.panes.colorpicker
 			super(1);
 			_colorSwatches = new Vector.<ColorSwatch>();
 			
-			this.addInfobar( new Infobar({ showBackButton:true, hideItemPreview:pData.hideItemPreview }) )
+			this.addInfobar( new Infobar({ showBackButton:true, showDownload:true, hideItemPreview:pData.hideItemPreview }) )
 				.on(Infobar.BACK_CLICKED, _onColorPickerBackClicked)
 				.on(Infobar.ITEM_PREVIEW_CLICKED, function(e){ dispatchEvent(new Event(EVENT_ITEM_ICON_CLICKED)); });
 			

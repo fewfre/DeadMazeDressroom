@@ -52,7 +52,7 @@ package app.ui.panes
 			// don't reverse by default for DeadMaze
 			// grid.reverse();
 			
-			this.addInfobar( new Infobar({ showEyeDropper:_type!=ItemType.POSE, showQualityButton:pType==ItemType.SHIRT||pType==ItemType.PANTS, gridManagement:true }) );
+			this.addInfobar( new Infobar({ showEyeDropper:_type!=ItemType.POSE, showDownload:true, showQualityButton:pType==ItemType.SHIRT||pType==ItemType.PANTS, gridManagement:true }) );
 			
 			// We don't want data added right away, add when pane opened
 			// _setupGrid(GameAssets.getItemDataListByType(_type));

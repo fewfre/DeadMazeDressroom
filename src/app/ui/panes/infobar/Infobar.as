@@ -52,9 +52,10 @@ package app.ui.panes.infobar
 		private var _qualityButton       : PushButton;
 		private var _favoriteButton      : SpriteButton;
 		
+		private var _rightSideTray       : Sprite;
 		private var _downloadButton      : SpriteButton;
 		
-		public var _gridManagementWidget : GridManagementWidget;
+		private var _gridManagementWidget : GridManagementWidget;
 		
 		private static const BTN_SIZE : int = 24;
 		private static const BTN_Y : int = 26;
@@ -67,7 +68,7 @@ package app.ui.panes.infobar
 		
 		// Constructor
 		// pData = { ?showBackButton:bool=false, ?hideItemPreview:bool=false, ?showEyeDropper:bool=false,
-		//           ?showFavorites:bool=false, ?showQualityButton:bool=false, ?gridManagement:(bool|{})=false }
+		//           ?showFavorites:bool=false, ?showDownload:bool=false, ?showQualityButton:bool=false, ?gridManagement:(bool|{})=false }
 		public function Infobar(pData:Object=null) {
 			super();
 			pData = pData || {};
@@ -164,12 +165,15 @@ package app.ui.panes.infobar
 			/********************
 			* Right Side Buttons
 			*********************/
-			_downloadButton = new SpriteButton({ width:BTN_SIZE, height:BTN_SIZE, obj_scale:0.45, obj:new $SimpleDownload() }).move(this.Width-BTN_SIZE, BTN_Y).appendTo(this) as SpriteButton;
-			_downloadButton.onButtonClick(_onDownloadClicked);
-			_downloadButton.disable().alpha = 0;
+			_rightSideTray = DisplayWrapper.wrap(new Sprite(), this).move(this.Width, 0).asSprite;
+			if(pData.showDownload) {
+				_downloadButton = SpriteButton.withObject(new $SimpleDownload(), 0.45, { size:BTN_SIZE }).move(-BTN_SIZE, BTN_Y).appendTo(_rightSideTray) as SpriteButton;
+				_downloadButton.onButtonClick(_onDownloadClicked);
+				_downloadButton.disable().alpha = 0;
+			}
 			
 			if(pData.showQualityButton) {
-				_qualityButton = new PushButton({ x:_downloadButton.x - 43, y:(50-37)*0.5, size:37, obj:new $PoorQualityIcon() }).appendTo(this) as PushButton;
+				_qualityButton = new PushButton({ x:_downloadButton.x - 43, y:(50-37)*0.5, size:37, obj:new $PoorQualityIcon() }).appendTo(_rightSideTray) as PushButton;
 				_qualityButton.onButtonClick(function(e):void{ dispatchEvent(new FewfEvent(QUALITY_CLICKED, { pushed:_qualityButton.pushed })); });
 				_qualityButton.disable().alpha = 0;
 			}
@@ -180,6 +184,8 @@ package app.ui.panes.infobar
 			if(pData.hideItemPreview) {
 				hideImageCont();
 			}
+			
+			_repositionGridManagementWidget();
 		}
 		public function move(pX:Number, pY:Number) : Infobar { x = pX; y = pY; return this; }
 		public function appendTo(pParent:Sprite): Infobar { pParent.addChild(this); return this; }
@@ -208,6 +214,12 @@ package app.ui.panes.infobar
 			_colorWheel.enableToggle(pShow).alpha = pShow ? 1 : 0;
 			_colorWheel.visible = pShow;
 			_rearrangeLeftButtonsTray();
+			_repositionGridManagementWidget();
+		}
+		
+		public function addCustomObjectToRightSideTray(pObj:DisplayObject) : void {
+			_rightSideTray.addChild(pObj);
+			_repositionGridManagementWidget();
 		}
 		
 		public function _rearrangeLeftButtonsTray() : void {
@@ -219,12 +231,29 @@ package app.ui.panes.infobar
 			}
 		}
 		
+		public function _repositionGridManagementWidget() : void {
+			if(_gridManagementWidget) {
+				var ll:Number = 0, rr:Number = _rightSideTray.getRect(this).left;
+				// Find left most x that's that has empty space - note that in most cases we need to assume it's there even
+				// if invisible, since that means it can be toggled on, and we don't want it shifting
+				if(_imageCont && _imageCont.visible) ll += _imageCont.width; // In this case invisible is the same as not existing
+				if(_colorWheel) ll += _colorWheel.Image.width + 10;
+				if(_backButton) ll += _backButton.Image.width + 10;
+				if(_eyeDropperButton) ll += _eyeDropperButton.width + 10;
+				if(_favoriteButton) ll += _favoriteButton.width + 3;
+				// Apply
+				_gridManagementWidget.x = ll + (rr - ll) / 2;
+				// new RoundRectangle(1, 10).move(ll, 0).appendTo(this).drawSolid(0, 0x0000FF);
+				// new RoundRectangle(1, 10).move(rr, 0).appendTo(this).drawSolid(0, 0xFF0000);
+			}
+		}
+		
 		public function hideImageCont() : void {
 			_imageCont.visible = false;
 			_removeItemOverlay.visible = false;
 			if(_colorWheel) _colorWheel.x = _colorWheel.Image.width*0.5 + 10;
 			if(_backButton) _backButton.x = _backButton.Image.width*0.5 + 10;
-			if(_gridManagementWidget) _gridManagementWidget.x = this.Width*0.5; // Center tray
+			_repositionGridManagementWidget();
 		}
 		
 		private function _updateID() : void {
@@ -243,7 +272,7 @@ package app.ui.panes.infobar
 			_updateID();
 			
 			_idText.alpha = 1;
-			_downloadButton.enable().alpha = 1;
+			if(_downloadButton) _downloadButton.enable().alpha = 1;
 			if(_eyeDropperButton) _eyeDropperButton.enable().alpha = 1;
 			if(_qualityButton) _qualityButton.enable().alpha = 1;
 			if(_favoriteButton) {
@@ -259,7 +288,7 @@ package app.ui.panes.infobar
 			
 			_idText.alpha = 0;
 			showColorWheel(false);
-			_downloadButton.disable().alpha = 0;
+			if(_downloadButton) _downloadButton.disable().alpha = 0;
 			if(_eyeDropperButton) _eyeDropperButton.disable().alpha = 0;
 			if(_qualityButton) _qualityButton.disable().alpha = 0;
 			if(_favoriteButton) _favoriteButton.disable().alpha = 0;
