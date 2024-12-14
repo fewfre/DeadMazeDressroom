@@ -107,7 +107,7 @@ package app.ui
 			/****************************
 			* Selectable text field
 			*****************************/
-			new PasteShareCodeInput().appendTo(this).move(18, 33)
+			new PasteShareCodeInput().appendTo(this).move(18, 34)
 				.on(PasteShareCodeInput.CHANGE, function(e:FewfEvent):void{ onShareCodeEntered(e.data.code, e.data.update); });
 
 		}

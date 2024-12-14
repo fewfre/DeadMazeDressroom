@@ -114,7 +114,7 @@ package app.ui.panes
 			// Advanced
 			i = 0; spacing = 39; xx = 90; yy = yy+50; sizex = 80; sizey = 25;
 			new TextTranslated("label_advanced", { size:12, originY:0 }).move(45, yy+3).appendTo(this);
-			advancedButton = PushButton.rect(sizex, sizey).setText("btn_female").move(xx + (spacing*i++), yy).appendTo(this) as PushButton;
+			advancedButton = PushButton.rect(sizex, sizey).setText("btn_extras").move(xx + (spacing*i++), yy).appendTo(this) as PushButton;
 			advancedButton.Text.size = 11;
 			advancedButton.toggle(GameAssets.showAll);
 			advancedButton.onToggle(function(pEvent:Event){

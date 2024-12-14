@@ -13,7 +13,9 @@
 	- Folder button in color finder moved onto infobar
 	- [Code] `ShopTabList` and (some) `PushButton` polish
 	- [Code] `GameButton` updated to have the text and image display logic that Push/Sprite buttons shared moved into it, and added more helper and convenience methods for adding data without using props
-
+	- [Code] Fixed `RoundedRectangle` 3d borders from causing the button to be 1 pixel small on width/height (long standing bug)
+		- Tweaked some values around the app to account for bigger rectangles, and did some extra polish besides
+	- Fixed "scroll to item" logic so items shouldn't be cutoff anymore
 
 ## V1.16b - 28 July 2024
 - Redesign for "copy share code" text fields / copy button to make it feel more polished
