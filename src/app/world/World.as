@@ -192,7 +192,7 @@ package app.world
 			Fewf.dispatcher.addEventListener(ConstantsApp.DOWNLOAD_ITEM_DATA_IMAGE, _onSaveItemDataAsImage);
 
 			// Select First Pane
-			shopTabs.tabs[0].toggleOn();
+			shopTabs.toggleOnFirstTab();
 		}
 		
 		// private function _setupDirtyPanePopulation(tType:String) : void {

@@ -146,7 +146,7 @@ package app.ui.panes
 
 		private function _onSexButtonClicked(pEvent:FewfEvent) {
 			var btn = pEvent.target as PushButton;
-			_untoggle(sexButtons, btn);
+			PushButton.untoggleAll(sexButtons, btn);
 			GameAssets.sex = pEvent.data.id;
 			character.updatePose();
 			dispatchEvent(new Event(EVENT_SEX_CHANGE));
@@ -154,7 +154,7 @@ package app.ui.panes
 
 		// private function _onFacingButtonClicked(pEvent:FewfEvent) {
 		// 	var btn = pEvent.target as PushButton;
-		// 	_untoggle(facingButtons, btn);
+		// 	PushButton.untoggleAll(facingButtons, btn);
 		// 	GameAssets.facingForward = pEvent.data.id;
 		// 	character.updatePose();
 		// 	dispatchEvent(new Event(EVENT_FACING_CHANGE));
@@ -193,14 +193,6 @@ package app.ui.panes
 			secondaryColorPickerButton.color = GameAssets.secondaryColor;
 		}
 
-		private function _untoggle(pList:Vector.<PushButton>, pButton:PushButton=null) : void {
-			for(var i:int = 0; i < pList.length; i++) {
-				if (pList[i].pushed && pList[i] != pButton) {
-					pList[i].toggleOff();
-				}
-			}
-		}
-
 		private function _untoggleColor(pList:Vector.<ColorButton>, pButton:ColorButton=null) : void {
 			if (pButton != null && pButton.selected) { return; }
 
@@ -237,7 +229,7 @@ package app.ui.panes
 		
 		public function updateButtonsBasedOnCurrentData() : void {
 			var tIndex:int, tColor:int;
-			_untoggle(sexButtons);
+			PushButton.untoggleAll(sexButtons);
 			sexButtons[ GameAssets.sex == Sex.MALE ? 1 : 0].toggleOn(false);
 			
 			tColor = GameAssets.hairColor;
