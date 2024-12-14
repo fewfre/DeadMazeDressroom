@@ -30,6 +30,7 @@ package app.world
 	import ext.ParentApp;
 	import flash.utils.setTimeout;
 	import flash.net.URLVariables;
+	import app.world.events.ItemDataEvent;
 	
 	public class World extends Sprite
 	{
@@ -376,32 +377,20 @@ package app.world
 			}
 		}
 
-		private function _onItemToggled(pEvent:FewfEvent) : void {
-			var tType = pEvent.data.type;
-			var tItemArray:Vector.<ItemData> = GameAssets.getItemDataListByType(tType);
-			var tInfoBar:Infobar = getInfoBarByType(tType);
-
-			// De-select all buttons that aren't the clicked one.
-			var tButtons:Vector.<PushButton> = getButtonArrayByType(tType);
-			for(var i:int = 0; i < tButtons.length; i++) {
-				if(tButtons[i].data.id != pEvent.data.id) {
-					if (tButtons[i].pushed)  { tButtons[i].toggleOff(); }
-				}
-			}
-
-			var tPane:ShopCategoryPane = getShopPane(tType);
-			var tButton:PushButton = tPane.getButtonWithItemData(pEvent.data.itemData);
+		private function _onItemToggled(e:ItemDataEvent) : void {
+			var tItemData:ItemData = e.itemData;
+			
+			var tPane:ShopCategoryPane = getShopPane(tItemData.type), tInfobar:Infobar = tPane.infobar;
+			var tButton:PushButton = tPane.getButtonWithItemData(tItemData);
 			// If clicked button is toggled on, equip it. Otherwise remove it.
 			if(tButton.pushed) {
-				var tData:ItemData = tItemArray[pEvent.data.id];
-				/*setCurItemID(tType, tButton.id);*/
-				setCurItemID(tType, pEvent.data.index);
-				this.character.setItemData(tData);
-
-				tInfoBar.addInfo( tData, GameAssets.getColoredItemImage(tData) );
-				tInfoBar.showColorWheel(tData.colorable);
+				tPane.selectedButtonIndex = tButton.id;
+				
+				this.character.setItemData(tItemData);
+				tInfobar.addInfo( tItemData, GameAssets.getColoredItemImage(tItemData) );
+				tInfobar.showColorWheel(tItemData.colorable);
 			} else {
-				_removeItem(tType);
+				_removeItem(tItemData.type);
 			}
 		}
 
@@ -514,33 +503,14 @@ package app.world
 			removeChild(_aboutScreen);
 		}
 
-		//{REGION Get TabPane data
-			private function getShopPane(pType:ItemType) : ShopCategoryPane {
-				return _paneManager.getPane(pType.toString()) as ShopCategoryPane;
-			}
-
-			private function getInfoBarByType(pType:ItemType) : Infobar {
-				return getShopPane(pType).infobar;
-			}
-
-			private function getButtonArrayByType(pType:ItemType) : Vector.<PushButton> {
-				return getShopPane(pType).buttons;
-			}
-
-			private function getCurItemID(pType:ItemType) : int {
-				return getShopPane(pType).selectedButtonIndex;
-			}
-
-			private function setCurItemID(pType:ItemType, pID:int) : void {
-				getShopPane(pType).selectedButtonIndex = pID;
-			}
-			
+		//{REGION PaneManager helpers
+			private function getShopPane(pType:ItemType) : ShopCategoryPane { return _paneManager.getPane(pType.toString()) as ShopCategoryPane; }
 			private function getColorPickerPane() : ColorPickerTabPane { return _paneManager.getPane(COLOR_PANE_ID) as ColorPickerTabPane; }
 			private function getConfigColorPickerPane() : ColorPickerTabPane { return _paneManager.getPane(CONFIG_COLOR_PANE_ID) as ColorPickerTabPane; }
 			private function getColorFinderPane() : ColorFinderPane { return _paneManager.getPane(COLOR_FINDER_PANE_ID) as ColorFinderPane; }
 			private function getDyePane() : DyePane { return _paneManager.getPane(DYE_PANE_ID) as DyePane; }
 			private function getConfigPane() : ConfigTabPane { return _paneManager.getPane(CONFIG_PANE_ID) as ConfigTabPane; }
-		//}END Get TabPane data
+		//}END PaneManager helpers
 			
 		private function _replaceImageWithNewImage(pOldSource:Object, pNew:MovieClip) : void {
 			pNew.x = pOldSource.Image.x;
@@ -557,7 +527,7 @@ package app.world
 			private function _eyeDropButtonClicked(pType:ItemType) : void {
 				if(this.character.getItemData(pType) == null) { return; }
 
-				var tData:ItemData = getInfoBarByType(pType).itemData;
+				var tData:ItemData = getShopPane(pType).infobar.itemData;
 				var tItem:MovieClip = GameAssets.getColoredItemImage(tData);
 				var tItem2:MovieClip = GameAssets.getColoredItemImage(tData);
 				getColorFinderPane().infobar.addInfo( tData, tItem );
@@ -575,7 +545,7 @@ package app.world
 			private function _dyeButtonClicked(pType:ItemType) : void {
 				if(this.character.getItemData(pType) == null) { return; }
 
-				var tData:ItemData = getInfoBarByType(pType).itemData;
+				var tData:ItemData = getShopPane(pType).infobar.itemData;
 				getDyePane().infobar.addInfo( tData, GameAssets.getItemImage(tData) );
 				this.currentlyColoringType = pType;
 				getDyePane().setColor(tData.color);
@@ -626,16 +596,17 @@ package app.world
 			private function _refreshSelectedItemColor(pType:ItemType, pForceReplace:Boolean=false) : void {
 				character.updatePose();
 				
-				var tItemData = this.character.getItemData(pType);
+				var tPane:ShopCategoryPane = getShopPane(pType);
+				var tItemData:ItemData = this.character.getItemData(pType);
 				if(pType != ItemType.SKIN && !pForceReplace) {
 					var tItem:MovieClip = GameAssets.getColoredItemImage(tItemData);
-					GameAssets.copyColor(tItem, getButtonArrayByType(pType)[ getCurItemID(pType) ].Image as MovieClip );
-					GameAssets.copyColor(tItem, getInfoBarByType(pType).Image );
+					GameAssets.copyColor(tItem, tPane.buttons[ tPane.selectedButtonIndex ].Image as MovieClip );
+					GameAssets.copyColor(tItem, tPane.infobar.Image );
 					GameAssets.copyColor(tItem, getColorPickerPane().infobar.Image);
 				} else {
-					_replaceImageWithNewImage(getButtonArrayByType(pType)[ getCurItemID(pType) ], GameAssets.getColoredItemImage(tItemData));
-					/*_replaceImageWithNewImage(getInfoBarByType(pType), GameAssets.getColoredItemImage(tItemData));*/
-					getInfoBarByType(pType).ChangeImage(GameAssets.getColoredItemImage(tItemData));
+					_replaceImageWithNewImage(tPane.buttons[ tPane.selectedButtonIndex ], GameAssets.getColoredItemImage(tItemData));
+					/*_replaceImageWithNewImage(tPane.infobar, GameAssets.getColoredItemImage(tItemData));*/
+					tPane.infobar.ChangeImage(GameAssets.getColoredItemImage(tItemData));
 					_replaceImageWithNewImage(getColorPickerPane().infobar, GameAssets.getColoredItemImage(tItemData));
 				}
 			}
@@ -643,7 +614,7 @@ package app.world
 			private function _colorButtonClicked(pType:ItemType) : void {
 				if(this.character.getItemData(pType) == null) { return; }
 
-				var tData:ItemData = getInfoBarByType(pType).itemData;
+				var tData:ItemData = getShopPane(pType).infobar.itemData;
 				getColorPickerPane().infobar.addInfo( tData, GameAssets.getItemImage(tData) );
 				this.currentlyColoringType = pType;
 				getColorPickerPane().init( tData.uniqId(), new <uint>[ tData.color ], null );
