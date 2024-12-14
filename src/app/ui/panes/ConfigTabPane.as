@@ -45,7 +45,7 @@ package app.ui.panes
 			var i:int, xx:Number, yy:Number, spacing:Number, sizex:Number, sizey:Number, clr:int, tIndex:int;
 
 			i = 0; xx = 70; yy = 30; spacing = 95; sizex = 80; sizey = 35;
-			new TextTranslated("label_sex", { x:35, y:yy+3, size:17, originY:0 }).appendToT(this);
+			new TextTranslated("label_sex", { size:17 }).move(35, yy+sizey/2-1).appendTo(this);
 			sexButtons = new <PushButton>[
 				PushButton.rect(sizex, sizey).setAllowToggleOff(false).setText("btn_female").setData({ id:Sex.FEMALE }).appendTo(this) as PushButton,
 				PushButton.rect(sizex, sizey).setAllowToggleOff(false).setText("btn_male").setData({ id:Sex.MALE }).appendTo(this) as PushButton,
@@ -70,54 +70,53 @@ package app.ui.panes
 
 			i = 0; spacing = 34; xx = ConstantsApp.PANE_WIDTH*0.5 - spacing*(10+0.5)*0.5; yy = yy+80; sizex = 30; sizey = 30;
 			var cbo = spacing/2-3;
-			new TextTranslated("label_hair_color", { x:ConstantsApp.PANE_WIDTH*0.5, y:yy-35, size:17, originY:0 }).appendToT(this);
+			new TextTranslated("label_hair_color", { size:17, originY:0 }).move(ConstantsApp.PANE_WIDTH*0.5, yy-35).appendTo(this);
 			hairColorButtons = new Vector.<ColorButton>();
 			for(i = 0; i < GameAssets.hairColors.length; i++) {
 				if(i%10 == 0 && i >= 10) {
 					yy += spacing;
 				}
 				clr = GameAssets.hairColors[i];
-				hairColorButtons.push( new ColorButton({ color:clr, x:xx+cbo + (spacing*(i%10)), y:yy+cbo, width:sizex, height:sizey }).appendTo(this) );
+				hairColorButtons.push( new ColorButton(clr, sizex, sizey).move(xx+cbo + (spacing*(i%10)), yy+cbo).appendTo(this) );
 			}
 			hairColorButtons.push( hairColorPickerButton = _newColorPickerButton(GameAssets.hairColor, xx+cbo + (spacing*10), yy+cbo-(spacing*0.5), sizex).appendTo(this) as ColorButton );
 			_registerClickHandler(hairColorButtons, ButtonBase.CLICK, _onHairColorButtonClicked);
-			hairColorPickerButton.onButtonClick(function(pEvent:Event):void{ dispatchEvent(new FewfEvent(EVENT_OPEN_COLORPICKER, { type:"hair", color:pEvent.target.color })); });
+			hairColorPickerButton.onButtonClick(function(e:Event):void{ dispatchEvent(new FewfEvent(EVENT_OPEN_COLORPICKER, { type:"hair", color:e.target.color })); });
 			tIndex = GameAssets.hairColors.indexOf(GameAssets.hairColor);
 			hairColorButtons[tIndex > -1 ? tIndex : (hairColorButtons.length-1)].selected = true;
 
 			i = 0; spacing = 34; xx = ConstantsApp.PANE_WIDTH*0.5 - spacing*(GameAssets.skinColors.length+0.5)*0.5; yy = yy+80; sizex = 30; sizey = 30;
-			new TextTranslated("label_skin_color", { x:ConstantsApp.PANE_WIDTH*0.5, y:yy-35, size:17, originY:0 }).appendToT(this);
+			new TextTranslated("label_skin_color", { size:17, originY:0 }).move(ConstantsApp.PANE_WIDTH*0.5, yy-35).appendTo(this);
 			skinColorButtons = new Vector.<ColorButton>();
 			for(i = 0; i < GameAssets.skinColors.length; i++) {
 				clr = GameAssets.skinColors[i];
-				skinColorButtons.push( new ColorButton({ color:clr, x:xx+cbo + (spacing*i), y:yy+cbo, width:sizex, height:sizey }).appendTo(this) );
+				skinColorButtons.push( new ColorButton(clr, sizex, sizey).move(xx+cbo + (spacing*i), yy+cbo).appendTo(this) );
 			}
 			skinColorButtons.push( skinColorPickerButton = _newColorPickerButton(GameAssets.skinColor, xx+cbo + (spacing*i), yy+cbo, sizex).appendTo(this) as ColorButton );
 			_registerClickHandler(skinColorButtons, ButtonBase.CLICK, _onSkinColorButtonClicked);
-			skinColorPickerButton.onButtonClick(function(pEvent:Event):void{ dispatchEvent(new FewfEvent(EVENT_OPEN_COLORPICKER, { type:"skin", color:pEvent.target.color })); });
+			skinColorPickerButton.onButtonClick(function(e:Event):void{ dispatchEvent(new FewfEvent(EVENT_OPEN_COLORPICKER, { type:"skin", color:e.target.color })); });
 			tIndex = GameAssets.skinColors.indexOf(GameAssets.skinColor);
 			skinColorButtons[tIndex > -1 ? tIndex : (skinColorButtons.length-1)].selected = true;
 
 			i = 0; spacing = 34; xx = ConstantsApp.PANE_WIDTH*0.5 - spacing*(GameAssets.secondaryColors.length+0.5)*0.5; yy = yy+80; sizex = 30; sizey = 30;
-			new TextTranslated("label_other_color", { x:ConstantsApp.PANE_WIDTH*0.5, y:yy-35, size:17, originY:0 }).appendToT(this);
+			new TextTranslated("label_other_color", { size:17, originY:0 }).move(ConstantsApp.PANE_WIDTH*0.5, yy-35).appendTo(this);
 			secondaryColorButtons = new Vector.<ColorButton>();
 			for(i = 0; i < GameAssets.secondaryColors.length; i++) {
 				clr = GameAssets.secondaryColors[i];
-				secondaryColorButtons.push( new ColorButton({ color:clr, x:xx+cbo + (spacing*i), y:yy+cbo, width:sizex, height:sizey }).appendTo(this) );
+				secondaryColorButtons.push( new ColorButton(clr, sizex, sizey).move(xx+cbo + (spacing*i), yy+cbo).appendTo(this) );
 			}
 			secondaryColorButtons.push( secondaryColorPickerButton = _newColorPickerButton(GameAssets.secondaryColor, xx+cbo + (spacing*i), yy+cbo, sizex).appendTo(this) as ColorButton );
 			_registerClickHandler(secondaryColorButtons, ButtonBase.CLICK, _onSecondaryColorButtonClicked);
-			secondaryColorPickerButton.onButtonClick(function(pEvent:Event):void{ dispatchEvent(new FewfEvent(EVENT_OPEN_COLORPICKER, { type:"secondary", color:pEvent.target.color })); });
+			secondaryColorPickerButton.onButtonClick(function(e:Event):void{ dispatchEvent(new FewfEvent(EVENT_OPEN_COLORPICKER, { type:"secondary", color:e.target.color })); });
 			tIndex = GameAssets.secondaryColors.indexOf(GameAssets.secondaryColor);
 			secondaryColorButtons[tIndex > -1 ? tIndex : (secondaryColorButtons.length-1)].selected = true;
 			
 			// Advanced
 			i = 0; spacing = 39; xx = 90; yy = yy+50; sizex = 80; sizey = 25;
-			new TextTranslated("label_advanced", { size:12, originY:0 }).move(45, yy+3).appendTo(this);
-			advancedButton = PushButton.rect(sizex, sizey).setText("btn_extras").move(xx + (spacing*i++), yy).appendTo(this) as PushButton;
-			advancedButton.Text.size = 11;
+			new TextTranslated("label_advanced", { size:12 }).move(45, yy+sizey/2-1).appendTo(this);
+			advancedButton = PushButton.rect(sizex, sizey).setText("btn_extras", { size:11 }).move(xx + (spacing*i++), yy).appendTo(this) as PushButton;
 			advancedButton.toggle(GameAssets.showAll);
-			advancedButton.onToggle(function(pEvent:Event){
+			advancedButton.onToggle(function(e:Event){
 				dispatchEvent(new Event(EVENT_SHOW_EXTRA));
 			});
 		}
@@ -135,7 +134,7 @@ package app.ui.panes
 		}
 		
 		private function _newColorPickerButton(color:int, xx:Number, yy:Number, size:Number) : ColorButton {
-			var btn = new ColorButton({ color:color, x:xx, y:yy, width:size, height:size });
+			var btn = ColorButton.square(color, size).move(xx, yy) as ColorButton;
 			var wheel = new $ColorWheel();
 			wheel.scaleX = wheel.scaleY = 0.5;
 			btn.addChild(wheel);

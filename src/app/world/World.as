@@ -74,12 +74,11 @@ package app.world
 				} catch (error:Error) { };
 			}
 
-			this.character = new Character({ skin:GameAssets.skins[GameAssets.defaultSkinIndex],
-				pose:GameAssets.poses[GameAssets.defaultPoseIndex],
-				face:GameAssets.faces[GameAssets.defaultFaceIndex],
-				params:parms,
-				scale:2.5
-			}).move(180, 375).setDragBounds(18, 73+15, 375-18-10, ConstantsApp.APP_HEIGHT-(73+15)-25).appendTo(this);
+			this.character = new Character(new <ItemData>[
+				GameAssets.skins[GameAssets.defaultSkinIndex],
+				GameAssets.poses[GameAssets.defaultPoseIndex],
+				GameAssets.faces[GameAssets.defaultFaceIndex],
+			], parms, 2.5).move(180, 375).setDragBounds(18, 73+15, 375-18-10, ConstantsApp.APP_HEIGHT-(73+15)-25).appendTo(this);
 
 			/////////////////////////////
 			// Setup UI

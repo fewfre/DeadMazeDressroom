@@ -42,7 +42,7 @@ package app.ui.panes
 			// _character = pCharacter;
 			_colors = Fewf.assets.getData("config").colors.dye.concat();
 
-			new SpriteButton({ x:ConstantsApp.PANE_WIDTH*0.5-5, y:80, width:100, height:22, text:"btn_color_defaults", obj:new Sprite(), origin:0.5 }).appendTo(this)
+			SpriteButton.rect(100, 22).setText("btn_color_defaults").toOrigin(0.5).move(ConstantsApp.PANE_WIDTH*0.5-5, 80).appendTo(this)
 				.onButtonClick(_onDefaultButtonClicked);
 
 			var i, xx:Number, yy:Number, spacing:Number, sizex:Number, sizey:Number, clr:int, tIndex:int, columns:int=7, columnI:int=0;
@@ -59,7 +59,7 @@ package app.ui.panes
 					columnI = 0;
 				}
 				clr = _colors[i] = parseInt(_colors[i]);
-				colorButtons.push( addChild( btn = new ColorButton({ color:clr, x:xx + (spacing*columnI), y:yy, width:sizex, height:sizey }) ) );
+				colorButtons.push( addChild( btn = new ColorButton(clr, sizex, sizey).move(xx + (spacing*columnI), yy) as ColorButton ) );
 				btn.onButtonClick(_onDyeButtonClicked);
 				columnI++;
 			}
