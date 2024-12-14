@@ -63,19 +63,19 @@ package app.ui
 			tX = -tTrayWidth*0.5 + tButtonSize*0.5 + tButtonSizeSpace;
 			
 			new SpriteButton({ size:tButtonSize, obj_scale:0.45, obj:new $Link(), origin:0.5 }).appendTo(tTray)
-				.setXY(tX+tButtonXInc*tButtonsOnLeft, yy)
+				.move(tX+tButtonXInc*tButtonsOnLeft, yy)
 				.on(ButtonBase.CLICK, dispatchEventHandler(SHARE_CLICKED));
 			tButtonsOnLeft++;
 			
 			if(!Fewf.isExternallyLoaded) {
 				_imgurButton = new SpriteButton({ size:tButtonSize, obj_scale:0.45, obj:new $ImgurIcon(), origin:0.5 })
-					.setXY(tX+tButtonXInc*tButtonsOnLeft, yy)
+					.move(tX+tButtonXInc*tButtonsOnLeft, yy)
 					.on(ButtonBase.CLICK, dispatchEventHandler(IMGUR_CLICKED))
 					.appendTo(tTray) as SpriteButton;
 				tButtonsOnLeft++;
 			} else {
 				_clipboardButton = new SpriteButton({ size:tButtonSize, obj_scale:0.415, obj:new $CopyIcon(), origin:0.5 })
-					.setXY(tX+tButtonXInc*tButtonsOnLeft, yy)
+					.move(tX+tButtonXInc*tButtonsOnLeft, yy)
 					.on(ButtonBase.CLICK, dispatchEventHandler(CLIPBOARD_CLICKED))
 					.appendTo(tTray) as SpriteButton;
 				tButtonsOnLeft++;
@@ -85,18 +85,18 @@ package app.ui
 			tX = tTrayWidth*0.5-(tButtonSize*0.5 + tButtonSizeSpace);
 
 			new SpriteButton({ size:tButtonSize, obj_scale:0.42, obj:new $Trash(), origin:0.5 }).appendTo(tTray)
-				.setXY(tX-tButtonXInc*tButtonOnRight, yy)
+				.move(tX-tButtonXInc*tButtonOnRight, yy)
 				.on(ButtonBase.CLICK, dispatchEventHandler(TRASH_CLICKED));
 			tButtonOnRight++;
 
 			// Dice icon based on https://www.iconexperience.com/i_collection/icons/?icon=dice
 			new SpriteButton({ size:tButtonSize, obj_scale:1, obj:new $Dice(), origin:0.5 }).appendTo(tTray)
-				.setXY(tX-tButtonXInc*tButtonOnRight, yy)
+				.move(tX-tButtonXInc*tButtonOnRight, yy)
 				.on(ButtonBase.CLICK, dispatchEventHandler(RANDOM_CLICKED));
 			tButtonOnRight++;
 			
 			_animateButton = new SpriteButton({ size:tButtonSize, obj:new $PlayButton(), obj_scale:0.5, origin:0.5 })
-				.setXY(tX-tButtonXInc*tButtonOnRight, yy)
+				.move(tX-tButtonXInc*tButtonOnRight, yy)
 				.on(ButtonBase.CLICK, dispatchEventHandler(ANIMATION_TOGGLED))
 				.appendTo(tTray) as SpriteButton;
 			toggleAnimateButtonAsset(pCharacter.animatePose);
@@ -108,7 +108,7 @@ package app.ui
 			var tTotalButtons:Number = tButtonsOnLeft+tButtonOnRight;
 			var tSliderWidth:Number = tTrayWidth - tButtonXInc*(tTotalButtons) - 20;
 			tX = -tSliderWidth*0.5+(tButtonXInc*((tButtonsOnLeft-tButtonOnRight)*0.5))-1;
-			scaleSlider = new FancySlider(tSliderWidth).setXY(tX, yy)
+			scaleSlider = new FancySlider(tSliderWidth).moveSelf(tX, yy)
 				.setSliderParams(1, 4, pCharacter.outfit.scaleX)
 				.appendTo(tTray);
 			scaleSlider.addEventListener(FancySlider.CHANGE, dispatchEventHandler(SCALE_SLIDER_CHANGE));
@@ -120,7 +120,7 @@ package app.ui
 				.on(PasteShareCodeInput.CHANGE, function(e:FewfEvent):void{ onShareCodeEntered(e.data.code, e.data.update); });
 
 		}
-		public function setXY(pX:Number, pY:Number) : Toolbox { x = pX; y = pY; return this; }
+		public function move(pX:Number, pY:Number) : Toolbox { x = pX; y = pY; return this; }
 		public function appendTo(target:Sprite): Toolbox { target.addChild(this); return this; }
 		public function on(type:String, listener:Function): Toolbox { this.addEventListener(type, listener); return this; }
 		public function off(type:String, listener:Function): Toolbox { this.removeEventListener(type, listener); return this; }

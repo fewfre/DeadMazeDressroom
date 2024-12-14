@@ -90,7 +90,7 @@ package app.world
 				face:GameAssets.faces[GameAssets.defaultFaceIndex],
 				params:parms,
 				scale:2.5
-			}).setXY(180, 375).appendTo(this);
+			}).move(180, 375).appendTo(this);
 
 			/////////////////////////////
 			// Setup UI
@@ -99,12 +99,12 @@ package app.world
 				.appendTo(this).drawAsTray();
 			_paneManager = new PaneManager().appendTo(tShop.root);
 			
-			this.shopTabs = new ShopTabList(70, ConstantsApp.SHOP_HEIGHT).setXY(375, 10).appendTo(this);
+			this.shopTabs = new ShopTabList(70, ConstantsApp.SHOP_HEIGHT).move(375, 10).appendTo(this);
 			this.shopTabs.addEventListener(ShopTabList.TAB_CLICKED, _onTabClicked);
 			_populateShopTabs();
 
 			// Toolbox
-			_toolbox = new Toolbox(character, _onShareCodeEntered).setXY(188, 28).appendTo(this)
+			_toolbox = new Toolbox(character, _onShareCodeEntered).move(188, 28).appendTo(this)
 				.on(Toolbox.SAVE_CLICKED, _onSaveClicked)
 				.on(Toolbox.SHARE_CLICKED, _onShareButtonClicked)
 				.on(Toolbox.CLIPBOARD_CLICKED, _onClipboardButtonClicked).on(Toolbox.IMGUR_CLICKED, _onImgurButtonClicked)
@@ -120,13 +120,13 @@ package app.world
 			
 			// About Screen Button
 			var aboutButton:SpriteButton = new SpriteButton({ size:25, origin:0.5 }).appendTo(this)
-				.setXY(tLangButton.x+(tLangButton.Width/2)+2+(25/2), ConstantsApp.APP_HEIGHT - 17)
+				.move(tLangButton.x+(tLangButton.Width/2)+2+(25/2), ConstantsApp.APP_HEIGHT - 17)
 				.on(ButtonBase.CLICK, _onAboutButtonClicked) as SpriteButton;
-			new TextBase("?", { size:22, color:0xFFFFFF, bold:true, origin:0.5 }).setXY(0, -1).appendTo(aboutButton)
+			new TextBase("?", { size:22, color:0xFFFFFF, bold:true, origin:0.5 }).move(0, -1).appendTo(aboutButton)
 			
 			if(!!(ParentApp.reopenSelectionLauncher())) {
 				new ScaleButton({ obj:new $BackArrow(), obj_scale:0.5, origin:0.5 }).appendTo(this)
-				.setXY(22, ConstantsApp.APP_HEIGHT-17-28)
+				.move(22, ConstantsApp.APP_HEIGHT-17-28)
 					.on(ButtonBase.CLICK, function():void{ ParentApp.reopenSelectionLauncher()(); });
 			}
 			
@@ -137,7 +137,7 @@ package app.world
 			_langScreen = new LangScreen().on(Event.CLOSE, _onLangScreenClosed);
 			_aboutScreen = new AboutScreen().on(Event.CLOSE, _onAboutScreenClosed);
 			
-			trashConfirmScreen = new TrashConfirmScreen().setXY(337, 65)
+			trashConfirmScreen = new TrashConfirmScreen().move(337, 65)
 				.on(TrashConfirmScreen.CONFIRM, _onTrashConfirmScreenConfirm)
 				.on(Event.CLOSE, _onTrashConfirmScreenClosed);
 

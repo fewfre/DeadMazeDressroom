@@ -28,13 +28,13 @@ package app.ui.screens
 			new RoundRectangle(tWidth, tHeight).toOrigin(0.5).drawAsTray().appendTo(this);
 			
 			// Header
-			new TextTranslated("share_header", { size:25, y:-55 }).appendToT(this);
+			new TextTranslated("share_header", { size:25 }).move(0, -55).appendTo(this);
 			
 			// Copy Field
 			_copyField = new FancyCopyField(tWidth-50).appendTo(this).centerOrigin().move(0, 35);
 			
 			// Close Button
-			ScaleButton.withObject(new $WhiteX()).setXY(tWidth/2 - 5, -tHeight/2 + 5).appendTo(this).onButtonClick(_onCloseClicked);
+			ScaleButton.withObject(new $WhiteX()).move(tWidth/2 - 5, -tHeight/2 + 5).appendTo(this).onButtonClick(_onCloseClicked);
 		}
 		public function on(type:String, listener:Function): ShareScreen { this.addEventListener(type, listener); return this; }
 		public function off(type:String, listener:Function): ShareScreen { this.removeEventListener(type, listener); return this; }
