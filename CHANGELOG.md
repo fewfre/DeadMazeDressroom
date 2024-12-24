@@ -2,6 +2,7 @@
 - Locked item categories now show a lock icon on their respective tab button
 - [Code] Rewrote `ShopTabList` to be more dynamic
 - [Bug] Changed code using stage width/height to use a new constant to avoid an issue where things would be placed offscreen.
+- (24 Dec) Added a small indicator on tabs to make it obvious when a category has an item selected
 - Moved a bunch of code updates from TFM dressroom
 	- Imgur feature overhaul
 		- Now works in air app (only worked on browser before)

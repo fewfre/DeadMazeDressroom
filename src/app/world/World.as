@@ -223,7 +223,7 @@ package app.world
 			tPane.infobar.on(GridManagementWidget.RANDOMIZE_CLICKED, function(){ _randomItemOfType(pType); });
 			tPane.infobar.on(GridManagementWidget.RANDOMIZE_LOCK_CLICKED, function(e:FewfEvent){
 				character.setItemTypeLock(pType, e.data.locked);
-				shopTabs.getTabButton(WorldPaneManager.itemTypeToId(pType)).setLocked(e.data.locked);
+				_updateTabListLockByItemType(pType);
 			});
 			tPane.infobar.on(Infobar.QUALITY_CLICKED, function(e:FewfEvent):void{ _qualityButtonClicked(pType, e.data.pushed); });
 			tPane.infobar.updateQualityButton();
@@ -257,8 +257,18 @@ package app.world
 				if(tHideTypeMap[type]) continue;
 				var tPluralI18n : Boolean = [ItemType.POSE, ItemType.SKIN, ItemType.BEARD, ItemType.SHIRT, ItemType.OBJECT].indexOf(type) > -1;
 				var i18nStr : String = type.toString() + (tPluralI18n ? "s" : "");
-				shopTabs.addTab("tab_"+i18nStr, WorldPaneManager.itemTypeToId(type)).setLocked(character.isItemTypeLocked(type));
+				shopTabs.addTab("tab_"+i18nStr, WorldPaneManager.itemTypeToId(type));
+				_updateTabListLockByItemType(type);
+				_updateTabListItemIndicatorByType(type);
 			}
+		}
+		private function _updateTabListLockByItemType(pType:ItemType) {
+			shopTabs.getTabButton(WorldPaneManager.itemTypeToId(pType)).setLocked(character.isItemTypeLocked(pType));
+		}
+		private function _updateTabListItemIndicatorByType(pType:ItemType) {
+			var tItemData:ItemData = character.getItemData(pType);
+			var tHadIndicator:Boolean = !!tItemData && !tItemData.matches(GameAssets.defaultSkin) && !tItemData.matches(GameAssets.defaultPose);
+			if(shopTabs.getTabButton(WorldPaneManager.itemTypeToId(pType))) shopTabs.getTabButton(WorldPaneManager.itemTypeToId(pType)).setItemIndicator(tHadIndicator);
 		}
 
 		private function _onMouseWheel(pEvent:MouseEvent) : void {
@@ -376,6 +386,7 @@ package app.world
 			} else {
 				_removeItem(tItemData.type);
 			}
+			_updateTabListItemIndicatorByType(tItemData.type);
 		}
 
 		private function _removeItem(pType:ItemType) : void {
@@ -396,6 +407,7 @@ package app.world
 					if(tOldData) tPane.getButtonWithItemData(tOldData).toggleOff();
 				}
 			}
+			_updateTabListItemIndicatorByType(pType);
 		}
 		
 		private function _onTabClicked(pEvent:FewfEvent) : void {
