@@ -11,11 +11,17 @@ package app.ui
 	import flash.events.Event;
 	import com.fewfre.display.RoundRectangle;
 	import com.fewfre.events.FewfEvent;
+	import com.fewfre.display.DisplayWrapper;
+	import flash.events.MouseEvent;
+	import flash.display.Graphics;
+	import app.data.ConstantsApp;
 	
 	public class Toolbox extends Sprite
 	{
 		// Constants
 		public static const SAVE_CLICKED         = "save_clicked";
+		public static const GIF_CLICKED          = "gif_clicked";
+		public static const WEBP_CLICKED         = "webp_clicked";
 		
 		public static const SHARE_CLICKED        = "share_clicked";
 		public static const CLIPBOARD_CLICKED    = "clipboard_clicked";
@@ -27,10 +33,18 @@ package app.ui
 		public static const TRASH_CLICKED        = "trash_clicked";
 		
 		// Storage
-		public var scaleSlider       : FancySlider;
-		private var _downloadButton  : SpriteButton;
-		private var _animateButton   : SpriteButton;
-		private var _clipboardButton : SpriteButton;
+		private var _downloadButton    : SpriteButton;
+		private var _downloadHoverTray : Sprite;
+		private var _gifButton         : SpriteButton;
+		private var _webpButton        : SpriteButton;
+		
+		private var _animateButton     : SpriteButton;
+		private var _clipboardButton   : SpriteButton;
+		
+		private var _scaleSlider         : FancySlider;
+		
+		// Properties
+		public function get scaleSlider() : FancySlider { return _scaleSlider; }
 		
 		// Constructor
 		// onShareCodeEntered: (code, (state:String)=>void)=>void
@@ -41,10 +55,35 @@ package app.ui
 			* Download Button
 			*********************/
 			var tDownloadTray:FrameBase = new FrameBase(66, 66).move(-bg.width*0.5 + 33, 9).appendTo(this);
+			_downloadHoverTray = DisplayWrapper.wrap(new Sprite(), tDownloadTray.root).asSprite;
+			_downloadHoverTray.visible = false;
 			
 			_downloadButton = new SpriteButton({ size:46, obj:new $LargeDownload(), origin:0.5 })
 				.onButtonClick(dispatchEventHandler(SAVE_CLICKED))
 				.appendTo(tDownloadTray.root) as SpriteButton;
+			
+			// Dropdown buttons
+			
+			_gifButton = SpriteButton.rect(46, 16).setTextUntranslated('.gif').toOrigin(0.5).move(0, 42)
+				.onButtonClick(dispatchEventHandler(GIF_CLICKED))
+				.appendTo(_downloadHoverTray) as SpriteButton;
+			
+			_webpButton = SpriteButton.rect(46, 16).setTextUntranslated('.webp').toOrigin(0.5).move(0, 42+_gifButton.Height+2)
+				.onButtonClick(dispatchEventHandler(WEBP_CLICKED))
+				.appendTo(_downloadHoverTray) as SpriteButton;
+			
+			// Draw rectangle to act as hitbox for mouse over
+			_downloadHoverTray.graphics.beginFill(0, 0);
+			_downloadHoverTray.graphics.drawRect(-_gifButton.Width/2, 0, _gifButton.Width, _webpButton.y+_webpButton.Height/2);
+			_downloadHoverTray.graphics.endFill();
+			
+			if(ConstantsApp.ANIMATION_DOWNLOAD_ENABLED) {
+				_downloadButton.on(MouseEvent.MOUSE_OVER, _showDownloadHoverTray);
+				_downloadHoverTray.addEventListener(MouseEvent.MOUSE_OVER, _showDownloadHoverTray);
+				
+				_downloadButton.on(MouseEvent.MOUSE_OUT, _hideDownloadHoverTray);
+				_downloadHoverTray.addEventListener(MouseEvent.MOUSE_OUT, _hideDownloadHoverTray);
+			}
 			
 			/********************
 			* Toolbar Buttons
@@ -99,7 +138,7 @@ package app.ui
 			var tTotalButtons:Number = tButtonsOnLeft+tButtonOnRight;
 			var tSliderWidth:Number = tTrayWidth - tButtonXInc*(tTotalButtons) - 20;
 			xx = -tSliderWidth*0.5+(tButtonXInc*((tButtonsOnLeft-tButtonOnRight)*0.5))-1;
-			scaleSlider = new FancySlider(tSliderWidth).move(xx, yy)
+			_scaleSlider = new FancySlider(tSliderWidth).move(xx, yy)
 				.setSliderParams(1, 4, pCharacter.outfit.scaleX)
 				.appendTo(tTray)
 				.on(FancySlider.CHANGE, dispatchEventHandler(SCALE_SLIDER_CHANGE));
@@ -121,6 +160,8 @@ package app.ui
 		///////////////////////
 		public function downloadButtonEnable(pOn:Boolean) : void {
 			if(pOn) _downloadButton.enable(); else _downloadButton.disable();
+			if(pOn) _gifButton.enable(); else _gifButton.disable();
+			if(pOn) _webpButton.enable(); else _webpButton.disable();
 		}
 		
 		public function toggleAnimateButtonAsset(pOn:Boolean) : void {
@@ -138,5 +179,8 @@ package app.ui
 		private function dispatchEventHandler(pEventName:String) : Function {
 			return function(e):void{ dispatchEvent(new Event(pEventName)); };
 		}
+		
+		private function _showDownloadHoverTray(e:Event) : void { _downloadHoverTray.visible = true; }
+		private function _hideDownloadHoverTray(e:Event) : void { _downloadHoverTray.visible = false; }
 	}
 }

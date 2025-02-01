@@ -17,13 +17,15 @@ package app.data
 		/****************************
 		* General
 		*****************************/
-		public static const VERSION           : String = "1.17";
+		public static const VERSION           : String = "1.17b";
 		public static const SOURCE_URL        : String = "https://github.com/fewfre/DeadMazeDressroom/blob/master/CHANGELOG.md";
 		public static const DISCORD_URL       : String = "https://discord.gg/DREPH9GqWw";
 
 		public static const NUM_ITEMS_PER_ROW : int = 7;
 
 		public static const ITEM_SAVE_SCALE   : int = 8; // Power of two is probably best
+		
+		public static var ANIMATION_DOWNLOAD_ENABLED: Boolean = true;
 		
 		public static const SHARED_OBJECT_KEY_GLOBAL_LANG: String = 'lang';
 		public static const SHARED_OBJECT_KEY_OUTFITS: String = 'saved-outfits';

@@ -1,3 +1,8 @@
+## V1.17b - 1 February 2025
+- Can now download character as an animated gif/webp
+	- Added gif/webp download buttons in a dropdown when hovering over the top left save button
+
+
 ## V1.17 - 14 December 2024
 - Locked item categories now show a lock icon on their respective tab button
 - [Code] Rewrote `ShopTabList` to be more dynamic
@@ -19,6 +24,7 @@
 	- [Code] Fixed `RoundedRectangle` 3d borders from causing the button to be 1 pixel small on width/height (long standing bug)
 		- Tweaked some values around the app to account for bigger rectangles, and did some extra polish besides
 	- Fixed "scroll to item" logic so items shouldn't be cutoff anymore
+
 
 ## V1.16b - 28 July 2024
 - Redesign for "copy share code" text fields / copy button to make it feel more polished

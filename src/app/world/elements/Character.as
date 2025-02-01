@@ -28,7 +28,7 @@ package app.world.elements
 		public function set scale(pVal:Number) : void { outfit.scaleX = outfit.scaleY = pVal; }
 
 		// Constructor
-		public function Character(pWornItems:Vector.<ItemData>=null, pParams:URLVariables=null, pScale:Number=1)
+		public function Character(pWornItems:Vector.<ItemData>=null, pParams:String=null, pScale:Number=1)
 		{
 			super();
 			animatePose = true;
@@ -57,7 +57,8 @@ package app.world.elements
 		}
 		public function move(pX:Number, pY:Number) : Character { x = pX; y = pY; return this; }
 		public function appendTo(pParent:Sprite): Character { pParent.addChild(this); return this; }
-		// public function copy() : Character { return new Character(null, getParams(), true); }
+		
+		public function copy() : Character { return new Character(null, getParams()); }
 
 		public function updatePose(pScale:Number=-1) {
 			var tScale = pScale;
@@ -131,34 +132,41 @@ package app.world.elements
 		/////////////////////////////
 		// Share Code
 		/////////////////////////////
-		public function parseParams(pParams:URLVariables) : void {
-			trace(pParams.toString());
-			GameAssets.showAll = pParams.xtr == "1";
-			
-			if(pParams.hc) { GameAssets.hairColor = uint("0x"+pParams.hc); }
-			if(pParams.sk) { GameAssets.skinColor = uint("0x"+pParams.sk); }
-			if(pParams.oc) { GameAssets.secondaryColor = uint("0x"+pParams.oc); }
-			
-			GameAssets.tornStates[ItemType.SHIRT] = pParams.t_t == "1";
-			GameAssets.tornStates[ItemType.PANTS] = pParams.b_t == "1";
+		public function parseParams(pCode:String) : Boolean {
+			try {
+				var pParams = new flash.net.URLVariables();
+				pParams.decode(pCode);
+					
+				trace(pParams.toString());
+				GameAssets.showAll = pParams.xtr == "1";
+				
+				if(pParams.hc) { GameAssets.hairColor = uint("0x"+pParams.hc); }
+				if(pParams.sk) { GameAssets.skinColor = uint("0x"+pParams.sk); }
+				if(pParams.oc) { GameAssets.secondaryColor = uint("0x"+pParams.oc); }
+				
+				GameAssets.tornStates[ItemType.SHIRT] = pParams.t_t == "1";
+				GameAssets.tornStates[ItemType.PANTS] = pParams.b_t == "1";
 
-			_setParamToType(pParams, ItemType.SKIN, "s", false);
-			_setParamToType(pParams, ItemType.HAIR, "d");
-			_setParamToType(pParams, ItemType.BEARD, "fh");
-			_setParamToType(pParams, ItemType.FACE, "fc");
-			_setParamToType(pParams, ItemType.HEAD, "h");
-			_setParamToType(pParams, ItemType.MASK, "m");
-			_setParamToType(pParams, ItemType.SHIRT, "t");
-			_setParamToType(pParams, ItemType.PANTS, "b");
-			_setParamToType(pParams, ItemType.BELT, "bt");
-			_setParamToType(pParams, ItemType.GLOVES, "g");
-			_setParamToType(pParams, ItemType.SHOES, "f");
-			_setParamToType(pParams, ItemType.BAG, "bg");
-			_setParamToType(pParams, ItemType.OBJECT, "o");
-			_setParamToType(pParams, ItemType.POSE, "p", false);
-			
-			if(pParams.sex) { GameAssets.sex = pParams.sex == Sex.MALE.toString() ? Sex.MALE : Sex.FEMALE; }
-			/*if(pParams.ff) { GameAssets.facingForward = pParams.ff != "0"; }*/
+				_setParamToType(pParams, ItemType.SKIN, "s", false);
+				_setParamToType(pParams, ItemType.HAIR, "d");
+				_setParamToType(pParams, ItemType.BEARD, "fh");
+				_setParamToType(pParams, ItemType.FACE, "fc");
+				_setParamToType(pParams, ItemType.HEAD, "h");
+				_setParamToType(pParams, ItemType.MASK, "m");
+				_setParamToType(pParams, ItemType.SHIRT, "t");
+				_setParamToType(pParams, ItemType.PANTS, "b");
+				_setParamToType(pParams, ItemType.BELT, "bt");
+				_setParamToType(pParams, ItemType.GLOVES, "g");
+				_setParamToType(pParams, ItemType.SHOES, "f");
+				_setParamToType(pParams, ItemType.BAG, "bg");
+				_setParamToType(pParams, ItemType.OBJECT, "o");
+				_setParamToType(pParams, ItemType.POSE, "p", false);
+				
+				if(pParams.sex) { GameAssets.sex = pParams.sex == Sex.MALE.toString() ? Sex.MALE : Sex.FEMALE; }
+				/*if(pParams.ff) { GameAssets.facingForward = pParams.ff != "0"; }*/
+			}
+			catch (error:Error) { return false; };
+			return true;
 		}
 		private function _setParamToType(pParams:URLVariables, pType:ItemType, pParam:String, pAllowNull:Boolean=true) {
 			if(isItemTypeLocked(pType)) return;
