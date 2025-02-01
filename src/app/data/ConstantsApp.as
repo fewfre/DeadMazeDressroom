@@ -23,6 +23,7 @@ package app.data
 
 		public static const NUM_ITEMS_PER_ROW : int = 7;
 
+		public static const DEFAULT_CHARACTER_SCALE : Number = 2.5;
 		public static const ITEM_SAVE_SCALE   : int = 8; // Power of two is probably best
 		
 		public static var ANIMATION_DOWNLOAD_ENABLED: Boolean = true;

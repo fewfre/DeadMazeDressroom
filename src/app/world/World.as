@@ -78,7 +78,8 @@ package app.world
 				GameAssets.skins[GameAssets.defaultSkinIndex],
 				GameAssets.poses[GameAssets.defaultPoseIndex],
 				GameAssets.faces[GameAssets.defaultFaceIndex],
-			], parms, 2.5).move(180, 375).setDragBounds(18, 73+15, 375-18-10, ConstantsApp.APP_HEIGHT-(73+15)-25).appendTo(this);
+			], parms, ConstantsApp.DEFAULT_CHARACTER_SCALE)
+				.move(180, 375).setDragBounds(18, 73+15, 375-18-10, ConstantsApp.APP_HEIGHT-(73+15)-25).appendTo(this);
 
 			/////////////////////////////
 			// Setup UI
@@ -101,6 +102,7 @@ package app.world
 				.on(Toolbox.CLIPBOARD_CLICKED, _onClipboardButtonClicked)
 				
 				.on(Toolbox.SCALE_SLIDER_CHANGE, _onScaleSliderChange)
+				.on(Toolbox.DEFAULT_SCALE_CLICKED, _onScaleSliderDefaultClicked)
 				
 				.on(Toolbox.ANIMATION_TOGGLED, _onPlayerAnimationToggle)
 				.on(Toolbox.RANDOM_CLICKED, _onRandomizeDesignClicked)
@@ -295,8 +297,13 @@ package app.world
 			}
 		}
 
-		private function _onScaleSliderChange(pEvent:Event):void {
+		private function _onScaleSliderChange(e:Event):void {
 			character.scale = _toolbox.scaleSlider.value;
+			character.clampCoordsToDragBounds();
+		}
+
+		private function _onScaleSliderDefaultClicked(e:Event):void {
+			character.scale = _toolbox.scaleSlider.value = ConstantsApp.DEFAULT_CHARACTER_SCALE;
 			character.clampCoordsToDragBounds();
 		}
 

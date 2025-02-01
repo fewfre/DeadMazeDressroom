@@ -19,29 +19,31 @@ package app.ui
 	public class Toolbox extends Sprite
 	{
 		// Constants
-		public static const SAVE_CLICKED         = "save_clicked";
-		public static const GIF_CLICKED          = "gif_clicked";
-		public static const WEBP_CLICKED         = "webp_clicked";
+		public static const SAVE_CLICKED          = "save_clicked";
+		public static const GIF_CLICKED           = "gif_clicked";
+		public static const WEBP_CLICKED          = "webp_clicked";
 		
-		public static const SHARE_CLICKED        = "share_clicked";
-		public static const CLIPBOARD_CLICKED    = "clipboard_clicked";
+		public static const SHARE_CLICKED         = "share_clicked";
+		public static const CLIPBOARD_CLICKED     = "clipboard_clicked";
 		
-		public static const SCALE_SLIDER_CHANGE  = "scale_slider_change";
+		public static const SCALE_SLIDER_CHANGE   = "scale_slider_change";
+		public static const DEFAULT_SCALE_CLICKED = "default_scale_clicked";
 		
-		public static const ANIMATION_TOGGLED    = "animation_toggled";
-		public static const RANDOM_CLICKED       = "random_clicked";
-		public static const TRASH_CLICKED        = "trash_clicked";
+		public static const ANIMATION_TOGGLED     = "animation_toggled";
+		public static const RANDOM_CLICKED        = "random_clicked";
+		public static const TRASH_CLICKED         = "trash_clicked";
 		
 		// Storage
-		private var _downloadButton    : SpriteButton;
-		private var _downloadHoverTray : Sprite;
-		private var _gifButton         : SpriteButton;
-		private var _webpButton        : SpriteButton;
+		private var _downloadButton     : SpriteButton;
+		private var _downloadHoverTray  : Sprite;
+		private var _gifButton          : SpriteButton;
+		private var _webpButton         : SpriteButton;
 		
-		private var _animateButton     : SpriteButton;
-		private var _clipboardButton   : SpriteButton;
+		private var _animateButton      : SpriteButton;
+		private var _clipboardButton    : SpriteButton;
 		
-		private var _scaleSlider         : FancySlider;
+		private var _scaleSlider        : FancySlider;
+		private var _defaultScaleButton : SpriteButton;
 		
 		// Properties
 		public function get scaleSlider() : FancySlider { return _scaleSlider; }
@@ -142,6 +144,16 @@ package app.ui
 				.setSliderParams(1, 4, pCharacter.outfit.scaleX)
 				.appendTo(tTray)
 				.on(FancySlider.CHANGE, dispatchEventHandler(SCALE_SLIDER_CHANGE));
+			
+			_defaultScaleButton = SpriteButton.rect(100, 14);
+			_defaultScaleButton.setText('btn_color_defaults').toOrigin(0.5).move(xx+tSliderWidth/2, yy-16.5).appendTo(tTray)
+				.onButtonClick(dispatchEventHandler(DEFAULT_SCALE_CLICKED));
+			_defaultScaleButton.alpha = 0;
+				
+			scaleSlider.on(MouseEvent.MOUSE_OVER, function():void{ _defaultScaleButton.alpha = 0.8; });
+			_defaultScaleButton.on(MouseEvent.MOUSE_OVER, function():void{ _defaultScaleButton.alpha = 0.8; });
+			scaleSlider.on(MouseEvent.MOUSE_OUT, function():void{ _defaultScaleButton.alpha = 0; });
+			_defaultScaleButton.on(MouseEvent.MOUSE_OUT, function():void{ _defaultScaleButton.alpha = 0; });
 			
 			/****************************
 			* Selectable text field
