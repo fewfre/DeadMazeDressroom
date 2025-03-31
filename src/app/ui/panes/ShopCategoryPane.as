@@ -147,7 +147,8 @@ package app.ui.panes
 		private function _addButton(itemData:ItemData, pScale:Number, i:int) : void {
 			var shopItem : Sprite;
 			if(itemData.hasTag('invisible')) {
-				shopItem = new TextTranslated("skin_invisible", { size:15, color:0xC2C2DA });
+				shopItem = new $HideEyeIcon();//new TextTranslated("skin_invisible", { size:15, color:0xC2C2DA });
+				shopItem.scaleX = shopItem.scaleY = 0.1;
 			} else {
 				shopItem = GameAssets.getItemImage(itemData);
 				shopItem.scaleX = shopItem.scaleY = pScale;
