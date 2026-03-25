@@ -2,7 +2,8 @@
 - Can now download character as an animated gif/webp
 	- Added gif/webp download buttons in a dropdown when hovering over the top left save button
 - Added button above scale slider (only appears when hovering over slider) to set character scale to default scale
-- (31 Mar) Updated "invisible" button for skin/face to use same icon as tfm dressroom (instead of using text)
+- (31 Mar 2025) Updated "invisible" button for skin/face to use same icon as tfm dressroom (instead of using text)
+- (25 Mar 2026) Fixed issue with script using https on w7, specifically for downloading animated gif
 
 
 ## V1.17 - 14 December 2024
