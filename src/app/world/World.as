@@ -51,7 +51,7 @@ package app.world
 		// Constructor
 		public function World(pStage:Stage) {
 			super();
-			ConstantsApp.ANIMATION_DOWNLOAD_ENABLED = !!Fewf.assets.getData("config").spritesheet2gif_url && (Fewf.isExternallyLoaded || (ExternalInterface.available && ExternalInterface.call("eval", "window.location.href") == null));
+			ConstantsApp.ANIMATION_DOWNLOAD_ENABLED = !!Config.spriteSheetToGifUrl && (Fewf.isExternallyLoaded || (ExternalInterface.available && ExternalInterface.call("eval", "window.location.href") == null));
 			_buildWorld(pStage);
 			pStage.addEventListener(MouseEvent.MOUSE_WHEEL, _onMouseWheel);
 			pStage.addEventListener(KeyboardEvent.KEY_DOWN, _onKeyDownListener);

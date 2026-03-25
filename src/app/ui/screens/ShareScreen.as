@@ -16,6 +16,7 @@ package app.ui.screens
 	import flash.events.MouseEvent;
 	import flash.utils.ByteArray;
 	import app.data.ConstantsApp;
+	import app.data.Config;
 
 	public class ShareScreen extends Sprite
 	{
@@ -45,7 +46,7 @@ package app.ui.screens
 			_copyField = new FancyCopyField(tWidth-50).appendTo(this).centerOrigin().move(0, 35);
 			
 			// Imgur
-			if(!!_getImgurUploadUrl()) {
+			if(!!Config.uploadToImgurUrl) {
 				_imgurButton = SpriteButton.withObject(new $ImgurIcon(), 0.45, { size:28, origin:0.5 })
 						.move(-tWidth/2 + 20, -tHeight/2 + 20)
 						.onButtonClick(_onImgurButtonClicked)
@@ -81,8 +82,6 @@ package app.ui.screens
 		///////////////////////
 		// Imgur
 		///////////////////////
-		private function _getImgurUploadUrl() : String { return Fewf.assets.getData("config").upload2imgur_url; }
-		
 		private function _onImgurButtonClicked(e:Event) : void {
 			_imgurTray.visible = true;
 			_imgurButton.disable();
@@ -100,7 +99,7 @@ package app.ui.screens
 			});
 		}
 		private function _uploadToImgur(img:Sprite, pCallback:Function) : void {
-			var url = _getImgurUploadUrl();
+			var url = Config.uploadToImgurUrl;
 			if(!url) { pCallback(null, "Imgur api not found."); return; }
 			
 			var tPNG:ByteArray = PNGEncoder.encode(FewfDisplayUtils.displayObjectToBitmapData(img));

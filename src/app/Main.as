@@ -8,6 +8,8 @@ package app
 	import com.fewfre.utils.*;
 	import flash.display.*;
 	import flash.events.*;
+	import com.fewfre.loaders.SpriteSheetToGifLoader;
+	import app.data.Config;
 
 	[SWF(backgroundColor="0x6A7495" , width="900" , height="425")]
 	public class Main extends MovieClip
@@ -55,6 +57,7 @@ package app
 		
 		private function _onPreloadComplete() : void {
 			_config = Fewf.assets.getData("config");
+			SpriteSheetToGifLoader.init(Config.spriteSheetToGifUrl);
 			_defaultLang = Fewf.i18n.getDefaultLang();
 			
 			// Some slight analytics
